@@ -19,7 +19,9 @@ with the end excluded. This matches the two original corpus windows. A fresh
 read-only SQLite transaction follows the current active parent chain in the
 authorized Devin database. It examines matching assistant calls and only their
 own returned outputs. Indexed joins constrain content reads to the active chain;
-a 120-second collection budget aborts without publishing partial results.
+a 120-second deadline is checked during SQLite execution and aborts without
+publishing partial results. This is not a strict whole-process timeout; Python
+parsing time between database operations is not independently interrupted.
 
 The unchanged analyzer labels CI-status calls. Mixed-shell and generic process
 waits are excluded. This snapshot recovered the same **128 calls** as the
