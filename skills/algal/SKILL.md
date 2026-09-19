@@ -1,6 +1,6 @@
 ---
 name: algal
-description: Run algal-skills programs instead of repeated raw shell output. Token-efficient deterministic and semi-deterministic workflows with replayable receipts. Use this when a task needs git state, diffs, tests, CI status, repo maps, search slices, or bounded web fetches.
+description: Run algal-skills programs instead of repeated raw tool output. Token-efficient deterministic workflows, optional Jev typed decisions, and replayable habitats for coding, research, and writing tasks.
 argument-hint: "list | run <program> --args <json|@file> | evolve | verify"
 allowed-tools: ["exec"]
 ---
@@ -18,6 +18,7 @@ model receives only the compact typed report — raw logs never enter context.
 - `bunx algal-skills run <program> --args '{"src":{...}}'` — run one program
 - `bunx algal-skills run <program> --args @args.json` — args from file
 - `bunx algal-skills verify <receipt> <manifest>` — replay a run bit-for-bit
+- `bunx algal-skills capabilities` — report optional Jev availability without secrets
 - `bunx algal-skills evolve --generations N --executor <spec>` — habitat promotion
 
 Args are keyed by input cell: almost always `{"src":{...}}` with fields like
@@ -26,8 +27,10 @@ Args are keyed by input cell: almost always `{"src":{...}}` with fields like
 ## Programs
 
 Fixed (0 model calls): `git-digest`, `diff-slice`, `test-sift`, `release-gate`,
-`ci-watch`, `repo-survey`, `search-slice`, `web-fetch`.
-Semi-deterministic (1 bounded model call): `diff-review`, `router`, `router-live`.
+`ci-watch`, `repo-survey`, `search-slice`, `web-fetch`, `research-bundle`,
+`writing-audit`.
+Semi-deterministic: `diff-review`, `router`, `router-live`; Jev-compatible typed
+decisions: `change-triage`, `research-triage`, `writing-evaluate`.
 Malleable habitats: `router-habitat` (propose→evaluate→score candidates),
 promoted via `algal-skills evolve` into the `router-champion` slot.
 
@@ -36,7 +39,8 @@ promoted via `algal-skills evolve` into the `router-champion` slot.
 - Pass `cwd` as the project root; `"."` resolves to your working directory.
 - Programs never write files, commit, push, or call APIs beyond the declared
   tool surface (git/gh/fetch/rg/subprocess for the declared check commands).
-- `--executor scripted:<file>` replays recorded model outputs for tests;
-  `gateway:<provider>/<model>` runs live structured-output calls.
+- `--executor scripted:<file>` replays recorded effects for tests;
+  `gateway:<provider>/<model>` runs text-generation calls and `jev[:model]`
+  runs typed decisions. Jev auto-admits only when configured and needed.
 - Every run prints a receipt; keep receipts for `verify` and for promotion
   lineage in habitats.

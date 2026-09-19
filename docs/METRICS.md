@@ -19,8 +19,10 @@ Aggregate findings (single-user, ~1 week):
 
 Interpretation, not extrapolation: within this corpus, the recurring
 context-heavy patterns were **git evidence gathering, test/build log reads,
-CI/PR polling, repo exploration, and search dumps** — the workflows this pack
-covers. These are one user's sessions; they motivate program selection, they
+CI/PR polling, repo exploration, search dumps, raw web evidence, and repeated
+review passes** — the workflows this pack covers. Research and writing rows
+extend the same bounded-evidence strategy beyond the original transcript-derived
+coding set. These are one user's sessions; they motivate program selection, they
 are not a measured savings claim.
 
 ## Bench design (`bench/run-bench.ts`)
@@ -37,9 +39,11 @@ For each workflow we measure **what enters the model's context**:
 - `est_*_tokens = ceil(bytes/4)` — labeled byte-estimates only.
 
 Deterministic inputs: the bench builds a fixture repo (40 files, dirty diff
-~35KB, 180-line failing test log) in tmpdir each run. Habitat quality is
-measured on `fixtures/router-cases.json` (9 labeled cases) via the spawned
-eval loop — `score` in the report is real, not assumed.
+~35KB, 180-line failing test log), three synthetic HTML research sources, and
+a 320-paragraph writing fixture in tmpdir each run. Habitat quality is measured
+on `fixtures/router-cases.json` (9 labeled cases) via the spawned eval loop —
+`score` in the report is real, not assumed. Jev-compatible rows use scripted
+typed answers with the exact `noul`/`choice`/`score` shapes.
 
 ### Labeled baselines & caveats
 
@@ -53,17 +57,29 @@ eval loop — `score` in the report is real, not assumed.
 - Baselines measure evidence ingestion, not reasoning cost; byte reduction is
   not a token/billing guarantee and says nothing about cache reuse, which is
   provider-dependent.
+- `research-triage` compares raw synthetic HTML with stripped, per-source
+  capped evidence and scripted typed answers. It does not establish live Jev
+  answer quality, latency, or provider usage.
+- `writing-audit` preserves mechanical audit signals, not the draft's full
+  semantic content; semantic editing still requires selected prose.
+- `change-triage` uses scripted typed answers over the same bounded diff.
 - Fixtures are small by construction; real repos make baselines *larger*.
+
+Latest deterministic suite: 248,603 baseline context bytes → 43,609 ALGAL
+context bytes (**82.5% reduction**), with 13 recorded agent/decision calls across
+10 workflows. Estimated tokens are 62,151 → 10,903 via `ceil(bytes/4)`.
 
 ## Reproduce
 
 ```sh
 bun install
-bun test                 # 17 checks incl. receipt bit-for-bit verify
+bun test                 # 24 checks incl. bounds, typed decisions, receipt verify
 bun bench/run-bench.ts   # rewrites bench/report/bench-report.json
 ```
 
-To measure live token usage (provider usage fields, not estimates), run the
-semi/habitat programs with `--executor gateway:<provider>/<model>` and diff
-the receipt effect records against a raw-loop equivalent — the receipt pins
-exactly what the model saw.
+To measure live provider usage rather than byte estimates, run text-generation
+programs with `--executor gateway:<provider>/<model>` or typed-decision programs
+with configured Jev/`--executor jev[:model]`, then compare receipt usage against
+a raw-loop equivalent. Live qualification is required before making provider
+quality, latency, or billing claims; the receipt pins what the executor saw but
+is not provider attestation.

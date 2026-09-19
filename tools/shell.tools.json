@@ -97,6 +97,35 @@
     },
     "exec": "cmd:bun __PKG__/tools/tool.ts web.fetch.v1"
   },
+  "research.bundle.v1": {
+    "signature": {
+      "inputs": {
+        "sources": { "type": "json" },
+        "max-sources": { "type": "json", "optional": true },
+        "max-bytes-per-source": { "type": "json", "optional": true }
+      },
+      "outputs": { "report": { "type": "json" } },
+      "effect": "read",
+      "cost": 400,
+      "maxOutputBytes": 98304
+    },
+    "exec": "cmd:bun __PKG__/tools/tool.ts research.bundle.v1"
+  },
+  "writing.audit.v1": {
+    "signature": {
+      "inputs": {
+        "text": { "type": "text", "optional": true },
+        "path": { "type": "text", "optional": true },
+        "cwd": { "type": "text", "optional": true },
+        "max-bytes": { "type": "json", "optional": true }
+      },
+      "outputs": { "report": { "type": "json" } },
+      "effect": "read",
+      "cost": 120,
+      "maxOutputBytes": 32768
+    },
+    "exec": "cmd:bun __PKG__/tools/tool.ts writing.audit.v1"
+  },
   "check.run.v1": {
     "signature": {
       "inputs": {

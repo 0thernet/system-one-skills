@@ -18,7 +18,11 @@ import { join, resolve } from "node:path";
 import {
   builtinRegistry,
   commandExecutor,
+  credentialResolver,
+  credentialStatus,
   FileStore,
+  JEV_DEFAULT_MODEL,
+  jevExecutor,
   parseOrganismManifest,
   parseToolSignature,
   runOrganism,
@@ -83,8 +87,26 @@ export async function loadModulesInto(dir: string, store: FileStore): Promise<nu
   return n;
 }
 
-export async function makeExecutors(specs: string[]): Promise<Executor[]> {
+export async function executorCapabilities() {
+  const status = await credentialStatus("jev");
+  return {
+    jev: {
+      available: status.configured,
+      source: status.source ?? null,
+      model: JEV_DEFAULT_MODEL,
+      effects: ["classifier", "decide"],
+    },
+  };
+}
+
+export async function makeExecutors(
+  specs: string[],
+  options: { autoJev?: boolean } = {},
+): Promise<Executor[]> {
   const out: Executor[] = [];
+  if (specs.length === 0 && options.autoJev && (await credentialStatus("jev")).configured) {
+    out.push(jevExecutor({ credential: credentialResolver("jev") }));
+  }
   for (const spec of specs) {
     if (spec.startsWith("scripted:")) {
       out.push(scriptedExecutor(JSON.parse(await readFile(resolve(spec.slice(9)), "utf8"))));
@@ -92,8 +114,14 @@ export async function makeExecutors(specs: string[]): Promise<Executor[]> {
       out.push(commandExecutor(spec.slice(4)));
     } else if (spec.startsWith("gateway:")) {
       out.push(vercelGatewayExecutor({ model: spec.slice(8) }));
+    } else if (spec === "jev" || spec.startsWith("jev:")) {
+      const model = spec === "jev" ? undefined : spec.slice(4);
+      out.push(jevExecutor({
+        credential: credentialResolver("jev"),
+        ...(model ? { model } : {}),
+      }));
     } else {
-      throw new Error(`unknown executor spec "${spec}" (want scripted:<f> | cmd:<sh> | gateway:<model>)`);
+      throw new Error(`unknown executor spec "${spec}" (want scripted:<f> | cmd:<sh> | gateway:<model> | jev[:model])`);
     }
   }
   return out;
@@ -114,12 +142,16 @@ export async function runProgram(opts: RunProgramOpts): Promise<RunReceipt> {
   const manifest = parseOrganismManifest(
     JSON.parse(await readFile(resolve(opts.manifestPath), "utf8")),
   );
+  const executorSpecs = opts.executorSpecs ?? [];
+  const autoJev = executorSpecs.length === 0 && manifest.cells.some(
+    (cell) => cell.kind === "classifier" || cell.kind === "decide",
+  );
   return runOrganism({
     manifest,
     args: opts.args ?? {},
     fns: builtinRegistry(),
     store,
-    executors: await makeExecutors(opts.executorSpecs ?? []),
+    executors: await makeExecutors(executorSpecs, { autoJev }),
     tools: opts.tools ?? packageTools(),
   });
 }

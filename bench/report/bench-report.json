@@ -9,7 +9,9 @@
    "byte reduction is not a token/billing guarantee; cache effects depend on provider",
    "fixture repos are small by construction; real repos make baselines larger, not smaller",
    "diff-review baseline assumes a typical 3-call read-review loop (labeled assumption)",
-   "bounded programs only win when raw evidence exceeds the cap: on a 1.4KB diff diff-review measured -18.9% (overhead, not savings) — the fixture diff is ~35KB to measure the intended regime"
+   "bounded programs only win when raw evidence exceeds the cap: on a 1.4KB diff diff-review measured -18.9% (overhead, not savings) — the fixture diff is ~35KB to measure the intended regime",
+   "Jev-compatible rows use scripted typed answers: they validate orchestration and bytes, not live provider quality, latency, or billing",
+   "writing-audit preserves mechanical signals, not the draft's full semantic content; semantic editing still requires selected prose"
   ]
  },
  "workflows": [
@@ -110,16 +112,58 @@
    "work_units": 16044,
    "quality": "measured score 1 on 9 labeled cases (see evolve for promotion policy)",
    "detail": "per-case doc-reading agent vs classifier + spawned eval loop"
+  },
+  {
+   "workflow": "research-triage",
+   "kind": "semi",
+   "baseline_context_bytes": 102062,
+   "algal_context_bytes": 12521,
+   "context_reduction_pct": 87.7,
+   "est_baseline_tokens": 25516,
+   "est_algal_tokens": 3131,
+   "agent_calls": 1,
+   "baseline_agent_calls": 1,
+   "work_units": 26625,
+   "quality": "scripted typed relevance/sufficiency/quality answers over the same three sources",
+   "detail": "raw HTML sources vs stripped byte-capped evidence + one typed decision"
+  },
+  {
+   "workflow": "writing-audit",
+   "kind": "fixed",
+   "baseline_context_bytes": 36920,
+   "algal_context_bytes": 1611,
+   "context_reduction_pct": 95.6,
+   "est_baseline_tokens": 9230,
+   "est_algal_tokens": 403,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 2074,
+   "quality": "mechanical audit signals preserved; semantic editing still requires selected prose",
+   "detail": "whole draft scan vs deterministic bounded audit record"
+  },
+  {
+   "workflow": "change-triage",
+   "kind": "semi",
+   "baseline_context_bytes": 37441,
+   "algal_context_bytes": 9934,
+   "context_reduction_pct": 73.5,
+   "est_baseline_tokens": 9361,
+   "est_algal_tokens": 2484,
+   "agent_calls": 1,
+   "baseline_agent_calls": 1,
+   "work_units": 21170,
+   "quality": "typed risk/readiness/quality answers over the same bounded diff",
+   "detail": "whole diff vs capped evidence + one Jev-compatible typed decision"
   }
  ],
  "totals": {
-  "baseline_context_bytes": 72180,
-  "algal_context_bytes": 19543,
-  "agent_calls": 11,
-  "baseline_agent_calls": 3,
-  "work_units": 57981,
-  "context_reduction_pct": 72.9,
-  "est_baseline_tokens": 18045,
-  "est_algal_tokens": 4886
+  "baseline_context_bytes": 248603,
+  "algal_context_bytes": 43609,
+  "agent_calls": 13,
+  "baseline_agent_calls": 5,
+  "work_units": 107850,
+  "context_reduction_pct": 82.5,
+  "est_baseline_tokens": 62151,
+  "est_algal_tokens": 10903
  }
 }

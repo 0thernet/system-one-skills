@@ -16,7 +16,7 @@ import { readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { PROGRAMS_DIR, PKG, runProgram, verifyRun } from "../src/run-program.ts";
+import { executorCapabilities, PROGRAMS_DIR, PKG, runProgram, verifyRun } from "../src/run-program.ts";
 
 const SKILLS = join(PKG, "skills");
 
@@ -85,6 +85,9 @@ async function main() {
       return;
     case "tools":
       process.stdout.write(await readFile(await resolvedToolsFile(), "utf8"));
+      return;
+    case "capabilities":
+      process.stdout.write(JSON.stringify(await executorCapabilities(), null, 1) + "\n");
       return;
     case "run": {
       const [program, ...restFlags] = rest;

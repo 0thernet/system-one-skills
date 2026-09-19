@@ -10,6 +10,7 @@ import { parseOrganismManifest, digestCanonical, manifestToJson } from "@hraness
 import {
   PKG,
   PROGRAMS_DIR,
+  makeExecutors,
   packageTools,
   runProgram,
   verifyRun,
@@ -51,7 +52,7 @@ describe("manifest admission", () => {
     }
   });
   test("fixed programs declare zero agent calls", () => {
-    for (const id of ["git-digest", "diff-slice", "test-sift", "release-gate", "ci-watch", "repo-survey", "search-slice", "web-fetch"]) {
+    for (const id of ["git-digest", "diff-slice", "test-sift", "release-gate", "ci-watch", "repo-survey", "search-slice", "web-fetch", "research-bundle", "writing-audit"]) {
       expect(manifestJson(id).budgets.maxAgentCalls).toBe(0);
     }
   });
@@ -109,6 +110,56 @@ describe("tools", () => {
   test("web.fetch.v1 rejects non-http input without a request", async () => {
     const r = await tool("web.fetch.v1")({ url: "file:///etc/passwd" });
     expect(r.ok).toBe(false);
+  });
+  test("web.fetch.v1 bounds response reads before clipping output", async () => {
+    const previous = globalThis.fetch;
+    globalThis.fetch = (async () => new Response("x".repeat(200_000), { headers: { "content-type": "text/plain" } })) as unknown as typeof fetch;
+    try {
+      const r = await tool("web.fetch.v1")({ url: "https://example.invalid/large", "max-bytes": 512 });
+      expect(r.ok).toBe(true);
+      expect((r.text as string).length).toBe(512);
+      expect(r.source_truncated).toBe(true);
+      expect(r.source_bytes).toBeLessThanOrEqual(4096);
+    } finally {
+      globalThis.fetch = previous;
+    }
+  });
+  test("research.bundle.v1 bounds inline sources and rejects unknown keys", async () => {
+    const r = await tool("research.bundle.v1")({
+      sources: [
+        { title: "A", text: "alpha evidence" },
+        { title: "B", text: "beta evidence", extra: true },
+      ],
+      "max-bytes-per-source": 512,
+    });
+    expect(r.ok).toBe(true);
+    expect(r.source_count).toBe(2);
+    expect(r.success_count).toBe(1);
+    expect(r.error_count).toBe(1);
+  });
+  test("writing.audit.v1 reports bounded deterministic writing signals", async () => {
+    const r = await tool("writing.audit.v1")({
+      text: "# Draft\n\nThis claim improved 42% without a citation. TODO revise.",
+    });
+    expect(r.ok).toBe(true);
+    expect(r.headings).toBe(1);
+    expect(r.placeholders).toBe(1);
+    expect((r.uncited_claims as string[]).length).toBe(1);
+  });
+  test("Jev executor specs and conditional auto-admission preserve the optional seam", async () => {
+    const explicit = await makeExecutors(["jev"]);
+    expect(explicit).toHaveLength(1);
+    expect(explicit[0]?.id).toBe("jev");
+    const previous = process.env.TYPESAFE_API_KEY;
+    process.env.TYPESAFE_API_KEY = "test-key-12345";
+    try {
+      const automatic = await makeExecutors([], { autoJev: true });
+      expect(automatic).toHaveLength(1);
+      expect(automatic[0]?.id).toBe("jev");
+    } finally {
+      if (previous === undefined) delete process.env.TYPESAFE_API_KEY;
+      else process.env.TYPESAFE_API_KEY = previous;
+    }
   });
 });
 
@@ -174,6 +225,71 @@ describe("program runs", () => {
     expect(r.work.agentCalls).toBe(1);
     expect(r.cells["fmt"]?.outputs?.out).toContain("pass");
   });
+  test("research-bundle and writing-audit run with zero model calls", async () => {
+    const research = await runProgram({
+      manifestPath: program("research-bundle"),
+      args: { src: { sources: [{ title: "A", text: "bounded evidence" }] } },
+      dir: mkdtempSync(join(tmpdir(), "algal-store-")),
+    });
+    expect(research.outcome).toBe("complete");
+    expect(research.work.agentCalls).toBe(0);
+    expect(research.cells["fmt"]?.outputs?.out).toContain("1/1 sources");
+    const writing = await runProgram({
+      manifestPath: program("writing-audit"),
+      args: { src: { text: "# Draft\n\nA concise sentence." } },
+      dir: mkdtempSync(join(tmpdir(), "algal-store-")),
+    });
+    expect(writing.outcome).toBe("complete");
+    expect(writing.work.agentCalls).toBe(0);
+    expect(writing.cells["fmt"]?.outputs?.out).toContain("words");
+  });
+  test("typed decision programs run with scripted Jev-shaped answers", async () => {
+    const cases = [
+      {
+        id: "change-triage",
+        args: { cwd: repo },
+        answers: {
+          risk: { choice: "low", confidence: 0.9, probabilities: { low: 0.9, medium: 0.08, high: 0.02 } },
+          merge_ready: { noul: 0.85 },
+          quality: { score: 4, confidence: 0.8, probabilities: { "1": 0.01, "2": 0.04, "3": 0.15, "4": 0.7, "5": 0.1 } },
+        },
+        summary: "risk low",
+      },
+      {
+        id: "research-triage",
+        args: { sources: [{ title: "A", text: "Evidence supports the claim." }], question: "Does the evidence support it?" },
+        answers: {
+          relevance: { choice: "supports", confidence: 0.9, probabilities: { supports: 0.9, contradicts: 0.02, mixed: 0.05, irrelevant: 0.03 } },
+          sufficient: { noul: 0.8 },
+          source_quality: { score: 4, confidence: 0.8, probabilities: { "1": 0.01, "2": 0.04, "3": 0.15, "4": 0.7, "5": 0.1 } },
+        },
+        summary: "supports",
+      },
+      {
+        id: "writing-evaluate",
+        args: { text: "A clear and supported draft.", audience: "engineers" },
+        answers: {
+          dominant_issue: { choice: "none", confidence: 0.9, probabilities: { clarity: 0.02, structure: 0.02, evidence: 0.02, tone: 0.02, mechanics: 0.02, none: 0.9 } },
+          publish_ready: { noul: 0.9 },
+          quality: { score: 5, confidence: 0.9, probabilities: { "1": 0.01, "2": 0.01, "3": 0.03, "4": 0.15, "5": 0.8 } },
+        },
+        summary: "issue none",
+      },
+    ];
+    for (const c of cases) {
+      const resp = mkdtempSync(join(tmpdir(), "algal-resp-"));
+      writeFileSync(join(resp, "r.json"), JSON.stringify({ judge: { answers: c.answers } }));
+      const r = await runProgram({
+        manifestPath: program(c.id),
+        args: { src: c.args as unknown as Record<string, import("@hraness/algal").JsonValue> },
+        dir: mkdtempSync(join(tmpdir(), "algal-store-")),
+        executorSpecs: [`scripted:${join(resp, "r.json")}`],
+      });
+      expect(r.outcome).toBe("complete");
+      expect(r.work.agentCalls).toBe(1);
+      expect(r.cells["fmt"]?.outputs?.out).toContain(c.summary);
+    }
+  });
   test("router-live routes through the slot default with zero config", async () => {
     const resp = mkdtempSync(join(tmpdir(), "algal-resp-"));
     writeFileSync(join(resp, "r.json"), JSON.stringify({ route: "search" }));
@@ -201,6 +317,28 @@ describe("receipts", () => {
     const report = await verifyRun(
       JSON.parse(JSON.stringify(receipt)),
       manifestJson("git-digest"),
+      dir,
+    );
+    expect(report.ok).toBe(true);
+    expect(report.mismatches ?? []).toEqual([]);
+  });
+  test("verify replays a typed decision receipt without live Jev", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "algal-store-"));
+    const resp = mkdtempSync(join(tmpdir(), "algal-resp-"));
+    writeFileSync(join(resp, "r.json"), JSON.stringify({ judge: { answers: {
+      dominant_issue: { choice: "none", confidence: 0.9, probabilities: { clarity: 0.02, structure: 0.02, evidence: 0.02, tone: 0.02, mechanics: 0.02, none: 0.9 } },
+      publish_ready: { noul: 0.9 },
+      quality: { score: 5, confidence: 0.9, probabilities: { "1": 0.01, "2": 0.01, "3": 0.03, "4": 0.15, "5": 0.8 } },
+    } } }));
+    const receipt = await runProgram({
+      manifestPath: program("writing-evaluate"),
+      args: { src: { text: "A clear draft.", audience: "engineers" } },
+      dir,
+      executorSpecs: [`scripted:${join(resp, "r.json")}`],
+    });
+    const report = await verifyRun(
+      JSON.parse(JSON.stringify(receipt)),
+      manifestJson("writing-evaluate"),
       dir,
     );
     expect(report.ok).toBe(true);

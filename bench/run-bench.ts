@@ -242,6 +242,72 @@ async function main() {
     }));
   }
 
+  {
+    const rawSources = [0, 1, 2].map((i) => ({
+      title: `Source ${i + 1}`,
+      text: `<html><nav>${"navigation filler ".repeat(700)}</nav><article>${`Evidence ${i + 1} supports the bounded research question. `.repeat(260)}</article><script>${"tracking ".repeat(900)}</script></html>`,
+    }));
+    const baseline = rawSources.map((source) => source.text).join("\n");
+    const respDir = mkdtempSync(join(tmpdir(), "bench-resp-"));
+    writeFileSync(join(respDir, "r.json"), JSON.stringify({
+      judge: { answers: {
+        relevance: { choice: "supports", confidence: 0.9, probabilities: { supports: 0.9, contradicts: 0.02, mixed: 0.05, irrelevant: 0.03 } },
+        sufficient: { noul: 0.82 },
+        source_quality: { score: 4, confidence: 0.8, probabilities: { "1": 0.01, "2": 0.04, "3": 0.15, "4": 0.7, "5": 0.1 } },
+      } },
+    }));
+    const r = (await runProgram({
+      manifestPath: program("research-triage"),
+      args: { src: { sources: rawSources, question: "Does the evidence support the claim?", "max-bytes-per-source": 4000 } },
+      dir: mkdtempSync(join(tmpdir(), "bench-")),
+      executorSpecs: [`scripted:${join(respDir, "r.json")}`],
+    })) as unknown as Receipt;
+    const algal = bytes(JSON.stringify(r.cells["gather"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
+    rows.push(row("research-triage", "semi", baseline, algal, r, {
+      baseline_agent_calls: 1,
+      quality: "scripted typed relevance/sufficiency/quality answers over the same three sources",
+      detail: "raw HTML sources vs stripped byte-capped evidence + one typed decision",
+    }));
+  }
+
+  {
+    const draft = Array.from({ length: 320 }, (_, i) => `Paragraph ${i + 1}. This draft sentence explains the same concept with measured detail and a claim of ${i + 10}% improvement.`).join("\n\n");
+    const r = (await runProgram({
+      manifestPath: program("writing-audit"),
+      args: { src: { text: draft } },
+      dir: mkdtempSync(join(tmpdir(), "bench-")),
+    })) as unknown as Receipt;
+    const algal = bytes(JSON.stringify(r.cells["audit"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
+    rows.push(row("writing-audit", "fixed", draft, algal, r, {
+      quality: "mechanical audit signals preserved; semantic editing still requires selected prose",
+      detail: "whole draft scan vs deterministic bounded audit record",
+    }));
+  }
+
+  {
+    const rawDiff = sh("git diff HEAD", repo);
+    const respDir = mkdtempSync(join(tmpdir(), "bench-resp-"));
+    writeFileSync(join(respDir, "r.json"), JSON.stringify({
+      judge: { answers: {
+        risk: { choice: "medium", confidence: 0.8, probabilities: { low: 0.1, medium: 0.8, high: 0.1 } },
+        merge_ready: { noul: 0.65 },
+        quality: { score: 3, confidence: 0.75, probabilities: { "1": 0.02, "2": 0.08, "3": 0.7, "4": 0.15, "5": 0.05 } },
+      } },
+    }));
+    const r = (await runProgram({
+      manifestPath: program("change-triage"),
+      args: { src: { cwd: repo, "max-bytes": 8000 } },
+      dir: mkdtempSync(join(tmpdir(), "bench-")),
+      executorSpecs: [`scripted:${join(respDir, "r.json")}`],
+    })) as unknown as Receipt;
+    const algal = bytes(JSON.stringify(r.cells["probe"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
+    rows.push(row("change-triage", "semi", rawDiff, algal, r, {
+      baseline_agent_calls: 1,
+      quality: "typed risk/readiness/quality answers over the same bounded diff",
+      detail: "whole diff vs capped evidence + one Jev-compatible typed decision",
+    }));
+  }
+
   // ------------------------------------------------------------- report ---
   const totals = rows.reduce(
     (a, r) => ({
@@ -265,6 +331,8 @@ async function main() {
         "fixture repos are small by construction; real repos make baselines larger, not smaller",
         "diff-review baseline assumes a typical 3-call read-review loop (labeled assumption)",
         "bounded programs only win when raw evidence exceeds the cap: on a 1.4KB diff diff-review measured -18.9% (overhead, not savings) — the fixture diff is ~35KB to measure the intended regime",
+        "Jev-compatible rows use scripted typed answers: they validate orchestration and bytes, not live provider quality, latency, or billing",
+        "writing-audit preserves mechanical signals, not the draft's full semantic content; semantic editing still requires selected prose",
       ],
     },
     workflows: rows,

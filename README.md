@@ -2,7 +2,8 @@
 
 Token-efficient agent skills built on [ALGAL](https://github.com/hraness/algal)
 programs: deterministic and semi-deterministic workflows that keep raw tool
-output out of the model's context — plus self-evolving habitats promoted by
+output out of the model's context, optional Jev typed decisions for coding,
+research, and writing triage, plus self-evolving habitats promoted by
 replayable evidence.
 
 Requires **Bun ≥ 1.3**. Depends on `@hraness/algal` (pinned git commit).
@@ -20,8 +21,9 @@ Three kinds of program:
 
 - **fixed** — `maxAgentCalls: 0`, pure `expr`/`fn`/`tool`/`repeat` cells.
   No model involved at all.
-- **semi-deterministic** — one bounded `agent`/`classifier` cell with a
-  declared output schema, fed a byte-capped evidence slice.
+- **semi-deterministic** — one bounded `agent`, `classifier`, or typed
+  `decide` cell with a declared output contract, fed a byte-capped evidence
+  slice.
 - **malleable habitats** — an agent proposes *candidate manifests as data*,
   spawned children evaluate them on labeled cases, and the host promotes a
   strictly-better winner into a durable slot. Evolution never mutates a
@@ -41,7 +43,7 @@ bunx algal-skills verify receipt.json manifest.algal.json
 wired as a `ToolRegistry` — no tool subprocess, no path templating. Args are
 keyed by input cell (`{"src":{...}}`); `--args @file.json` also works.
 
-Skill definitions for agent CLIs ship under `skills/`. Install all eight from
+Skill definitions for agent CLIs ship under `skills/`. Install all eleven from
 the public Agent Skills registry source, or copy them from the npm package:
 
 ```sh
@@ -52,6 +54,25 @@ bunx algal-skills install-skills --target ~/.config/devin/skills
 ```
 
 Discover first without installing: `bunx skills add 0thernet/algal-skills --list`.
+
+## Optional Jev decisions
+
+Jev is optional. Fixed programs run unchanged without it. When ALGAL's
+credential resolver finds Jev in `TYPESAFE_API_KEY`, the OS vault, or its
+permission-checked credential file, `algal-skills` automatically admits Jev
+for `classifier` and typed `decide` effects only:
+
+```sh
+bunx algal auth jev                 # configure through ALGAL custody
+bunx algal-skills capabilities      # reports availability, never the key
+bunx algal-skills run change-triage --args '{"src":{"cwd":"."}}'
+```
+
+Jev answers bounded `noul`, `choice`, and `score` questions. It does not
+generate code or prose, serve approval gates, or replace deterministic tools.
+Pass `--executor jev[:model]` to require it explicitly; pass a scripted or
+gateway executor to select a different boundary. Credentials never enter
+manifests, digests, logs, or receipts.
 
 ## Programs
 
@@ -65,8 +86,13 @@ Discover first without installing: `bunx skills add 0thernet/algal-skills --list
 | `repo-survey` | 0 | `find`/`ls`/`cat` chains on an unfamiliar repo |
 | `search-slice` | 0 | unbounded `grep`/`rg` dumps (rg, JS fallback) |
 | `web-fetch` | 0 | raw HTML in context |
+| `research-bundle` | 0 | repeated fetch/read/clip loops across up to 12 sources |
+| `writing-audit` | 0 | rereading a whole draft for mechanical/style signals |
 | `diff-review` | 1 | whole-diff reviews; schema-verified verdict |
-| `router` / `router-live` | 1 | doc-reading to pick a lane; live reads the promoted champion |
+| `change-triage` | 1 typed | diff risk/readiness/quality triage (Jev-compatible) |
+| `research-triage` | 1 typed | source relevance/sufficiency/quality triage (Jev-compatible) |
+| `writing-evaluate` | 1 typed | issue/readiness/quality evaluation without rewriting |
+| `router` / `router-live` | 1 | doc-reading to pick a lane; Jev can serve the classifier |
 | `router-habitat` | 1+N | propose→evaluate→score router candidates |
 | `hab-eval-inner`, `ci-check-inner` | – | inner organisms for `each`/`repeat` cells |
 
@@ -103,10 +129,15 @@ For tests and offline work use `--executor scripted:<file>`; see
 | diff-review | 37441 → 9672 | 74.2% | 1 |
 | ci-watch | 745 → 35 | 95.3% | 0 |
 | router-habitat | 25493 → 6922 | 72.8% | 10 |
-| **total** | **72180 → 19543** | **72.9%** | 11 |
+| research-triage | 102062 → 12521 | 87.7% | 1 scripted typed |
+| writing-audit | 36920 → 1611 | 95.6% | 0 |
+| change-triage | 37441 → 9934 | 73.5% | 1 scripted typed |
+| **total** | **248603 → 43609** | **82.5%** | 13 |
 
 Read these as **context-byte reductions on declared fixtures**, with
-est_tokens = bytes/4 labeled as estimates. Byte reduction is not a billing
+`est_tokens = ceil(bytes/4)` labeled as estimates. Jev-compatible rows use
+scripted typed answers, proving orchestration and context shape—not live Jev
+quality, latency, or billing. Byte reduction is not a billing
 guarantee; small inputs can cost more than they save (a 1.4 KB diff measured
 **-18.9%**). Full methodology, corpus motivation, and caveats:
 [docs/METRICS.md](docs/METRICS.md). Motivating corpus: aggregate analysis of
@@ -117,8 +148,8 @@ transcript content ships) in `research/session-report.json`.
 
 - Manifests are data; tool impls are reviewed code — fixed argv arrays, no
   string-concatenated shells, byte-bounded outputs.
-- The tool surface is git/gh/rg/fetch/subprocess only for the declared check
-  commands; nothing writes, commits, pushes, or mutates remotes.
+- The tool surface is bounded git/gh/rg/fetch/text-analysis/subprocess only for
+  declared workflows; nothing writes, commits, pushes, or mutates remotes.
 - `test.run`/`check.run` run caller-declared commands inside the runtime's
   effect boundary — treat them as `exec` equivalents, not sandbox escapes.
 - Spawned manifests are admitted by the contract parser under the parent's
@@ -130,7 +161,7 @@ transcript content ships) in `research/session-report.json`.
 
 ```sh
 bun install
-bun test                 # 17 tests: admission, tools, runs, verify, hygiene
+bun test                 # 24 tests: admission, bounds, runs, Jev seam, verify, hygiene
 bun bench/run-bench.ts   # regenerate bench/report/bench-report.json
 bunx algal-skills list
 ```

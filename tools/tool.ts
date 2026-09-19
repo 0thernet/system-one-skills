@@ -431,9 +431,42 @@ function htmlToText(html: string): string {
     .trim();
 }
 
+async function boundedResponseText(response: Response, maxBytes: number) {
+  const reader = response.body?.getReader();
+  if (!reader) return { text: "", bytes: 0, truncated: false };
+  const chunks: Uint8Array[] = [];
+  let bytes = 0;
+  let truncated = false;
+  while (true) {
+    const item = await reader.read();
+    if (item.done) break;
+    const remaining = maxBytes - bytes;
+    if (remaining <= 0) {
+      truncated = true;
+      await reader.cancel();
+      break;
+    }
+    const chunk = item.value.byteLength > remaining ? item.value.subarray(0, remaining) : item.value;
+    chunks.push(chunk);
+    bytes += chunk.byteLength;
+    if (chunk.byteLength < item.value.byteLength) {
+      truncated = true;
+      await reader.cancel();
+      break;
+    }
+  }
+  const joined = new Uint8Array(bytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    joined.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return { text: new TextDecoder().decode(joined), bytes, truncated };
+}
+
 async function webFetch(inputs: Record<string, unknown>) {
   const url = str(inputs.url);
-  const maxBytes = int(inputs["max-bytes"], 16_000, 512, 128_000);
+  const maxBytes = int(inputs["max-bytes"], 16_000, 512, 120_000);
   if (!/^https?:\/\/[^\s]{1,2000}$/.test(url)) return { ok: false, error: "web.fetch.v1 requires an http(s) url" };
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 30_000);
@@ -441,19 +474,143 @@ async function webFetch(inputs: Record<string, unknown>) {
     const res = await fetch(url, {
       signal: ctl.signal,
       redirect: "follow",
-      headers: { "user-agent": "algal-skills/0.1 (+https://github.com/hraness/algal-skills)", accept: "text/*,application/json,application/xhtml+xml" },
+      headers: { "user-agent": "algal-skills/0.2 (+https://github.com/0thernet/algal-skills)", accept: "text/*,application/json,application/xhtml+xml" },
     });
-    const raw = await res.text();
+    const raw = await boundedResponseText(res, Math.min(512_000, maxBytes * 8));
     const ct = res.headers.get("content-type") ?? "";
     const isHtml = /html|xml/.test(ct);
-    const body = isHtml ? htmlToText(raw) : raw;
-    const { text, truncated } = clip(body, maxBytes);
-    return { ok: res.ok, status: res.status, content_type: ct.slice(0, 80), text, truncated, source_bytes: Buffer.from(raw, "utf8").length };
+    const body = isHtml ? htmlToText(raw.text) : raw.text;
+    const clipped = clip(body, maxBytes);
+    return { ok: res.ok, status: res.status, content_type: ct.slice(0, 80), text: clipped.text, truncated: raw.truncated || clipped.truncated, source_bytes: raw.bytes, source_truncated: raw.truncated };
   } catch (e) {
     return { ok: false, error: `fetch failed: ${String(e).slice(0, 200)}` };
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function researchBundle(inputs: Record<string, unknown>) {
+  const raw = inputs.sources;
+  const maxSources = int(inputs["max-sources"], 8, 1, 12);
+  const requestedBytes = int(inputs["max-bytes-per-source"], 8_000, 512, 16_000);
+  const maxBytes = Math.min(requestedBytes, Math.floor(80_000 / maxSources));
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return { ok: false, error: "research.bundle.v1 requires a non-empty sources array" };
+  }
+  const sources: Array<Record<string, unknown>> = [];
+  for (const [index, item] of raw.slice(0, maxSources).entries()) {
+    if (typeof item === "string") {
+      const fetched = await webFetch({ url: item, "max-bytes": maxBytes });
+      sources.push({ index, url: item.slice(0, 2000), ...fetched });
+      continue;
+    }
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      sources.push({ index, ok: false, error: "source must be a URL string or {url?, title?, text?}" });
+      continue;
+    }
+    const source = item as Record<string, unknown>;
+    if (Object.keys(source).some((key) => !["url", "title", "text"].includes(key))) {
+      sources.push({ index, ok: false, error: "source contains unknown keys" });
+      continue;
+    }
+    const url = str(source.url).slice(0, 2000);
+    const title = str(source.title).slice(0, 160);
+    if (typeof source.text === "string") {
+      const rawText = source.text.replace(/\r\n/g, "\n").trim();
+      const boundedRaw = clip(rawText, Math.min(128_000, maxBytes * 8));
+      const text = /<[^>]+>/.test(boundedRaw.text) ? htmlToText(boundedRaw.text) : boundedRaw.text;
+      const clipped = clip(text, maxBytes);
+      sources.push({ index, ok: true, url, title, text: clipped.text, truncated: boundedRaw.truncated || clipped.truncated, source_bytes: Buffer.byteLength(rawText), source_truncated: boundedRaw.truncated });
+    } else if (url) {
+      const fetched = await webFetch({ url, "max-bytes": maxBytes });
+      sources.push({ index, url, title, ...fetched });
+    } else {
+      sources.push({ index, ok: false, error: "source requires url or text" });
+    }
+  }
+  const successes = sources.filter((source) => source.ok === true);
+  return {
+    ok: successes.length > 0,
+    sources,
+    source_count: sources.length,
+    success_count: successes.length,
+    error_count: sources.length - successes.length,
+    truncated: raw.length > maxSources || sources.some((source) => source.truncated === true),
+    text_bytes: successes.reduce((sum, source) => sum + Buffer.byteLength(str(source.text)), 0),
+  };
+}
+
+function syllables(word: string): number {
+  const groups = word.toLowerCase().replace(/[^a-z]/g, "").match(/[aeiouy]+/g)?.length ?? 1;
+  return Math.max(1, groups - (/e$/.test(word) && groups > 1 ? 1 : 0));
+}
+
+async function writingAudit(inputs: Record<string, unknown>) {
+  const maxBytes = int(inputs["max-bytes"], 64_000, 512, 128_000);
+  let text = str(inputs.text);
+  let source = "inline";
+  if (!text && typeof inputs.path === "string") {
+    const root = safeCwd(inputs.cwd);
+    const path = resolve(root, inputs.path);
+    if (path !== root && !path.startsWith(root + sep)) return { ok: false, error: "path escapes cwd" };
+    try {
+      const info = await stat(path);
+      if (!info.isFile() || info.size > maxBytes * 2) return { ok: false, error: "file is not a bounded text file" };
+      text = await readFile(path, "utf8");
+      source = path.slice(root.length + 1) || ".";
+    } catch (e) {
+      return { ok: false, error: `read failed: ${String(e).slice(0, 160)}` };
+    }
+  }
+  if (!text) return { ok: false, error: "writing.audit.v1 requires text or path" };
+  const clipped = clip(text.replace(/\r\n/g, "\n"), maxBytes);
+  text = clipped.text;
+  const words = text.match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu) ?? [];
+  const sentences = text.split(/(?<=[.!?])\s+|\n{2,}/).map((s) => s.trim()).filter(Boolean);
+  const sentenceWords = sentences.map((sentence) => sentence.match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu)?.length ?? 0);
+  const totalSyllables = words.reduce((sum, word) => sum + syllables(word), 0);
+  const wordCount = words.length;
+  const sentenceCount = Math.max(1, sentences.length);
+  const readingEase = wordCount
+    ? Math.round((206.835 - 1.015 * (wordCount / sentenceCount) - 84.6 * (totalSyllables / wordCount)) * 10) / 10
+    : 0;
+  const grams = new Map<string, number>();
+  const lowered = words.map((word) => word.toLowerCase());
+  for (let i = 0; i + 2 < lowered.length; i++) {
+    const gram = lowered.slice(i, i + 3).join(" ");
+    grams.set(gram, (grams.get(gram) ?? 0) + 1);
+  }
+  const repeatedPhrases = [...grams.entries()]
+    .filter(([, count]) => count >= 3)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 12)
+    .map(([phrase, count]) => ({ phrase, count }));
+  const longSentences = sentences
+    .map((sentence, index) => ({ line: index + 1, words: sentenceWords[index] ?? 0, text: sentence.slice(0, 180) }))
+    .filter((sentence) => sentence.words > 30)
+    .slice(0, 12);
+  const claimLike = sentences.filter((sentence) => /\b\d+(?:\.\d+)?%?\b|\b(?:always|never|best|worst|only|proven)\b/i.test(sentence));
+  const uncitedClaims = claimLike.filter((sentence) => !/https?:\/\/|\[[^\]]+\]\([^)]+\)|\[[0-9]+\]/.test(sentence));
+  return {
+    ok: true,
+    source,
+    bytes: Buffer.byteLength(text),
+    truncated: clipped.truncated,
+    words: wordCount,
+    sentences: sentences.length,
+    paragraphs: text.split(/\n\s*\n/).filter((part) => part.trim()).length,
+    headings: text.split("\n").filter((line) => /^#{1,6}\s+/.test(line)).length,
+    links: (text.match(/https?:\/\/|\[[^\]]+\]\([^)]+\)/g) ?? []).length,
+    average_sentence_words: Math.round((wordCount / sentenceCount) * 10) / 10,
+    reading_ease_estimate: readingEase,
+    long_sentences: longSentences,
+    repeated_phrases: repeatedPhrases,
+    placeholders: (text.match(/\b(?:TODO|TBD|FIXME|XXX)\b/g) ?? []).length,
+    hedge_terms: (text.match(/\b(?:maybe|perhaps|possibly|somewhat|arguably|likely)\b/gi) ?? []).length,
+    passive_markers: (text.match(/\b(?:is|are|was|were|be|been|being)\s+\w+(?:ed|en)\b/gi) ?? []).length,
+    claim_like_sentences: claimLike.length,
+    uncited_claims: uncitedClaims.slice(0, 12).map((sentence) => sentence.slice(0, 180)),
+  };
 }
 
 // ------------------------------------------------------------- check.run ---
@@ -490,6 +647,8 @@ export const TOOLS: Record<string, (i: Record<string, unknown>) => Promise<Recor
   "repo.survey.v1": repoSurvey,
   "search.slice.v1": searchSlice,
   "web.fetch.v1": webFetch,
+  "research.bundle.v1": researchBundle,
+  "writing.audit.v1": writingAudit,
   "check.run.v1": checkRun,
 };
 

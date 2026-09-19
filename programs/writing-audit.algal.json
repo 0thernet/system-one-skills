@@ -1,0 +1,40 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:writing-audit",
+  "name": "Writing audit",
+  "note": "Deterministically audits inline text or a bounded local file for length, readability estimate, long sentences, repeated phrases, placeholders, hedging, passive markers, links, and uncited claim-like sentences.",
+  "budgets": { "maxSteps": 8, "maxAgentCalls": 0, "maxWork": 120000 },
+  "interface": {
+    "inputs": {
+      "text": { "cell": "src", "port": "text" },
+      "path": { "cell": "src", "port": "path" },
+      "cwd": { "cell": "src", "port": "cwd" },
+      "max-bytes": { "cell": "src", "port": "max-bytes" }
+    },
+    "outputs": {
+      "audit": { "cell": "audit", "port": "report" },
+      "summary": { "cell": "fmt", "port": "out" }
+    }
+  },
+  "cells": [
+    { "id": "src", "kind": "input", "outputs": { "text": "text", "path": "text", "cwd": "text", "max-bytes": "json" } },
+    { "id": "audit", "kind": "tool", "tool": "writing.audit.v1" },
+    {
+      "id": "fmt",
+      "kind": "expr",
+      "inputs": { "r": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": ["sconcat", ["toText", ["get", "r", "words"]], " words | reading ease≈", ["toText", ["get", "r", "reading_ease_estimate"]], " | long sentences ", ["toText", ["len", ["get", "r", "long_sentences"]]], " | uncited claims ", ["toText", ["len", ["get", "r", "uncited_claims"]]]]
+      },
+      "output": { "kind": "text" }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "text" }, "to": { "cell": "audit", "port": "text" } },
+    { "from": { "cell": "src", "port": "path" }, "to": { "cell": "audit", "port": "path" } },
+    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "audit", "port": "cwd" } },
+    { "from": { "cell": "src", "port": "max-bytes" }, "to": { "cell": "audit", "port": "max-bytes" } },
+    { "from": { "cell": "audit", "port": "report" }, "to": { "cell": "fmt", "port": "r" } }
+  ]
+}

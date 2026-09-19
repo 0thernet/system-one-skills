@@ -1,7 +1,7 @@
 {
   "name": "algal-skills",
-  "version": "0.1.2",
-  "description": "Token-efficient agent skills built on ALGAL programs: deterministic workflows that keep raw tool output out of the model's context, plus self-evolving habitats promoted by replayable evidence.",
+  "version": "0.2.0",
+  "description": "Token-efficient ALGAL skills for coding, research, and writing: deterministic evidence reduction, optional Jev typed decisions, and replayable evolving habitats.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "bun": ">=1.3.0"
   },
   "dependencies": {
-    "@hraness/algal": "github:hraness/algal#b54b5129844637eed59713ca0419a01ee035ec6c"
+    "@hraness/algal": "github:hraness/algal#6db9d38ac9b99095b26a520bb4c1a79945b6bced"
   },
   "devDependencies": {
     "@types/bun": "^1.2.0",
@@ -64,6 +64,9 @@
     "codex-skills",
     "token-efficiency",
     "algal",
+    "jev",
+    "research",
+    "writing",
     "llm",
     "agentic-workflows"
   ]

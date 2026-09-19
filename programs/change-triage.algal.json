@@ -1,0 +1,52 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:change-triage",
+  "name": "Change triage",
+  "note": "Reads a bounded diff and asks one typed decision effect for merge risk, readiness probability, and quality score. Jev serves this when available; scripted decision answers keep tests and replay deterministic.",
+  "budgets": { "maxSteps": 12, "maxAgentCalls": 1, "maxWork": 180000 },
+  "interface": {
+    "inputs": {
+      "cwd": { "cell": "src", "port": "cwd" },
+      "staged": { "cell": "src", "port": "staged" },
+      "rev": { "cell": "src", "port": "rev" },
+      "max-bytes": { "cell": "src", "port": "max-bytes" }
+    },
+    "outputs": {
+      "evidence": { "cell": "probe", "port": "report" },
+      "triage": { "cell": "judge", "port": "out" },
+      "summary": { "cell": "fmt", "port": "out" }
+    }
+  },
+  "cells": [
+    { "id": "src", "kind": "input", "outputs": { "cwd": "text", "staged": "json", "rev": "text", "max-bytes": "json" } },
+    { "id": "probe", "kind": "tool", "tool": "diff.read.v1" },
+    {
+      "id": "judge",
+      "kind": "decide",
+      "inputs": { "evidence": "json" },
+      "prompt": "Triage this bounded code change. Base answers only on supplied diff evidence; uncertainty lowers readiness and quality.",
+      "questions": {
+        "risk": { "type": "choice", "instructions": "Choose the merge-risk tier.", "criteria": { "low": "Localized and well-supported change", "medium": "Meaningful uncertainty or moderate blast radius", "high": "Large blast radius, unsafe behavior, or likely defect" } },
+        "merge_ready": { "type": "noul", "instructions": "Probability that the change is ready to merge without further work." },
+        "quality": { "type": "score", "instructions": "Rate implementation quality from 1 (poor) to 5 (excellent).", "criteria": ["1", "2", "3", "4", "5"] }
+      },
+      "view": { "inputs": "*" },
+      "budget": { "maxContextBytes": 65536, "maxOutputBytes": 4096, "maxEffectMs": 60000 }
+    },
+    {
+      "id": "fmt",
+      "kind": "expr",
+      "inputs": { "a": "json" },
+      "expr": { "contract": "algal.expr.v1", "program": ["sconcat", "risk ", ["get", "a", "answers", "risk", "choice"], " | ready ", ["toText", ["get", "a", "answers", "merge_ready", "noul"]], " | quality ", ["toText", ["get", "a", "answers", "quality", "score"]]] },
+      "output": { "kind": "text" }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "probe", "port": "cwd" } },
+    { "from": { "cell": "src", "port": "staged" }, "to": { "cell": "probe", "port": "staged" } },
+    { "from": { "cell": "src", "port": "rev" }, "to": { "cell": "probe", "port": "rev" } },
+    { "from": { "cell": "src", "port": "max-bytes" }, "to": { "cell": "probe", "port": "max-bytes" } },
+    { "from": { "cell": "probe", "port": "report" }, "to": { "cell": "judge", "port": "evidence" }, "guard": { "expr": { "contract": "algal.expr.v1", "program": ["eq", ["get", "value", "ok"], true] } } },
+    { "from": { "cell": "judge", "port": "out" }, "to": { "cell": "fmt", "port": "a" } }
+  ]
+}
