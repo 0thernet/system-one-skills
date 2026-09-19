@@ -1,0 +1,125 @@
+{
+ "generated_by": "bench/run-bench.ts — deterministic fixtures, no live model calls",
+ "methodology": {
+  "baseline": "raw bytes an agent ingests doing the same job by hand (command dumps, unbounded logs, doc reads)",
+  "algal": "interface-output bytes + model-visible evidence bytes; agent_calls and work_units from the run receipt",
+  "tokens": "est = ceil(bytes/4) — a byte estimate, not provider usage",
+  "caveats": [
+   "baselines measure the evidence-ingestion half of a workflow, not the agent's reasoning cost",
+   "byte reduction is not a token/billing guarantee; cache effects depend on provider",
+   "fixture repos are small by construction; real repos make baselines larger, not smaller",
+   "diff-review baseline assumes a typical 3-call read-review loop (labeled assumption)",
+   "bounded programs only win when raw evidence exceeds the cap: on a 1.4KB diff diff-review measured -18.9% (overhead, not savings) — the fixture diff is ~35KB to measure the intended regime"
+  ]
+ },
+ "workflows": [
+  {
+   "workflow": "git-digest",
+   "kind": "fixed",
+   "baseline_context_bytes": 2176,
+   "algal_context_bytes": 1609,
+   "context_reduction_pct": 26.1,
+   "est_baseline_tokens": 544,
+   "est_algal_tokens": 403,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 3836,
+   "quality": "same fields as the raw commands (verified in tests)",
+   "detail": "status+log+stat+stash dumps vs summary"
+  },
+  {
+   "workflow": "test-sift",
+   "kind": "fixed",
+   "baseline_context_bytes": 4460,
+   "algal_context_bytes": 832,
+   "context_reduction_pct": 81.3,
+   "est_baseline_tokens": 1115,
+   "est_algal_tokens": 208,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 2241,
+   "quality": "verdict+failure lines+tail preserved; filler dropped",
+   "detail": "full test log vs sifted verdict"
+  },
+  {
+   "workflow": "repo-survey",
+   "kind": "fixed",
+   "baseline_context_bytes": 635,
+   "algal_context_bytes": 94,
+   "context_reduction_pct": 85.2,
+   "est_baseline_tokens": 159,
+   "est_algal_tokens": 24,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 1262,
+   "quality": "same dirs/manifests/readme fields",
+   "detail": "find+ls+cat chain vs survey summary"
+  },
+  {
+   "workflow": "search-slice",
+   "kind": "fixed",
+   "baseline_context_bytes": 1230,
+   "algal_context_bytes": 379,
+   "context_reduction_pct": 69.2,
+   "est_baseline_tokens": 308,
+   "est_algal_tokens": 95,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 2600,
+   "quality": "top-12 of 40 matches, identical ordering",
+   "detail": "unbounded grep (40 hits) vs 12-match slice"
+  },
+  {
+   "workflow": "diff-review",
+   "kind": "semi",
+   "baseline_context_bytes": 37441,
+   "algal_context_bytes": 9672,
+   "context_reduction_pct": 74.2,
+   "est_baseline_tokens": 9361,
+   "est_algal_tokens": 2418,
+   "agent_calls": 1,
+   "baseline_agent_calls": 3,
+   "work_units": 30913,
+   "quality": "schema-verified verdict on identical diff",
+   "detail": "whole diff + assumed 3-call read-review loop vs 1 bounded call"
+  },
+  {
+   "workflow": "ci-watch",
+   "kind": "fixed",
+   "baseline_context_bytes": 745,
+   "algal_context_bytes": 35,
+   "context_reduction_pct": 95.3,
+   "est_baseline_tokens": 187,
+   "est_algal_tokens": 9,
+   "agent_calls": 0,
+   "baseline_agent_calls": 0,
+   "work_units": 1085,
+   "quality": "terminal status identical to final poll",
+   "detail": "5 polls of gh JSON vs terminal summary (stubbed tool)"
+  },
+  {
+   "workflow": "router-habitat",
+   "kind": "habitat",
+   "baseline_context_bytes": 25493,
+   "algal_context_bytes": 6922,
+   "context_reduction_pct": 72.8,
+   "est_baseline_tokens": 6374,
+   "est_algal_tokens": 1731,
+   "agent_calls": 10,
+   "baseline_agent_calls": 0,
+   "work_units": 16044,
+   "quality": "measured score 1 on 9 labeled cases (see evolve for promotion policy)",
+   "detail": "per-case doc-reading agent vs classifier + spawned eval loop"
+  }
+ ],
+ "totals": {
+  "baseline_context_bytes": 72180,
+  "algal_context_bytes": 19543,
+  "agent_calls": 11,
+  "baseline_agent_calls": 3,
+  "work_units": 57981,
+  "context_reduction_pct": 72.9,
+  "est_baseline_tokens": 18045,
+  "est_algal_tokens": 4886
+ }
+}

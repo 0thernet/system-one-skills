@@ -1,0 +1,118 @@
+{
+ "package": "algal-skills",
+ "contract": "algal.organism.v1",
+ "programs": [
+  {
+   "id": "ci-check-inner",
+   "file": "ci-check-inner.algal.json",
+   "key": "organism:ci-check-inner",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "A single bounded CI status probe; ci-watch repeats it until the run reaches a terminal state."
+  },
+  {
+   "id": "ci-watch",
+   "file": "ci-watch.algal.json",
+   "key": "organism:ci-watch",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Polls the latest CI run inside a bounded repeat cell and returns only the terminal status. The sleep+gh-poll loop \u2014 and every intermediate status dump \u2014 stays inside the runtime, out of the model's context."
+  },
+  {
+   "id": "diff-review",
+   "file": "diff-review.algal.json",
+   "key": "organism:diff-review",
+   "agentCalls": 1,
+   "malleable": false,
+   "note": "Bounded diff in, structured verdict out. The model reviews a byte-capped slice (never the raw repo) and must answer inside a declared schema \u2014 exactly one agent call."
+  },
+  {
+   "id": "diff-slice",
+   "file": "diff-slice.algal.json",
+   "key": "organism:diff-slice",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Byte-bounded diff read: stat plus a clipped patch, never an unbounded git diff dump in context."
+  },
+  {
+   "id": "git-digest",
+   "file": "git-digest.algal.json",
+   "key": "organism:git-digest",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "One bounded tool call replaces the status/diff/log round-trip set: repo state arrives pre-digested, so raw git output never enters the model's context."
+  },
+  {
+   "id": "hab-eval-inner",
+   "file": "hab-eval-inner.algal.json",
+   "key": "organism:hab-eval-inner",
+   "agentCalls": 4,
+   "malleable": false,
+   "note": "Generic fitness probe for malleable habitats: spawns the candidate manifest against one labeled case and reports {ok, expect, got}. A failed or skipped spawn contributes nothing \u2014 the outer scorer counts delivered verdicts only."
+  },
+  {
+   "id": "release-gate",
+   "file": "release-gate.algal.json",
+   "key": "organism:release-gate",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Runs up to four declared gate commands (test/lint/typecheck/build) inside one bounded tool call and returns the stage verdicts plus failure tails only \u2014 the agent stops babysitting sequential check commands."
+  },
+  {
+   "id": "repo-survey",
+   "file": "repo-survey.algal.json",
+   "key": "organism:repo-survey",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "One bounded tool call produces the repo map \u2014 top-level dirs, manifests, key source files, README head \u2014 replacing the ls/find/cat round-trips an agent would otherwise spend context on."
+  },
+  {
+   "id": "router-habitat",
+   "file": "router-habitat.algal.json",
+   "key": "organism:router-habitat",
+   "agentCalls": 40,
+   "malleable": true,
+   "note": "Malleable habitat: an agent proposes ONE candidate router manifest as data, the each-cell population evaluates it against labeled cases through hab-eval-inner, and a pure scorer emits the fitness record. The host promotes winners into the router:champion slot \u2014 evolution never mutates the running organism."
+  },
+  {
+   "id": "router-live",
+   "file": "router-live.algal.json",
+   "key": "organism:router-live",
+   "agentCalls": 2,
+   "malleable": true,
+   "note": "Routes through the champion manifest in the router-champion slot \u2014 the durable endpoint of router-habitat promotion. An empty slot serves the packaged default router via the slot's declared default."
+  },
+  {
+   "id": "router",
+   "file": "router.algal.json",
+   "key": "organism:router",
+   "agentCalls": 1,
+   "malleable": false,
+   "note": "One classifier call maps a task description to the algal-skills lane that should handle it. This manifest is the malleable genotype: router-habitat evolves prompt and label set against labeled cases."
+  },
+  {
+   "id": "search-slice",
+   "file": "search-slice.algal.json",
+   "key": "organism:search-slice",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Bounded ripgrep inside a tool call: the agent gets the top-N match lines, never a raw grep dump to page through."
+  },
+  {
+   "id": "test-sift",
+   "file": "test-sift.algal.json",
+   "key": "organism:test-sift",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Runs the declared test command inside a bounded tool call and emits only the verdict, extracted failure lines, and a tail \u2014 the full log never reaches the model's context."
+  },
+  {
+   "id": "web-fetch",
+   "file": "web-fetch.algal.json",
+   "key": "organism:web-fetch",
+   "agentCalls": 0,
+   "malleable": false,
+   "note": "Bounded page fetch: HTML stripped to text, clipped to a byte cap, with source byte count \u2014 the model sees the extract, not the raw page."
+  }
+ ]
+}

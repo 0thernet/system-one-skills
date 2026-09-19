@@ -1,0 +1,51 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:diff-slice",
+  "name": "Diff slice",
+  "note": "Byte-bounded diff read: stat plus a clipped patch, never an unbounded git diff dump in context.",
+  "budgets": { "maxSteps": 8, "maxAgentCalls": 0, "maxWork": 60000 },
+  "interface": {
+    "inputs": {
+      "cwd": { "cell": "src", "port": "cwd" },
+      "staged": { "cell": "src", "port": "staged" },
+      "rev": { "cell": "src", "port": "rev" },
+      "max-bytes": { "cell": "src", "port": "max-bytes" }
+    },
+    "outputs": {
+      "result": { "cell": "probe", "port": "report" },
+      "text": { "cell": "fmt", "port": "out" }
+    }
+  },
+  "cells": [
+    {
+      "id": "src",
+      "kind": "input",
+      "outputs": { "cwd": "text", "staged": "json", "rev": "text", "max-bytes": "json" }
+    },
+    { "id": "probe", "kind": "tool", "tool": "diff.read.v1", "budget": { "maxEffectMs": 60000 } },
+    {
+      "id": "fmt",
+      "kind": "expr",
+      "inputs": { "r": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": [
+          "if", ["eq", ["get", "r", "ok"], true],
+          ["sconcat",
+            ["get", "r", "stat"], "\n---\n", ["get", "r", "diff"],
+            ["if", ["eq", ["get", "r", "truncated"], true],
+              ["sconcat", "\n[truncated: ", ["toText", ["get", "r", "bytes"]], "B total]"], ""]],
+          ["sconcat", "diff read failed: ",
+            ["if", ["isText", ["get", "r", "error"]], ["get", "r", "error"], "unknown error"]]]
+      },
+      "output": { "kind": "text" }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "probe", "port": "cwd" } },
+    { "from": { "cell": "src", "port": "staged" }, "to": { "cell": "probe", "port": "staged" } },
+    { "from": { "cell": "src", "port": "rev" }, "to": { "cell": "probe", "port": "rev" } },
+    { "from": { "cell": "src", "port": "max-bytes" }, "to": { "cell": "probe", "port": "max-bytes" } },
+    { "from": { "cell": "probe", "port": "report" }, "to": { "cell": "fmt", "port": "r" } }
+  ]
+}

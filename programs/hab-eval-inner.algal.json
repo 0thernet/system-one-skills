@@ -1,0 +1,55 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:hab-eval-inner",
+  "name": "Habitat eval — one case",
+  "note": "Generic fitness probe for malleable habitats: spawns the candidate manifest against one labeled case and reports {ok, expect, got}. A failed or skipped spawn contributes nothing — the outer scorer counts delivered verdicts only.",
+  "budgets": { "maxSteps": 16, "maxAgentCalls": 4, "maxWork": 100000, "maxDepth": 4 },
+  "interface": {
+    "inputs": {
+      "item": { "cell": "src", "port": "item" },
+      "candidate": { "cell": "src", "port": "candidate" }
+    },
+    "outputs": {
+      "verdict": { "cell": "verdict", "port": "out" }
+    }
+  },
+  "cells": [
+    { "id": "src", "kind": "input", "outputs": { "item": "json", "candidate": "json" } },
+    {
+      "id": "mkargs",
+      "kind": "expr",
+      "inputs": { "item": "json" },
+      "expr": { "contract": "algal.expr.v1", "program": ["get", "item", "args"] },
+      "output": { "kind": "json", "schema": { "type": "object" } }
+    },
+    { "id": "run", "kind": "spawn" },
+    {
+      "id": "verdict",
+      "kind": "expr",
+      "inputs": { "data": "json", "item": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": {
+          "ok": ["eq", ["get", "data", ["get", "item", "key"]], ["get", "item", "expect"]],
+          "expect": ["get", "item", "expect"],
+          "got": ["get", "data", ["get", "item", "key"]]
+        }
+      },
+      "output": {
+        "kind": "json",
+        "schema": {
+          "type": "object",
+          "required": ["ok"],
+          "properties": { "ok": { "type": "boolean" }, "expect": {}, "got": {} }
+        }
+      }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "item" }, "to": { "cell": "mkargs", "port": "item" } },
+    { "from": { "cell": "src", "port": "item" }, "to": { "cell": "verdict", "port": "item" } },
+    { "from": { "cell": "src", "port": "candidate" }, "to": { "cell": "run", "port": "manifest" } },
+    { "from": { "cell": "mkargs", "port": "out" }, "to": { "cell": "run", "port": "args" } },
+    { "from": { "cell": "run", "port": "data" }, "to": { "cell": "verdict", "port": "data" } }
+  ]
+}

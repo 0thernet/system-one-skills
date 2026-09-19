@@ -7,7 +7,7 @@
 // fixed argv arrays (no string concatenation into shells), outputs are
 // byte-bounded, and failures return structured records instead of throwing.
 
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 
@@ -34,7 +34,12 @@ function run(
 ): Promise<{ code: number; stdout: string; stderr: string; timedOut: boolean }> {
   const maxBytes = opts.maxBytes ?? MAX_CMD_OUTPUT;
   return new Promise((res) => {
-    const child = spawn(argv[0], argv.slice(1), {
+    const cmd = argv[0];
+    if (!cmd) {
+      res({ code: 2, stdout: "", stderr: "empty argv", timedOut: false });
+      return;
+    }
+    const child: ChildProcess = spawn(cmd, argv.slice(1), {
       cwd: opts.cwd,
       env: { ...process.env, GIT_CONFIG_NOSYSTEM: "1" },
       stdio: ["ignore", "pipe", "pipe"],
@@ -46,17 +51,17 @@ function run(
       timedOut = true;
       child.kill("SIGKILL");
     }, opts.timeoutMs ?? DEFAULT_TIMEOUT);
-    child.stdout.on("data", (d) => {
+    child.stdout?.on("data", (d: { toString(e: string): string }) => {
       if (stdout.length < maxBytes) stdout += d.toString("utf8");
     });
-    child.stderr.on("data", (d) => {
+    child.stderr?.on("data", (d: { toString(e: string): string }) => {
       if (stderr.length < 8192) stderr += d.toString("utf8");
     });
-    child.on("error", (e) => {
+    child.on("error", (e: Error) => {
       clearTimeout(timer);
       res({ code: 127, stdout, stderr: String(e), timedOut });
     });
-    child.on("close", (code) => {
+    child.on("close", (code: number | null) => {
       clearTimeout(timer);
       res({ code: code ?? 1, stdout, stderr, timedOut });
     });
@@ -217,7 +222,7 @@ async function ciStatus(inputs: Record<string, unknown>) {
     status: str(latest.status, "unknown"),
     conclusion: str(latest.conclusion),
     url: str(latest.url),
-    run_id: str(latest.databaseId),
+    run_id: str(latest.databaseId) || String(latest.databaseId ?? ""),
     head_sha: str(latest.headSha).slice(0, 12),
     title: str(latest.displayTitle).slice(0, 120),
   };
@@ -296,6 +301,83 @@ async function repoSurvey(inputs: Record<string, unknown>) {
 
 // ----------------------------------------------------------- search.slice --
 
+function globToRe(glob: string): RegExp | null {
+  if (!glob) return null;
+  let re = "";
+  for (let i = 0; i < glob.length; i++) {
+    const c = glob[i];
+    if (c === "*" && glob[i + 1] === "*") { re += ".*"; i++; }
+    else if (c === "*") re += "[^/]*";
+    else if (c === "?") re += "[^/]";
+    else if (c === "{") re += "(?:";
+    else if (c === "}") re += ")";
+    else if (c === ",") re += "|";
+    else if (c !== undefined) re += c.replace(/[.+^$[\]()\\|]/g, "\\$&");
+  }
+  try {
+    return new RegExp(glob.includes("/") ? `^${re}$` : `(^|/)${re}$`);
+  } catch {
+    return null;
+  }
+}
+
+async function jsGrep(
+  root: string,
+  re: RegExp,
+  globRe: RegExp | null,
+  maxMatches: number,
+  ctxLines: number,
+): Promise<{ matches: Array<Record<string, unknown>>; scanned: number; truncated: boolean }> {
+  const matches: Array<Record<string, unknown>> = [];
+  let scanned = 0;
+  let truncated = false;
+  const walk = async (dir: string, depth: number): Promise<void> => {
+    if (truncated || depth > 6 || scanned > 8000) return;
+    let entries;
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (truncated) return;
+      const full = join(dir, e.name);
+      const rel = full.slice(root.length + 1);
+      if (e.isDirectory()) {
+        if (!e.name.startsWith(".") && !SKIP_DIRS.has(e.name.toLowerCase())) await walk(full, depth + 1);
+        continue;
+      }
+      if (e.name.startsWith(".")) continue;
+      if (globRe && !globRe.test(rel) && !globRe.test(e.name)) continue;
+      scanned++;
+      let text: string;
+      try {
+        const s = await stat(full);
+        if (s.size > 512 * 1024) continue;
+        text = await readFile(full, "utf8");
+      } catch {
+        continue;
+      }
+      if (text.includes("\u0000")) continue;
+      const lines = text.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        if (matches.length >= maxMatches) { truncated = true; return; }
+        const line = lines[i] ?? "";
+        if (re.test(line)) {
+          const ctx: string[] = [];
+          for (let k = 1; k <= ctxLines; k++) {
+            if (i - k >= 0) ctx.unshift(lines[i - k] ?? "");
+            if (i + k < lines.length) ctx.push(lines[i + k] ?? "");
+          }
+          matches.push({ file: rel, line: i + 1, text: line.trim().slice(0, 200), ...(ctxLines ? { context: ctx.map((l) => l.trim().slice(0, 160)) } : {}) });
+        }
+      }
+    }
+  };
+  await walk(root, 0);
+  return { matches, scanned, truncated };
+}
+
 async function searchSlice(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
   const pattern = str(inputs.pattern).slice(0, 200);
@@ -308,6 +390,16 @@ async function searchSlice(inputs: Record<string, unknown>) {
   if (glob && /^[\w*?{}.[\]/!-]{1,80}$/.test(glob)) argv.push("-g", glob);
   argv.push("-e", pattern, "--", ".");
   const r = await run(argv, { cwd, timeoutMs: 30_000, maxBytes: 64_000 });
+  if (r.code === 127) {
+    let re: RegExp;
+    try {
+      re = new RegExp(pattern);
+    } catch {
+      return { ok: false, error: "search.slice.v1 pattern is not a valid regex" };
+    }
+    const g = await jsGrep(cwd, re, globToRe(glob), maxMatches, ctxLines);
+    return { ok: true, engine: "js", matches: g.matches, total: g.matches.length, scanned: g.scanned, truncated: g.truncated };
+  }
   if (r.code > 1) return { ok: false, error: tail(r.stderr, 6) || "rg failed" };
   const matches = r.stdout
     .split("\n")
@@ -315,7 +407,7 @@ async function searchSlice(inputs: Record<string, unknown>) {
     .slice(0, maxMatches)
     .map((line) => {
       const m = /^([^:]+):(\d+):(.*)$/.exec(line);
-      return m ? { file: m[1], line: Number(m[2]), text: m[3].trim().slice(0, 200) } : { file: "?", line: 0, text: line.slice(0, 200) };
+      return m ? { file: m[1], line: Number(m[2]), text: (m[3] ?? "").trim().slice(0, 200) } : { file: "?", line: 0, text: line.slice(0, 200) };
     });
   return { ok: true, matches, total: matches.length, truncated: r.stdout.split("\n").filter(Boolean).length > maxMatches };
 }
@@ -390,7 +482,7 @@ async function checkRun(inputs: Record<string, unknown>) {
 
 // --------------------------------------------------------------- dispatch --
 
-const TOOLS: Record<string, (i: Record<string, unknown>) => Promise<Record<string, unknown>>> = {
+export const TOOLS: Record<string, (i: Record<string, unknown>) => Promise<Record<string, unknown>>> = {
   "git.digest.v1": gitDigest,
   "diff.read.v1": diffRead,
   "test.run.v1": testRun,
@@ -424,4 +516,6 @@ async function main() {
   }
 }
 
-await main();
+if (import.meta.main) {
+  await main();
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "types": ["bun"]
+  },
+  "include": ["bin/**/*.ts", "src/**/*.ts", "tools/**/*.ts", "habitats/**/*.ts", "bench/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+}

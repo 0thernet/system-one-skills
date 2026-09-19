@@ -1,0 +1,65 @@
+[
+ {
+  "args": {
+   "task": "what branch am I on and what's staged"
+  },
+  "expect": "digest",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "map this repository's layout"
+  },
+  "expect": "survey",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "review my working diff for issues"
+  },
+  "expect": "diff",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "run the test suite and tell me if it passes"
+  },
+  "expect": "test",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "is CI green on this PR"
+  },
+  "expect": "ci",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "where is verifyReceipt defined"
+  },
+  "expect": "search",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "fetch the changelog page and summarize it"
+  },
+  "expect": "fetch",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "run all release gates before we ship"
+  },
+  "expect": "gate",
+  "key": "lane"
+ },
+ {
+  "args": {
+   "task": "explain what a monad is"
+  },
+  "expect": "direct",
+  "key": "lane"
+ }
+]

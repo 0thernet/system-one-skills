@@ -1,0 +1,70 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:release-gate",
+  "name": "Release gate",
+  "note": "Runs up to four declared gate commands (test/lint/typecheck/build) inside one bounded tool call and returns the stage verdicts plus failure tails only — the agent stops babysitting sequential check commands.",
+  "budgets": { "maxSteps": 8, "maxAgentCalls": 0, "maxWork": 200000 },
+  "interface": {
+    "inputs": {
+      "cmd-test": { "cell": "src", "port": "cmd-test" },
+      "cmd-lint": { "cell": "src", "port": "cmd-lint" },
+      "cmd-typecheck": { "cell": "src", "port": "cmd-typecheck" },
+      "cmd-build": { "cell": "src", "port": "cmd-build" },
+      "cwd": { "cell": "src", "port": "cwd" }
+    },
+    "outputs": {
+      "report": { "cell": "gate", "port": "report" },
+      "verdict": { "cell": "fmt", "port": "out" }
+    }
+  },
+  "cells": [
+    {
+      "id": "src",
+      "kind": "input",
+      "outputs": {
+        "cmd-test": "text",
+        "cmd-lint": "text",
+        "cmd-typecheck": "text",
+        "cmd-build": "text",
+        "cwd": "text"
+      }
+    },
+    { "id": "gate", "kind": "tool", "tool": "check.run.v1", "budget": { "maxEffectMs": 600000 } },
+    {
+      "id": "fmt",
+      "kind": "expr",
+      "inputs": { "r": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": [
+          "if", ["eq", ["get", "r", "ok"], true],
+          ["sconcat",
+            ["if", ["eq", ["get", "r", "passed"], true],
+              "release gate PASSED",
+              ["sconcat", "release gate FAILED at ", ["get", "r", "failed_stage"]]],
+            "\n",
+            ["join",
+              ["map", ["get", "r", "stages"], "s",
+                ["sconcat",
+                  ["get", "s", "name"], ": ",
+                  ["if", ["eq", ["get", "s", "skipped"], true],
+                    "skipped",
+                    ["sconcat", "exit ", ["toText", ["get", "s", "code"]]]],
+                  ["if", ["gt", ["get", "s", "code"], 0],
+                    ["sconcat", "\n", ["get", "s", "tail"]], ""]]],
+              "\n"]],
+          ["sconcat", "release gate error: ",
+            ["if", ["isText", ["get", "r", "error"]], ["get", "r", "error"], "unknown error"]]]
+      },
+      "output": { "kind": "text" }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "cmd-test" }, "to": { "cell": "gate", "port": "cmd-test" } },
+    { "from": { "cell": "src", "port": "cmd-lint" }, "to": { "cell": "gate", "port": "cmd-lint" } },
+    { "from": { "cell": "src", "port": "cmd-typecheck" }, "to": { "cell": "gate", "port": "cmd-typecheck" } },
+    { "from": { "cell": "src", "port": "cmd-build" }, "to": { "cell": "gate", "port": "cmd-build" } },
+    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "gate", "port": "cwd" } },
+    { "from": { "cell": "gate", "port": "report" }, "to": { "cell": "fmt", "port": "r" } }
+  ]
+}

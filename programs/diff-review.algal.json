@@ -1,0 +1,93 @@
+{
+  "contract": "algal.organism.v1",
+  "key": "organism:diff-review",
+  "name": "Diff review",
+  "note": "Bounded diff in, structured verdict out. The model reviews a byte-capped slice (never the raw repo) and must answer inside a declared schema — exactly one agent call.",
+  "budgets": { "maxSteps": 12, "maxAgentCalls": 1, "maxWork": 120000 },
+  "interface": {
+    "inputs": {
+      "cwd": { "cell": "src", "port": "cwd" },
+      "staged": { "cell": "src", "port": "staged" },
+      "rev": { "cell": "src", "port": "rev" },
+      "max-bytes": { "cell": "src", "port": "max-bytes" }
+    },
+    "outputs": {
+      "verdict": { "cell": "review", "port": "out" },
+      "summary": { "cell": "fmt", "port": "out" }
+    }
+  },
+  "cells": [
+    {
+      "id": "src",
+      "kind": "input",
+      "outputs": { "cwd": "text", "staged": "json", "rev": "text", "max-bytes": "json" }
+    },
+    { "id": "probe", "kind": "tool", "tool": "diff.read.v1", "budget": { "maxEffectMs": 60000 } },
+    {
+      "id": "evidence",
+      "kind": "expr",
+      "inputs": { "r": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": [
+          "sconcat",
+          "STAT:\n", ["get", "r", "stat"],
+          "\nDIFF",
+          ["if", ["eq", ["get", "r", "truncated"], true],
+            ["sconcat", " (truncated, ", ["toText", ["get", "r", "bytes"]], "B total)"], ""],
+          ":\n", ["get", "r", "diff"]]
+      },
+      "output": { "kind": "text" }
+    },
+    {
+      "id": "review",
+      "kind": "agent",
+      "inputs": { "evidence": "text" },
+      "prompt": "Review this diff for correctness risks, security issues, and missing tests. Reply as JSON: {\"verdict\": \"pass\"|\"warn\"|\"fail\", \"findings\": [\"[severity] file: note\", ...]}. At most 6 findings; empty list if clean.",
+      "view": { "inputs": ["evidence"] },
+      "output": {
+        "kind": "json",
+        "schema": {
+          "type": "object",
+          "required": ["verdict", "findings"],
+          "properties": {
+            "verdict": { "enum": ["pass", "warn", "fail"] },
+            "findings": {
+              "type": "array",
+              "maxItems": 6,
+              "items": { "type": "string" }
+            }
+          }
+        }
+      },
+      "budget": { "maxContextBytes": 40000, "maxOutputBytes": 8192, "maxEffectMs": 120000 }
+    },
+    {
+      "id": "fmt",
+      "kind": "expr",
+      "inputs": { "v": "json" },
+      "expr": {
+        "contract": "algal.expr.v1",
+        "program": [
+          "sconcat",
+          "verdict: ", ["get", "v", "verdict"],
+          ["if", ["eq", ["len", ["get", "v", "findings"]], 0], " — clean",
+            ["sconcat", "\nfindings:\n",
+              ["join",
+                ["map", ["get", "v", "findings"], "f",
+                  ["sconcat", "- ", ["get", "f"]]],
+                "\n"]]]]
+      },
+      "output": { "kind": "text" }
+    }
+  ],
+  "edges": [
+    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "probe", "port": "cwd" } },
+    { "from": { "cell": "src", "port": "staged" }, "to": { "cell": "probe", "port": "staged" } },
+    { "from": { "cell": "src", "port": "rev" }, "to": { "cell": "probe", "port": "rev" } },
+    { "from": { "cell": "src", "port": "max-bytes" }, "to": { "cell": "probe", "port": "max-bytes" } },
+    { "from": { "cell": "probe", "port": "report" }, "to": { "cell": "evidence", "port": "r" }, "guard": { "expr": { "contract": "algal.expr.v1", "program": ["eq", ["get", "value", "ok"], true] } } },
+    { "from": { "cell": "evidence", "port": "out" }, "to": { "cell": "review", "port": "evidence" } },
+    { "from": { "cell": "review", "port": "out" }, "to": { "cell": "fmt", "port": "v" } }
+  ]
+}
