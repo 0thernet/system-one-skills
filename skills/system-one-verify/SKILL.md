@@ -1,21 +1,16 @@
 ---
 name: system-one-verify
-description: Run the project's test or release-gate commands inside a bounded tool call and read only the verdict, extracted failure lines, and a tail — not the raw log. Covers test-sift and release-gate.
-allowed-tools: ["exec"]
+description: Run known noisy tests or builds with compact output. Use for pass/fail checks expected to emit at least 8 KiB; use native tools for short output or detailed log analysis.
 ---
 
-# system-one-verify
+Run an authorized validation command once:
 
-Requires the `system-one-skills` runtime ([install](https://github.com/0thernet/system-one-skills#install-and-run)). If unavailable, use native tools or install when authorized.
+```sh
+system-one-skills check --timeout-ms 900000 -- bun test
+```
 
-- `test-sift`: `{"src":{"cmd":"bun test","cwd":".","timeout-ms":300000}}`
-  → `{code, timed_out, category, failures[≤40], tail, output_bytes, output_truncated, tail_truncated}`.
-  Category classifies failures as build/lint/type/test/timeout/other.
-- `release-gate`: up to four stage commands in one call:
-  `{"src":{"cmd-test":"bun test","cmd-lint":"bun run lint","cmd-typecheck":"tsc --noEmit","cmd-build":"bun run build","cwd":"."}}`
-  → per-stage `{name, code, skipped, tail}`, `passed`, `failed_stage`.
+Requires Node 20+ and the [runtime](https://github.com/0thernet/system-one-skills#install). If unavailable, use native tools. Keep any required host scheduler outside this command.
 
-Both execute the complete command, then return a bounded report. Long logs
-retain only a suffix, so early diagnostics may need a follow-up read. Use this
-when repeated or large logs justify overhead; a short native result can cost less.
-Preserve repository-required command sequences and host scheduling.
+Choose this only when earlier runs establish verbose output and the task needs the exit status. Short output passes through unchanged. The runtime preserves the command's exit code and reduces long output without model calls.
+
+Omissions are explicit; the complete local log is retained at the printed path. Inspect it when warnings, coverage, or failure diagnosis matter. Do not infer complete diagnostic coverage from an excerpt, or rerun a command merely to retrieve omitted output.

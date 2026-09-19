@@ -1,222 +1,111 @@
-# Evidence for System One Skills
+# Measured value: known noisy validation
 
-The release separates **observed workload**, **reducer behavior**, and **task
-outcomes**. Smaller tool output is useful only when the complete task costs
-less and still meets its correctness criteria. No live paired task-savings
-claim is made for this release.
+Use `system-one-verify` when earlier runs already establish at least **8 KiB of
+output** and the task needs the command's exit status. Use native tools for
+short output or detailed log analysis. Do not run a command merely to measure
+its verbosity.
 
-## What the real transcripts establish
+The current **development/calibration** sample contains 24 real completed Devin
+validation outputs. Three satisfy the 8 KiB selection rule. For those three,
+the shipped reducer changes **9,731 output tokens to 931**, with another
+**774 tokens charged for skill instructions, catalog descriptions, and
+incremental invocations**: **8,026 net text tokens saved** under the named
+`o200k_base` encoding. Each selected case clears the required 128-token margin.
 
-`research/analyze_sessions.py` analyzes a fixed historical window from local
-Devin, Claude Code, and Codex records. The public
-[aggregate report](../research/session-report.json) includes provenance,
-selection rules, excluded/unsupported records, usage semantics, and workflow
-opportunities. The [parser methodology](../research/METHODOLOGY.md) documents
-provider differences. Raw records remain private.
+This is measured text reduction on the examples used to tune the reducer. It
+is not an independent held-out result, provider-billing measurement, or proof
+of complete task correctness. The full machine-readable evidence is in
+[admission-report.json](../research/admission-report.json).
 
-The earlier analysis was inadequate: Claude was absent; cumulative or repeated
-usage and forked records could inflate totals; output attribution confused
-some parallel tool calls; and the Devin JSON export could lag its active
-SQLite conversation. The new report replaces those totals. This is a
-single-user convenience sample, not representative traffic across providers.
-A provider or workflow with little evidence remains underqualified.
+## Per-case results and negative examples
 
-Observed tool frequency and bytes identify opportunities. They do not prove
-those outputs were wasteful, that the agent could have skipped them, or that
-the skill would complete the task. Shell-command classification is deliberately
-conservative; unrecognized commands remain unknown.
-
-### Current measured cohort
-
-| Provider | Session groups with selected evidence | Calls | Output fragments | Unique usage responses |
+| Archived output | Raw tokens | Presented tokens | First-use overhead | Net tokens saved |
 | --- | ---: | ---: | ---: | ---: |
-| Codex | 44 | 229 | 258 | 6,807 |
-| Claude Code | 21 | 30 | 36 | 57 |
-| Devin CLI | 38 | 2,992 | 2,992 | 2,845 |
+| 8,207 bytes | 1,840 | 415 | 258 | 1,167 |
+| 9,876 bytes | 2,348 | 253 | 258 | 1,837 |
+| 22,040 bytes | 5,543 | 263 | 258 | 5,022 |
+| **Selected total** | **9,731** | **931** | **774** | **8,026** |
 
-Codex session groups use the recorded execution/session ID and can contain many
-agent threads; distinct observed usage-thread counts are reported separately.
-These groups are not a count of user tasks. The separate Codex supplemental view
-contains 150 completed nested shell events;
-it is not added to the outer tool-call/output view. Usage-response counts include
-responses without tool calls and have provider-specific coverage.
+The other **21 cases remain in the report**. Their output passes through
+unchanged; invoking the skill on them would add 258 first-use accounting tokens
+per case. All three selected logs are successful checks. Four recorded failures
+are present in the sample, but all are below the selection threshold. There is
+therefore no empirical long-failure savings claim from this sample.
 
-## Real-output replay
+The size rule uses archived size as a stand-in for an available previous
+observation. Actual agent selection and next-run size stability were not
+measured. Cases are not selected by whether their token result was favorable.
 
-A replay feeds recorded output through the current reducer without executing
-the original command. The check compares:
+| Simulated size threshold | Selected cases | Cases failing 128-token margin |
+| --- | ---: | ---: |
+| 4 KiB | 7 | 4 |
+| **8 KiB** | **3** | **0** |
+| 16 KiB | 1 | 0 |
+| 32 KiB | 0 | 0 |
 
-- original visible output bytes;
-- exact default CLI JSON bytes, including structured reports and completeness metadata;
-- observed exit status against the returned exit status;
-- retained failure markers where they occur in the inspected output;
-- negative savings, exclusions, and missing evidence.
+## What is charged
 
-The replay is a counterfactual transformation of real text. It does not recover
-unrecorded logs, undo original tool truncation, measure the agent's next decision,
-or measure provider billing. Excerpts can omit the root cause; a failure flag
-must remain a failure even when its diagnosis needs a follow-up read.
+Token counts use local `tiktoken` **0.12.0**, encoding **`o200k_base`**. They are
+actual counts for that encoding, not a bytes-divided-by-four estimate or a claim
+about Devin/Claude model tokenization.
+Presented tokens include the actual replay artifact paths. Those paths contain
+longer sample identifiers than the default CLI path and add conservative
+overhead; fresh temporary-directory nonces can slightly change rerun counts.
 
-The current replay report contains twelve Devin cases from 25 eligible completed
-validation outputs: 47,472 archived bytes → 20,507 default CLI bytes, a 56.8%
-aggregate reduction. Four cases shrink and eight grow; all twelve preserve the
-checked invariants, with three nonzero original exits. Codex and Claude have no
-eligible completed pure-validation samples in this window, so their replay
-coverage is zero. [Full numeric cases](../research/replay-report.json).
+| Instruction/invocation component | Tokens |
+| --- | ---: |
+| Full skill file, charged on every case | 204 |
+| Catalog name and description, also charged | 42 |
+| Native invocation estimate | 6 |
+| Skill invocation estimate | 18 |
+| **Incremental first-use total: 204 + 42 + 18 − 6** | **258** |
+| Common task-instruction estimate, charged equally to both arms | 13 |
 
-## Synthetic execution benchmark
+Original complete user/system prompts were not retained with the replay
+samples. The common 13-token instruction is explicitly constructed and cancels
+in the comparison; it is not recovered prompt history. Skill-loading
+interactions, provider chat framing, reasoning, caches, retries, and later
+full-log retrieval remain unmeasured. The report preserves these limits.
 
-`bun bench/run-bench.ts` rebuilds deterministic fixtures and regenerates
-[bench-report.json](../bench/report/bench-report.json). Its source fingerprint
-covers the runner, CLI, tools, manifests, dependency lockfile, and fixtures;
-`bun run check` rejects a stale report.
+## Three-provider grounding and coverage
 
-For each row:
+| Transcript source | Calls in September 12–18 UTC | Calls September 19 before 14:00 UTC | Eligible completed validation outputs | Sampled / selected |
+| --- | ---: | ---: | ---: | ---: |
+| Codex | 229 | 0 | 0 | 0 / 0 |
+| Claude Code | 30 | 2 | 0 | 0 / 0 |
+| Devin CLI | 2,992 | 4,554 | 207 | 24 / 3 |
 
-- `baseline_context_bytes`: bytes from the stated raw-output baseline;
-- `cli_stdout_bytes`: **exact** default compact CLI JSON plus newline (derived prose is optional);
-- `model_request_envelope_bytes` and `model_response_envelope_bytes`: serialized
-  request/result envelopes observed at every executor call, including children;
-- `system_one_context_bytes`: sum of those three values;
-- `full_receipt_bytes`: the larger optional receipt, reported separately;
-- `agent_calls` and `work_units`: observed execution receipt counts;
-- `est_*_tokens = ceil(bytes/4)`: coarse byte proxies, never tokenizer counts.
+The analyzer chooses up to 12 eligible outputs per provider per cohort by
+smallest opaque hash. These two cohorts contribute 7,807 recorded tool calls;
+overlapping nested Codex telemetry is kept separate. Strict replay rules did
+not yield eligible Codex or Claude validation outputs in these windows. Their
+real corpus coverage must not be described as evidence of this skill's savings
+on those agents. The corpus belongs to one developer and retained ancestry may
+omit compacted history.
 
-Request envelopes include local contract metadata and are not exact provider
-wire messages. Synthetic baselines omit a native agent's reasoning and may
-already be reducible with a short ordinary shell command. They are fixture
-comparisons, not a fair randomized end-to-end agent experiment. The benchmark
-uses no live model calls.
+## Preservation and admission
 
-The CI row assumes five polls and uses a stub. Router rows assume repeated
-2.8 KB documentation reads and supply the correct labels to a scripted executor.
-That validates the evaluation machinery, not routing accuracy. Typed review,
-research, and writing decisions likewise use scripted answers. A clipped diff
-is not equivalent evidence for a full review. There is no valid single overall
-“quality-preserving savings” percentage to infer by pooling these tasks.
+All 24 replays pass the ten scoped preservation checks: correct byte counts,
+exact passthrough or marked compaction, exit/omission/path disclosures, capture
+bound and size guards, complete archived-excerpt storage, and private file
+permissions. They replay text through the actual reducer without executing any
+archived command. Storage checks validate the replay harness; separate CLI
+integration tests validate real process capture and exit behavior.
 
-The historical 82.5% headline counted selected interface fields while the CLI
-printed a full receipt. It also favored large noisy fixtures. That number is
-retired as a description of default behavior. Short outputs can get larger
-once metadata and skill overhead are included; publish those losses too.
+A separate synthetic forward check preserved exit 42 and one-time execution.
+Its early colored diagnostic required one targeted read of the saved log to
+explain the failure. That check exposed a matching gap: the reducer now ignores
+SGR color sequences when identifying diagnostic lines while preserving their
+original bytes. A regression covers this case. This is synthetic development
+evidence, not another real transcript or measured end-to-end savings result;
+the extra read illustrates a cost that the token table does not include.
 
-## Discovery and loading overhead
+The public gate checks source/report freshness, three-provider corpus coverage,
+all preservation results, retained negative examples, and a margin of at least
+128 tokens for every case selected by the fixed rule. Hashes detect drift; they
+do not independently prove measurement quality. See the full
+[method and reproduction protocol](../research/METHODOLOGY.md).
 
-`bun bench/skill-footprint.ts` measures each skill file and its name/description
-bytes separately. The current eleven names/descriptions total 2,268 UTF-8 bytes,
-before any harness wrappers. Bodies are loaded selectively; counting every body
-as present would exaggerate normal overhead. Conversely, duplicate installed
-copies can repeat discovery metadata. Neither byte figure is a tokenizer or
-cache measurement. Charge the actual discovered/loaded content to live trials.
-
-## Paired live trials
-
-Use this protocol before recommending a skill as a default optimization:
-
-1. Freeze a task set from historical transcripts before choosing caps or prompts.
-   Include ordinary short outputs, Unicode/path edge cases, failing checks,
-   timeout/cancellation, incomplete search, and missing evidence. Keep related
-   tasks from the same session in one split to prevent leakage.
-2. State a task-specific oracle: exact test results; required failure diagnosis;
-   complete caller set; independently labeled research conclusions; or an
-   editorial rubric. Syntax/schema/replay validity alone cannot be the oracle.
-3. Run baseline and skill arms on equivalent clean snapshots with the same model,
-   tool permissions, and budget. Randomize arm order; isolate stores and side
-   effects. Record cache conditions and provider versions. Do not replay
-   historical mutating commands against a live repository or account.
-4. Record every model request through task completion. Count skill discovery and
-   loading, tool argument text, nested calls, retries, escalation, follow-up reads,
-   repairs, and final validation. Normalize provider tokens into disjoint buckets:
-   uncached input, cache reads, cache writes, and output. Missing counts are
-   unknown, never zero. Keep actual cost and wall-clock latency separately.
-5. Blind the reviewer to the arm where possible. Preserve task pass/fail, critical
-   errors, a predefined 0–1 quality score, and evidence pointers privately. Include
-   failed and abandoned runs in the report, with failure causes.
-6. Analyze paired differences per skill/provider/model. Use session-clustered
-   confidence intervals when tasks share a conversation. Require no material
-   correctness regression and positive savings after all overhead. Inspect the
-   worst cases; a positive average can conceal unacceptable failures.
-
-The supplied screening command accepts a private JSON array:
-
-```sh
-bun bench/assess-trials.ts private-observed-trials.json
-```
-
-Each record has the following shape (numbers here are **illustrative schema
-values**, not an observed trial):
-
-```json
-{
-  "id": "opaque-pair-id",
-  "skill": "system-one-verify",
-  "provider": "codex",
-  "model": "exact-model-version",
-  "snapshot": "repository-tree-or-fixture-digest",
-  "evidence": "observed",
-  "held_out": true,
-  "all_overhead_included": true,
-  "baseline": {
-    "tokens": {"uncached_input": 500, "cached_input": 2000, "cache_write_input": 0, "output": 100},
-    "task_pass": true, "critical_errors": 0, "quality": 1
-  },
-  "skill_arm": {
-    "tokens": {"uncached_input": 450, "cached_input": 2000, "cache_write_input": 0, "output": 100},
-    "task_pass": true, "critical_errors": 0, "quality": 1
-  }
-}
-```
-
-The assessor validates structure and rejects duplicate pairs, unobserved
-records, task failures, critical errors, and quality regressions. It requires
-30 held-out pairs per group and a positive approximate normal 95% lower bound
-on mean token savings before returning `candidate-for-adoption`. The input's
-labels and overhead declarations still need evidence; a JSON flag cannot
-attest completeness. The normal interval is a screening aid, unsuitable for
-strongly skewed or correlated small samples. Use cluster bootstrap or an
-appropriate paired test for publication. The command does not compare dollars
-or latency and does not claim cross-provider token equivalence.
-
-## Admission status and additional classes
-
-The [README skill table](../README.md#which-skills-are-useful) lists every skill's
-preservation boundary. Manifest admission, focused regression tests, and real
-output replays support executable behavior. Live semantic decision quality and
-end-to-end savings remain unqualified.
-
-Prioritize new classes using provider-specific workflow counts in the aggregate
-report. The outer three-provider view contains 531 file reads (1,708,162 output
-bytes), 215 repository searches (305,635 bytes), 494 process waits (1,378,914 bytes),
-76 CI-status calls (116,355 bytes), and 90 coordination calls (29,892 bytes).
-Pure validation accounts for 52 calls (88,342 bytes); mixed shell accounts for
-860 calls and unknown shell for 449, so instrumentation gaps remain substantial.
-Only five build/install calls support the specialized-build candidate. These
-are opportunity counts, not avoidable-token totals. The candidate is an interpretation:
-
-| Observed workflow family | Candidate System One skill | Required oracle before admission |
-| --- | --- | --- |
-| Repeated CI/PR inspection | State-change digest tied to immutable run and SHA | Same terminal state, failures, and required-check coverage; no missed transitions |
-| Repeated repository reads/search | Incremental search/map refresh | Complete changed match set and explicit invalidation after file or query changes |
-| Agent coordination output | Bounded handoff/status packets | Preserve blockers, ownership, unresolved findings, and evidence references |
-| Test/build execution | Structured failure classification | Preserve exit status and critical diagnostics; count any follow-up reads |
-| Web/research evidence | Deduplication and relevance prefilter | Held-out relevance/contradiction recall with original source access |
-| Writing/editing | Mechanical audit, then optional typed prioritization | Detect labeled issues without changing meaning; semantic scores need blinded review |
-
-A candidate with sparse or absent observed support stays a hypothesis. Do not
-create a new skill merely because a large context dump exists: measure whether
-a native tool, narrower query, or existing skill already solves that job more
-cheaply. Router evolution additionally needs amortization: all proposal and
-evaluation tokens must be recovered by later held-out routing wins.
-
-## Reproduce and maintain
-
-Run `python3 research/analyze_sessions.py --help` for provider input and fixed
-window options. Keep local corpus roots and any replay inputs outside the public
-repository. Rebuild synthetic measurements after relevant source changes, then
-run the package gate. A different private corpus will produce different totals;
-public parser fixtures verify interpretation without distributing conversations.
-
-Evidence and documentation owner: this repository. Analysis/review: agents,
-2026-09-19; no human or provider attestation is implied. Reassess on material
-runtime, model, input-distribution, or skill changes. Token optimization is an
-empirical outcome, not an installation guarantee.
+Independent paired agent tasks are still needed to measure diagnostic quality,
+retrieval/repair costs, and end-to-end token usage. CI polling is not included:
+call frequency alone does not show a benefit over native `gh run watch`.

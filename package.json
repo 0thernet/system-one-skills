@@ -1,7 +1,7 @@
 {
   "name": "system-one-skills",
-  "version": "0.3.0",
-  "description": "System One skills for Devin, Claude Code and Codex: bounded deterministic workflows, optional Jev decisions, and transcript-grounded efficiency assessment.",
+  "version": "0.4.0",
+  "description": "Keep noisy test and build logs out of your agent context. One focused System One skill, deterministic output reduction, zero model calls.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,35 +13,17 @@
   },
   "type": "module",
   "bin": {
-    "system-one-skills": "bin/system-one-skills.js",
-    "system-one-skills-tool": "tools/tool.js",
-    "algal-skills": "bin/algal-skills.js",
-    "algal-skills-tool": "tools/tool.js"
+    "system-one-skills": "bin/system-one-skills.js"
   },
   "exports": {
-    ".": "./src/run-program.ts",
-    "./programs": "./programs/index.json",
-    "./tools-registry": "./tools/shell.tools.json",
-    "./metrics": "./bench/report/bench-report.json"
+    "./reduce": "./src/reduce.js"
   },
   "files": [
     "bin",
     "src",
-    "tools",
-    "programs",
     "skills",
-    "habitats",
-    "fixtures",
-    "bench",
-    "docs",
     "README.md",
-    "LICENSE",
-    "AGENTS.md",
-    "research/analyze_sessions.py",
-    "research/session-report.json",
-    "research/METHODOLOGY.md",
-    "research/replay_validation.ts",
-    "research/replay-report.json"
+    "LICENSE"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -52,10 +34,7 @@
     "assess": "bun bench/assess-trials.ts"
   },
   "engines": {
-    "bun": ">=1.3.0"
-  },
-  "dependencies": {
-    "@hraness/algal": "github:hraness/algal#6db9d38ac9b99095b26a520bb4c1a79945b6bced"
+    "node": ">=20"
   },
   "devDependencies": {
     "@types/bun": "^1.2.0",
@@ -67,15 +46,16 @@
   "keywords": [
     "system-one",
     "system-one-skills",
-    "system-1",
     "agent-skills",
-    "agent-optimization",
-    "token-efficiency",
-    "devin",
-    "claude-code",
+    "token-savings",
+    "test-logs",
+    "build-logs",
     "codex",
-    "typesafe",
-    "jev",
-    "algal"
+    "claude-code",
+    "devin"
+  ],
+  "os": [
+    "darwin",
+    "linux"
   ]
 }

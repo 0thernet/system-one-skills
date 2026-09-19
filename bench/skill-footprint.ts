@@ -2,7 +2,8 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { PKG } from "../src/run-program.ts";
+import { fileURLToPath } from "node:url";
+const PKG = fileURLToPath(new URL("../", import.meta.url));
 
 export function skillFootprint() {
   const rows = readdirSync(join(PKG,"skills"),{withFileTypes:true}).filter(e=>e.isDirectory()).map(entry=>{
