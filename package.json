@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "algal-skills": "./bin/algal-skills.js",
-    "algal-skills-tool": "./tools/tool.js"
+    "algal-skills": "bin/algal-skills.js",
+    "algal-skills-tool": "tools/tool.js"
   },
   "exports": {
     ".": "./src/run-program.ts",
