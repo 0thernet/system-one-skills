@@ -41,13 +41,17 @@ bunx algal-skills verify receipt.json manifest.algal.json
 wired as a `ToolRegistry` — no tool subprocess, no path templating. Args are
 keyed by input cell (`{"src":{...}}`); `--args @file.json` also works.
 
-Skill definitions for agent CLIs ship under `skills/`:
+Skill definitions for agent CLIs ship under `skills/`. Install all eight from
+the public Agent Skills registry source, or copy them from the npm package:
 
 ```sh
+bunx skills add 0thernet/algal-skills --all
 bunx algal-skills install-skills                      # -> ./.devin/skills/
 bunx algal-skills install-skills --target .agents/skills
 bunx algal-skills install-skills --target ~/.config/devin/skills
 ```
+
+Discover first without installing: `bunx skills add 0thernet/algal-skills --list`.
 
 ## Programs
 

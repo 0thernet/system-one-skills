@@ -1,6 +1,6 @@
 ---
 name: algal-evolve
-description: Run the router habitat: an agent proposes candidate router manifests, spawned children evaluate them on labeled cases, and a strictly-improving winner is promoted to the router-champion slot with lineage evidence.
+description: "Run the router habitat: an agent proposes candidate router manifests, spawned children evaluate them on labeled cases, and a strictly-improving winner is promoted to the router-champion slot with lineage evidence."
 argument-hint: "--generations N [--cases file] [--executor spec] [--seed-champion]"
 allowed-tools: ["exec"]
 ---
