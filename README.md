@@ -12,6 +12,30 @@ locally for inspection. No model call, API key, or runtime dependency.
 system-one-skills check --timeout-ms 900000 -- bun test
 ```
 
+## Skill inventory
+
+All eleven workflows are tracked below. **Only `system-one-verify` is currently
+shipped.** The other entries are research candidates, not installable skills or
+claims of proven savings. The [CI pilot](https://github.com/0thernet/system-one-skills/blob/main/docs/CI-PILOT.md)
+found no established avoidable polling in its resolved sequences, so that
+candidate stays out of the package. The [full catalog](https://github.com/0thernet/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
+records transcript coverage, native baselines, reliability requirements, and the
+next experiment for each one.
+
+| Skill | Job | Evidence / availability |
+| --- | --- | --- |
+| `system-one-verify` | Run noisy checks and retain compact evidence | Shipped; measured text savings on selected validation logs; bounded runtime contracts tested |
+| `system-one-explore` | Bounded repository search and orientation | Candidate; must beat focused `rg` and selective file reads without missing relevant code |
+| `system-one-ci` | Wait for one identified CI run | Candidate; must beat native `gh run watch` while preserving run identity and final status |
+| `system-one-diff` | Bounded diff inspection or review | Candidate; must preserve relevant changes and count follow-up reads and missed findings |
+| `system-one-digest` | Compact current Git state | Candidate; must beat a short native Git invocation without hiding state |
+| `system-one-fetch` | Extract useful page text with provenance | Candidate; must preserve source evidence and beat existing bounded fetch tools |
+| `system-one-research` | Assemble a multi-source evidence bundle | Candidate; needs source-quality, citation-completeness, and full-task cost evaluation |
+| `system-one-triage` | Classify bounded code, research, or writing decisions | Candidate; needs labeled decisions, abstention checks, and all model costs counted |
+| `system-one-writing` | Find concrete draft-quality issues | Candidate; needs author-approved labels and measured usefulness, not heuristic counts alone |
+| `system-one-evolve` | Evaluate and select routing policies | Candidate; requires independent task-quality evidence including the entire search cost |
+| `system-one` | Select an appropriate workflow | Candidate; routing and discovery overhead must earn their cost over direct selection |
+
 ## The value
 
 Passing tests can produce thousands of repetitive lines. Sending those lines to
@@ -45,6 +69,26 @@ This improves the handoff of verbose validation results. It does not alter the
 check, judge code quality, replace repository gates, or promise that every task
 uses fewer billed tokens.
 
+## Tokens, reliability, and performance
+
+These are separate claims. A smaller response is not evidence of faster task
+completion or a more reliable answer.
+
+| Dimension | Benefit being tested | Current evidence |
+| --- | --- | --- |
+| Token usage | Less text reaches the agent after skill, invocation, and retrieval costs | Real-log replay counts include static overhead; full-task and billing savings remain unmeasured |
+| Reliability | Deterministic capture preserves command status and inspectable evidence | Runtime tests cover exact short output, private complete logs, failures, cancellation, and bounded capture; task-level reliability improvement is unproven |
+| Performance | Less agent work after paying command-wrapper overhead | 140 synthetic native/wrapper pairs added **41.82 ms median / 48.37 ms p95** locally; model and end-to-end task latency remain unmeasured |
+
+The wrapper adds local work. Its benefit is avoiding unnecessary model context
+and repeated mechanical interpretation; it does not make the underlying tests
+run faster. Compare against native quiet modes and bounded tools before adding
+a skill. If the task needs the full output anyway, reduction can add cost.
+The [runtime report](https://github.com/0thernet/system-one-skills/blob/main/docs/RUNTIME-EVIDENCE.md)
+records the shared macOS/Node 24 environment, balanced run order, raw timings,
+full-log checks, and 25 fault/contract tests. Those finite checks support the
+documented behavior; they do not establish improved agent task success.
+
 ## Measured admission
 
 The [evidence report](https://github.com/0thernet/system-one-skills/blob/v0.4.0/docs/METRICS.md) replays **24 real completed Devin
@@ -62,18 +106,55 @@ All three exceed a 128-token margin after the counted static overhead. The
 258 tokens per case. That is why the skill routes short checks to native tools.
 
 These are development measurements of successful noisy logs, not a provider
-billing or whole-task result. The broader corpus includes real **Codex and Claude**
-transcripts, but neither supplied eligible validation replays under the recorded
-selection rules. Long failure handling is covered by regression tests and an
+billing or whole-task result. These two calibration cohorts include real
+**Codex and Claude** transcripts, but neither supplied eligible validation replays
+under the recorded selection rules. Long failure handling is covered by regression tests and an
 independent agent exercise; its real-world savings still need measurement.
 
 The [admission report](https://github.com/0thernet/system-one-skills/blob/v0.4.0/research/admission-report.json) contains every case,
 explicit limits, and source hashes. Future skills need paired task evaluation
 that counts follow-up reads and rejects correctness regressions.
 
+A [previously unused September 1–11 cohort](https://github.com/0thernet/system-one-skills/blob/main/docs/HOLDOUT.md)
+adds **14 selected replays: two Claude and twelve Devin**. All were below the
+8 KiB routing threshold. Invoking the wrapper anyway would add **3,612 estimated
+tokens**; the recommended route is native execution. No preservation check failed,
+but this cohort supplies **no additional evidence of noisy-log savings**. Codex
+again supplied no eligible replay. This counterfactual charges first-use overhead
+per case; catalog discovery can still cost tokens when an installed skill abstains.
+We publish the negative result and selection gaps alongside the favorable
+calibration results.
+
 The package contains only `system-one-verify`. Additional skills need
 real task evidence and a stronger result than the available native tool before
 they belong in this collection.
+
+## How a skill earns admission
+
+“Provably good” needs a stated workload, baseline, and claim. Tests can establish
+specific output contracts; empirical trials estimate savings and failure rates
+on their recorded population. Neither proves every future task will improve.
+
+1. **Find a repeated job in real transcripts.** Publish provider coverage and
+   exclusions. Call frequency motivates an experiment; it is not savings.
+2. **Freeze the comparison before measuring.** Record the skill/runtime hashes,
+   representative native baseline, eligible tasks, and acceptance thresholds.
+3. **Test correctness first.** Preserve required evidence, task success, failure
+   handling, and quality. Count wrong routing and follow-up retrieval.
+4. **Measure all costs.** Include discovery, loading, every model turn, retries,
+   cache buckets, wall time, and local wrapper overhead. Report each metric
+   separately, including regressions.
+5. **Confirm on unused tasks.** Count independent task clusters, disclose
+   uncertainty, and require held-out evidence before expanding claims. A sample
+   used to fix a skill becomes development data.
+6. **Publish and re-evaluate.** Keep failed cases and superseded results. Tie
+   reports to source hashes and withdraw claims when the implementation changes.
+
+See the [paired-task schema and admission rules](https://github.com/0thernet/system-one-skills/blob/main/bench/TRIALS.md),
+[unused-cohort protocol](https://github.com/0thernet/system-one-skills/blob/main/research/holdout-protocol.json),
+and [research log](https://github.com/0thernet/system-one-skills/blob/main/docs/RESEARCH-LOG.md).
+Candidates join the default installation only after evidence supports their
+specific use case; an attractive mechanism alone does not qualify them.
 
 ## Install
 
