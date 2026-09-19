@@ -1,19 +1,20 @@
 ---
-name: algal-research
+name: system-one-research
 description: Build bounded multi-source evidence bundles without loading raw pages into model context, then optionally use Jev typed decisions to classify relevance, sufficiency, and source quality.
-argument-hint: "<sources-json> [question]"
 allowed-tools: ["exec"]
 ---
 
-# algal-research
+# system-one-research
+
+Requires the `system-one-skills` runtime ([install](https://github.com/0thernet/system-one-skills#install-and-run)). If unavailable, use native tools or install when authorized.
 
 Use `research-bundle` for deterministic collection and `research-triage` when
 typed decision support is available.
 
 ```sh
-bunx algal-skills run research-bundle --args @research-args.json
-bunx algal-skills capabilities
-bunx algal-skills run research-triage --args @research-args.json
+system-one-skills run research-bundle --args @research-args.json
+system-one-skills capabilities
+system-one-skills run research-triage --args @research-args.json
 ```
 
 `src.sources` accepts at most twelve URL strings or objects shaped as

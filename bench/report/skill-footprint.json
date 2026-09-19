@@ -1,0 +1,72 @@
+{
+  "method": "UTF-8 bytes of name plus newline plus description, and full SKILL.md files. Static discovery/loading footprint only; actual harness wrappers, tokenizer, caching and whether a skill is loaded vary. Full files are normally loaded selectively, not all at once.",
+  "skills": [
+    {
+      "skill": "system-one",
+      "file_sha256": "ff847defecbdf32be0660ee5655b132b764039fe70052099fa2cb7eb52679f49",
+      "name_description_bytes": 214,
+      "full_skill_file_bytes": 2890
+    },
+    {
+      "skill": "system-one-ci",
+      "file_sha256": "dfd762e15e1a88834a75d6346a155933bfebd9b31c71854c1ba2387830f00dc6",
+      "name_description_bytes": 178,
+      "full_skill_file_bytes": 978
+    },
+    {
+      "skill": "system-one-diff",
+      "file_sha256": "b54a5cfea466ca45a2c85021d34e517a1f25187996234d0824380733a17c1499",
+      "name_description_bytes": 214,
+      "full_skill_file_bytes": 1183
+    },
+    {
+      "skill": "system-one-digest",
+      "file_sha256": "0fce63e4cbad8b2c452a7fae4cb5fba13ec0ae8f69e3bb3f801462c8374ef3c4",
+      "name_description_bytes": 219,
+      "full_skill_file_bytes": 949
+    },
+    {
+      "skill": "system-one-evolve",
+      "file_sha256": "a17c8f471b519bb7087c9985965ff28c0fe2f3e0b280ea1fd911956d3830c36b",
+      "name_description_bytes": 231,
+      "full_skill_file_bytes": 1585
+    },
+    {
+      "skill": "system-one-explore",
+      "file_sha256": "e75b3bee7a06b5ee7a65b7c63803ff15fed15dbf67e43843bc6e2088a5721158",
+      "name_description_bytes": 196,
+      "full_skill_file_bytes": 1071
+    },
+    {
+      "skill": "system-one-fetch",
+      "file_sha256": "b6b1f28158504ff60198cfa3c1f5bbe787170322c70dd51be0be43764febe446",
+      "name_description_bytes": 187,
+      "full_skill_file_bytes": 754
+    },
+    {
+      "skill": "system-one-research",
+      "file_sha256": "1798c8d72eda785f870fe4bfc96cd54e33f1fd4c7772bf4b684870e61c42edca",
+      "name_description_bytes": 205,
+      "full_skill_file_bytes": 1110
+    },
+    {
+      "skill": "system-one-triage",
+      "file_sha256": "f14f3cc1a7997b5b77929ae5e1d3ce08dd343c9b9dde8019ab50b32083829b89",
+      "name_description_bytes": 195,
+      "full_skill_file_bytes": 1275
+    },
+    {
+      "skill": "system-one-verify",
+      "file_sha256": "1460a53b07a396dbfbd3b9832bd5a2a2543d62ccbeb33e5feb0248f8f7e0a3e9",
+      "name_description_bytes": 211,
+      "full_skill_file_bytes": 1283
+    },
+    {
+      "skill": "system-one-writing",
+      "file_sha256": "ad8ecc4acb6403533107dfc97290b65f2404e5fb5d9c98c71812e33704f6ffa1",
+      "name_description_bytes": 218,
+      "full_skill_file_bytes": 1259
+    }
+  ],
+  "total_name_description_bytes": 2268
+}

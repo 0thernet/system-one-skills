@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// run-program — the algal-skills in-process runner.
+// run-program — the system-one-skills in-process runner.
 //
 // Runs a packaged (or user-supplied) organism manifest through the ALGAL
 // library with the package's tool implementations wired in-process as a
@@ -15,6 +15,7 @@
 
 import { readdir, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   builtinRegistry,
   commandExecutor,
@@ -32,14 +33,17 @@ import {
 } from "@hraness/algal";
 import type {
   Executor,
+  EffectRequest,
+  ExecutorResult,
   JsonValue,
   RunReceipt,
   ToolRegistry,
   VerifyReport,
 } from "@hraness/algal";
-import { TOOLS } from "../tools/tool.ts";
+import { validateRouterCandidate } from "../habitats/candidate.ts";
+import { TOOLS, withToolSignal } from "../tools/tool.ts";
 
-export const PKG = resolve(new URL("..", import.meta.url).pathname);
+export const PKG = resolve(fileURLToPath(new URL("..", import.meta.url)));
 export const PROGRAMS_DIR = join(PKG, "programs");
 
 /** In-process tool registry: every packaged tool returns one `report` port. */
@@ -47,16 +51,10 @@ export function packageTools(): ToolRegistry {
   const reg: ToolRegistry = new Map();
   for (const [name, impl] of Object.entries(TOOLS)) {
     reg.set(name, {
-      signature: parseToolSignature({
-        inputs: signatureInputs[name] ?? {},
-        outputs: { report: { type: "json" } },
-        effect: name === "test.run.v1" || name === "check.run.v1" ? "write" : "read",
-        cost: 100,
-        maxOutputBytes: 131072,
-      }),
-      tool: async (inputs) => {
+      signature: parseToolSignature(registrySpec[name as keyof typeof registrySpec].signature),
+      tool: async (inputs, context) => {
         try {
-          return { report: (await impl(inputs)) as JsonValue };
+          return { report: (await withToolSignal(context.signal, () => impl(inputs))) as JsonValue };
         } catch (e) {
           return { report: { ok: false, error: `tool error: ${String(e).slice(0, 300)}` } };
         }
@@ -66,14 +64,8 @@ export function packageTools(): ToolRegistry {
   return reg;
 }
 
-// Mirrors tools/shell.tools.json so the in-process registry and the cmd:
-// registry cannot drift — the JSON file remains the source of truth.
+// Keep effects, cost, input schema and output bound identical for both registries.
 import registrySpec from "../tools/shell.tools.json" with { type: "json" };
-const signatureInputs = Object.fromEntries(
-  Object.entries(registrySpec as unknown as Record<string, { signature: { inputs: Record<string, { type: string; optional?: boolean }> } }>).map(
-    ([k, v]) => [k, v.signature.inputs],
-  ),
-);
 
 export async function loadModulesInto(dir: string, store: FileStore): Promise<number> {
   let n = 0;
@@ -134,6 +126,8 @@ export type RunProgramOpts = {
   executorSpecs?: string[];
   modulesDir?: string;
   tools?: ToolRegistry;
+  /** Local measurement hook; observes a clone, so it cannot alter execution. */
+  observeEffect?: (request: EffectRequest, result: ExecutorResult | JsonValue) => void;
 };
 
 export async function runProgram(opts: RunProgramOpts): Promise<RunReceipt> {
@@ -144,14 +138,31 @@ export async function runProgram(opts: RunProgramOpts): Promise<RunReceipt> {
   );
   const executorSpecs = opts.executorSpecs ?? [];
   const autoJev = executorSpecs.length === 0 && manifest.cells.some(
-    (cell) => cell.kind === "classifier" || cell.kind === "decide",
+    (cell) => cell.kind === "classifier" || cell.kind === "decide" || manifest.key === "organism:router-live",
   );
+  const executors = await makeExecutors(executorSpecs, { autoJev });
+  const validateCandidate = manifest.key === "organism:router-habitat";
+  const observedExecutors = opts.observeEffect || validateCandidate ? executors.map((executor): Executor => ({
+    ...executor,
+    execute: async (request, signal) => {
+      const output = await executor.execute(request, signal);
+      if (validateCandidate && request.cellId === "gen") validateRouterCandidate(output);
+      opts.observeEffect?.(structuredClone(request), structuredClone(output));
+      return output;
+    },
+    ...(executor.executeEffect ? { executeEffect: async (request: EffectRequest, signal?: AbortSignal) => {
+      const result = await executor.executeEffect!(request, signal);
+      if (validateCandidate && request.cellId === "gen") validateRouterCandidate(result.output);
+      opts.observeEffect?.(structuredClone(request), structuredClone(result));
+      return result;
+    } } : {}),
+  })) : executors;
   return runOrganism({
     manifest,
     args: opts.args ?? {},
     fns: builtinRegistry(),
     store,
-    executors: await makeExecutors(executorSpecs, { autoJev }),
+    executors: observedExecutors,
     tools: opts.tools ?? packageTools(),
   });
 }

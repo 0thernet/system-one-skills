@@ -3,44 +3,206 @@
   "key": "organism:git-digest",
   "name": "Git digest",
   "note": "One bounded tool call replaces the status/diff/log round-trip set: repo state arrives pre-digested, so raw git output never enters the model's context.",
-  "budgets": { "maxSteps": 8, "maxAgentCalls": 0, "maxWork": 50000 },
+  "budgets": {
+    "maxSteps": 8,
+    "maxAgentCalls": 0,
+    "maxWork": 50000
+  },
   "interface": {
-    "inputs": { "cwd": { "cell": "src", "port": "cwd" } },
+    "inputs": {
+      "cwd": {
+        "cell": "src",
+        "port": "cwd"
+      },
+      "max-recent": {
+        "cell": "src",
+        "port": "max-recent"
+      }
+    },
     "outputs": {
-      "digest": { "cell": "probe", "port": "report" },
-      "summary": { "cell": "fmt", "port": "out" }
+      "digest": {
+        "cell": "probe",
+        "port": "report"
+      },
+      "summary": {
+        "cell": "fmt",
+        "port": "out"
+      }
     }
   },
   "cells": [
-    { "id": "src", "kind": "input", "outputs": { "cwd": "text" } },
-    { "id": "probe", "kind": "tool", "tool": "git.digest.v1", "budget": { "maxEffectMs": 30000 } },
+    {
+      "id": "src",
+      "kind": "input",
+      "outputs": {
+        "cwd": "text",
+        "max-recent": "json"
+      }
+    },
+    {
+      "id": "probe",
+      "kind": "tool",
+      "tool": "git.digest.v1",
+      "budget": {
+        "maxEffectMs": 30000
+      }
+    },
     {
       "id": "fmt",
       "kind": "expr",
-      "inputs": { "r": "json" },
+      "inputs": {
+        "r": "json"
+      },
       "expr": {
         "contract": "algal.expr.v1",
         "program": [
-          "if", ["eq", ["get", "r", "ok"], true],
-          ["sconcat",
-            "branch ", ["get", "r", "branch"],
-            " | staged ", ["toText", ["get", "r", "staged"]],
-            " unstaged ", ["toText", ["get", "r", "unstaged"]],
-            " untracked ", ["toText", ["get", "r", "untracked"]],
-            " | ahead ", ["toText", ["get", "r", "ahead"]],
-            " behind ", ["toText", ["get", "r", "behind"]],
-            " | stash ", ["toText", ["get", "r", "stash_count"]],
-            "\nrecent:\n", ["join", ["get", "r", "recent"], "\n"],
-            "\n", ["get", "r", "stat"]],
-          ["sconcat", "git digest failed: ",
-            ["if", ["isText", ["get", "r", "error"]], ["get", "r", "error"], "unknown error"]]
+          "if",
+          [
+            "eq",
+            [
+              "get",
+              "r",
+              "ok"
+            ],
+            true
+          ],
+          [
+            "sconcat",
+            "branch ",
+            [
+              "get",
+              "r",
+              "branch"
+            ],
+            " | staged ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "staged"
+              ]
+            ],
+            " unstaged ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "unstaged"
+              ]
+            ],
+            " untracked ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "untracked"
+              ]
+            ],
+            " | ahead ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "ahead"
+              ]
+            ],
+            " behind ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "behind"
+              ]
+            ],
+            " | stash ",
+            [
+              "toText",
+              [
+                "get",
+                "r",
+                "stash_count"
+              ]
+            ],
+            "\nrecent:\n",
+            [
+              "join",
+              [
+                "get",
+                "r",
+                "recent"
+              ],
+              "\n"
+            ],
+            "\n",
+            [
+              "get",
+              "r",
+              "stat"
+            ]
+          ],
+          [
+            "sconcat",
+            "git digest failed: ",
+            [
+              "if",
+              [
+                "isText",
+                [
+                  "get",
+                  "r",
+                  "error"
+                ]
+              ],
+              [
+                "get",
+                "r",
+                "error"
+              ],
+              "unknown error"
+            ]
+          ]
         ]
       },
-      "output": { "kind": "text" }
+      "output": {
+        "kind": "text"
+      }
     }
   ],
   "edges": [
-    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "probe", "port": "cwd" } },
-    { "from": { "cell": "probe", "port": "report" }, "to": { "cell": "fmt", "port": "r" } }
+    {
+      "from": {
+        "cell": "src",
+        "port": "cwd"
+      },
+      "to": {
+        "cell": "probe",
+        "port": "cwd"
+      }
+    },
+    {
+      "from": {
+        "cell": "probe",
+        "port": "report"
+      },
+      "to": {
+        "cell": "fmt",
+        "port": "r"
+      }
+    },
+    {
+      "from": {
+        "cell": "src",
+        "port": "max-recent"
+      },
+      "to": {
+        "cell": "probe",
+        "port": "max-recent"
+      }
+    }
   ]
 }

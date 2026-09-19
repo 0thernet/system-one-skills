@@ -1,18 +1,20 @@
 {
-  "name": "algal-skills",
-  "version": "0.2.0",
-  "description": "Token-efficient ALGAL skills for coding, research, and writing: deterministic evidence reduction, optional Jev typed decisions, and replayable evolving habitats.",
+  "name": "system-one-skills",
+  "version": "0.3.0",
+  "description": "System One skills for Devin, Claude Code and Codex: bounded deterministic workflows, optional Jev decisions, and transcript-grounded efficiency assessment.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0thernet/algal-skills.git"
+    "url": "git+https://github.com/0thernet/system-one-skills.git"
   },
-  "homepage": "https://github.com/0thernet/algal-skills#readme",
+  "homepage": "https://github.com/0thernet/system-one-skills#readme",
   "bugs": {
-    "url": "https://github.com/0thernet/algal-skills/issues"
+    "url": "https://github.com/0thernet/system-one-skills/issues"
   },
   "type": "module",
   "bin": {
+    "system-one-skills": "bin/system-one-skills.js",
+    "system-one-skills-tool": "tools/tool.js",
     "algal-skills": "bin/algal-skills.js",
     "algal-skills-tool": "tools/tool.js"
   },
@@ -32,18 +34,22 @@
     "fixtures",
     "bench",
     "docs",
-    "research/analyze_sessions.py",
-    "research/session-report.json",
     "README.md",
     "LICENSE",
-    "AGENTS.md"
+    "AGENTS.md",
+    "research/analyze_sessions.py",
+    "research/session-report.json",
+    "research/METHODOLOGY.md",
+    "research/replay_validation.ts",
+    "research/replay-report.json"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "check": "bun scripts/check.ts",
     "bench": "bun bench/run-bench.ts",
-    "prepublishOnly": "bun scripts/check.ts"
+    "prepublishOnly": "bun scripts/check.ts",
+    "assess": "bun bench/assess-trials.ts"
   },
   "engines": {
     "bun": ">=1.3.0"
@@ -59,15 +65,17 @@
     "access": "public"
   },
   "keywords": [
+    "system-one",
+    "system-one-skills",
+    "system-1",
     "agent-skills",
-    "devin-skills",
-    "codex-skills",
+    "agent-optimization",
     "token-efficiency",
-    "algal",
+    "devin",
+    "claude-code",
+    "codex",
+    "typesafe",
     "jev",
-    "research",
-    "writing",
-    "llm",
-    "agentic-workflows"
+    "algal"
   ]
 }

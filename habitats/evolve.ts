@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// evolve — the algal-skills habitat promotion driver.
+// evolve — the system-one-skills habitat promotion driver.
 //
 // Runs the router-habitat organism for a bounded number of generations
 // against labeled cases, scores every candidate manifest the generator
@@ -9,14 +9,16 @@
 // promotion — evolution never mutates a running manifest.
 //
 // Usage:
-//   bun habitat/evolve.ts [--generations N] [--cases file] [--dir .algal]
+//   bun habitats/evolve.ts [--generations N] [--cases file] [--dir .algal]
 //                         [--executor scripted:<file> | cmd:<shell> | gateway:<model>]
 //                         [--min-score 0..1] [--seed-champion]
 //
 // Exit codes: 0 promotion evaluated (report on stdout), 2 usage/IO error.
 
+import { validateRouterCandidate } from "./candidate.ts";
 import { readFile, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   builtinRegistry,
   commandExecutor,
@@ -29,7 +31,7 @@ import {
 } from "@hraness/algal";
 import type { Executor, JsonValue, OrganismManifest } from "@hraness/algal";
 
-const PKG = resolve(new URL("..", import.meta.url).pathname);
+const PKG = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const SLOT = "router-champion";
 const DEFAULT_CASES = join(PKG, "fixtures", "router-cases.json");
 const HABITAT = join(PKG, "programs", "router-habitat.algal.json");
@@ -48,7 +50,10 @@ function parseFlags(argv: string[]) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === undefined || !a.startsWith("--")) usage(`unexpected arg ${a}`);
-    out[a.slice(2)] = argv[++i] ?? usage(`--${a.slice(2)} needs a value`);
+    const key = a.slice(2);
+    if (!["generations", "cases", "dir", "executor", "min-score", "seed-champion"].includes(key)) usage(`unknown flag --${key}`);
+    if (key === "seed-champion") { out[key] = "true"; continue; }
+    out[key] = argv[++i] ?? usage(`--${key} needs a value`);
   }
   return out;
 }
@@ -57,7 +62,7 @@ async function loadModules(dir: string, store: FileStore): Promise<number> {
   let n = 0;
   for (const f of await readdir(dir)) {
     if (!f.endsWith(".algal.json")) continue;
-    store.putManifest(parseOrganismManifest(JSON.parse(await readFile(join(dir, f), "utf8"))));
+    await store.putManifest(parseOrganismManifest(JSON.parse(await readFile(join(dir, f), "utf8"))));
     n++;
   }
   return n;
@@ -100,18 +105,31 @@ async function evalScore(
 
 async function main() {
   const flags = parseFlags(process.argv.slice(2));
-  const generations = Math.min(8, Math.max(1, Number(flags.generations ?? 3)));
-  const minScore = Math.min(1, Math.max(0, Number(flags["min-score"] ?? 0)));
+  const generations = Number(flags.generations ?? 3);
+  const minScore = Number(flags["min-score"] ?? 0);
+  if (!Number.isInteger(generations) || generations < 1 || generations > 8) usage("generations must be an integer from 1 to 8");
+  if (!Number.isFinite(minScore) || minScore < 0 || minScore > 1) usage("min-score must be between 0 and 1");
   const dir = resolve(flags.dir ?? ".algal");
   const executorSpec = flags.executor ?? "scripted:" + join(PKG, "fixtures", "habitat.responses.json");
   const cases = JSON.parse(await readFile(resolve(flags.cases ?? DEFAULT_CASES), "utf8")) as Case[];
-  if (!Array.isArray(cases) || cases.length === 0 || cases.length > 64) {
-    usage("cases must be a non-empty array of at most 64 items");
+  if (!Array.isArray(cases) || cases.length === 0 || cases.length > 32) {
+    usage("cases must be a non-empty array of at most 32 items");
   }
+
+  if (cases.some((item) => !item || typeof item.args !== "object" || Array.isArray(item.args) || typeof item.args?.task !== "string" || item.key !== "lane" || !["survey", "digest", "diff", "test", "ci", "search", "fetch", "gate", "direct"].includes(String(item.expect)))) usage("cases require {args: {task: text}, key: lane, expect: known lane}");
 
   const store = new FileStore(dir);
   await loadModules(join(PKG, "programs"), store);
-  const executors = [await makeExecutor(executorSpec)];
+  const executor = await makeExecutor(executorSpec);
+  const executors: Executor[] = [{ ...executor, execute: async (request, signal) => {
+    const output = await executor.execute(request, signal);
+    if (request.cellId === "gen") validateRouterCandidate(output);
+    return output;
+  }, ...(executor.executeEffect ? { executeEffect: async (request, signal) => {
+    const result = await executor.executeEffect!(request, signal);
+    if (request.cellId === "gen") validateRouterCandidate(result.output);
+    return result;
+  } } : {}) }];
   const fns = builtinRegistry();
   const habitat = parseOrganismManifest(JSON.parse(await readFile(HABITAT, "utf8")));
   const inner = parseOrganismManifest(JSON.parse(await readFile(EVAL_INNER, "utf8")));
@@ -123,6 +141,7 @@ async function main() {
     await store.setSlot(SLOT, seed);
     champion = seed;
   }
+  if (champion) validateRouterCandidate(champion);
   const championDigest = champion ? digestCanonical(champion) : null;
 
   // Measure the incumbent on identical cases — promotion must beat this.
@@ -177,6 +196,7 @@ async function main() {
     });
   }
 
+  if (best === null && lineage.every((entry) => entry.error !== undefined)) process.exitCode = 1;
   process.stdout.write(
     JSON.stringify(
       {

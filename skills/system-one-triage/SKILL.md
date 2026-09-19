@@ -1,16 +1,17 @@
 ---
-name: algal-triage
+name: system-one-triage
 description: Use optional Jev typed decisions for bounded code-change, research-evidence, and writing-quality triage while preserving deterministic fallback programs when Jev is unavailable.
-argument-hint: "change | research | writing"
 allowed-tools: ["exec"]
 ---
 
-# algal-triage
+# system-one-triage
+
+Requires the `system-one-skills` runtime ([install](https://github.com/0thernet/system-one-skills#install-and-run)). If unavailable, use native tools or install when authorized.
 
 Check capability without exposing credentials:
 
 ```sh
-bunx algal-skills capabilities
+system-one-skills capabilities
 ```
 
 When `jev.available` is true, classifier and `decide` cells auto-route to Jev:
@@ -21,5 +22,8 @@ When `jev.available` is true, classifier and `decide` cells auto-route to Jev:
 
 Configure through ALGAL credential custody with `bunx algal auth jev` or
 `TYPESAFE_API_KEY`. Credentials never enter manifests, digests, or receipts.
-Without Jev, use `diff-slice`/`diff-review`, `research-bundle`, and
+Without Jev, use `diff-slice`, `research-bundle`, and
 `writing-audit`; fixed workflows continue to work with zero model calls.
+
+Typed answers and confidence are decision support, not verified correctness.
+The published fixtures use scripted answers; live quality remains unqualified.

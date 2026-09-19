@@ -10,7 +10,18 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-    "types": ["bun"]
+    "types": [
+      "bun"
+    ]
   },
-  "include": ["bin/**/*.ts", "src/**/*.ts", "tools/**/*.ts", "habitats/**/*.ts", "bench/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+  "include": [
+    "bin/**/*.ts",
+    "src/**/*.ts",
+    "tools/**/*.ts",
+    "habitats/**/*.ts",
+    "bench/**/*.ts",
+    "tests/**/*.ts",
+    "scripts/**/*.ts",
+    "research/**/*.ts"
+  ]
 }

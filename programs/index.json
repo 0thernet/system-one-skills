@@ -1,5 +1,5 @@
 {
-  "package": "algal-skills",
+  "package": "system-one-skills",
   "contract": "algal.organism.v1",
   "programs": [
     {
@@ -24,7 +24,7 @@
       "key": "organism:ci-watch",
       "agentCalls": 0,
       "malleable": false,
-      "note": "Polls CI inside a bounded repeat cell and returns only terminal status."
+      "note": "Polls one immutable CI run selected for HEAD or by explicit ID; errors stop the loop."
     },
     {
       "id": "diff-review",
@@ -120,7 +120,7 @@
       "key": "organism:search-slice",
       "agentCalls": 0,
       "malleable": false,
-      "note": "Bounded code search with ripgrep and a pure-JavaScript fallback."
+      "note": "Bounded code search with ripgrep JSON; requires rg to preserve regex and ignore semantics."
     },
     {
       "id": "test-sift",

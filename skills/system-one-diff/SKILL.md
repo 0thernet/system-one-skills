@@ -1,11 +1,12 @@
 ---
-name: algal-diff
+name: system-one-diff
 description: Inspect or review the working diff as a byte-bounded slice. diff-slice returns stat plus a clipped patch (0 model calls); diff-review adds one structured verdict call with findings capped by schema.
-argument-hint: "[--cwd dir] [--staged] [--rev <rev>] [--max-bytes N]"
 allowed-tools: ["exec"]
 ---
 
-# algal-diff
+# system-one-diff
+
+Requires the `system-one-skills` runtime ([install](https://github.com/0thernet/system-one-skills#install-and-run)). If unavailable, use native tools or install when authorized.
 
 Two programs for diff work:
 
@@ -16,4 +17,6 @@ Two programs for diff work:
   `--executor gateway:anthropic/claude-sonnet-4` or `--executor scripted:resp.json`.
 
 Use `diff-slice` when you will read the patch yourself; use `diff-review`
-when you want the verdict without loading the whole diff into context.
+for triage. A schema-valid verdict over a clipped diff does not establish a
+complete review. Inspect omitted files and relevant callers before approving
+a change; charge that follow-up context to the assessment.

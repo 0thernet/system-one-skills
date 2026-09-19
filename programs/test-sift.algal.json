@@ -2,46 +2,246 @@
   "contract": "algal.organism.v1",
   "key": "organism:test-sift",
   "name": "Test sift",
-  "note": "Runs the declared test command inside a bounded tool call and emits only the verdict, extracted failure lines, and a tail — the full log never reaches the model's context.",
-  "budgets": { "maxSteps": 8, "maxAgentCalls": 0, "maxWork": 100000 },
+  "note": "Runs the declared test command inside a bounded tool call and emits only the verdict, extracted failure lines, and a tail \u2014 the full log never reaches the model's context.",
+  "budgets": {
+    "maxSteps": 8,
+    "maxAgentCalls": 0,
+    "maxWork": 100000
+  },
   "interface": {
     "inputs": {
-      "cmd": { "cell": "src", "port": "cmd" },
-      "cwd": { "cell": "src", "port": "cwd" }
+      "cmd": {
+        "cell": "src",
+        "port": "cmd"
+      },
+      "cwd": {
+        "cell": "src",
+        "port": "cwd"
+      },
+      "timeout-ms": {
+        "cell": "src",
+        "port": "timeout-ms"
+      }
     },
     "outputs": {
-      "report": { "cell": "run", "port": "report" },
-      "verdict": { "cell": "fmt", "port": "out" }
+      "report": {
+        "cell": "run",
+        "port": "report"
+      },
+      "verdict": {
+        "cell": "fmt",
+        "port": "out"
+      }
     }
   },
   "cells": [
-    { "id": "src", "kind": "input", "outputs": { "cmd": "text", "cwd": "text" } },
-    { "id": "run", "kind": "tool", "tool": "test.run.v1", "budget": { "maxEffectMs": 600000 } },
+    {
+      "id": "src",
+      "kind": "input",
+      "outputs": {
+        "cmd": "text",
+        "cwd": "text",
+        "timeout-ms": "json"
+      }
+    },
+    {
+      "id": "run",
+      "kind": "tool",
+      "tool": "test.run.v1",
+      "budget": {
+        "maxEffectMs": 600000
+      }
+    },
     {
       "id": "fmt",
       "kind": "expr",
-      "inputs": { "r": "json", "cmd": "text" },
+      "inputs": {
+        "r": "json",
+        "cmd": "text"
+      },
       "expr": {
         "contract": "algal.expr.v1",
         "program": [
-          "if", ["eq", ["get", "r", "ok"], false],
-          ["sconcat", "ERROR running ", ["get", "cmd"], ": ",
-            ["if", ["isText", ["get", "r", "error"]], ["get", "r", "error"], "tool failed"]],
-          ["if", ["eq", ["get", "r", "code"], 0],
-            ["sconcat", "PASS ", ["get", "cmd"], " (", ["toText", ["get", "r", "output_bytes"]], "B output sifted)"],
-            ["sconcat", "FAIL ", ["get", "cmd"],
-              " [category ", ["if", ["isText", ["get", "r", "category"]], ["get", "r", "category"], "other"], "]",
-              ["if", ["eq", ["get", "r", "timed_out"], true], " TIMED-OUT", ""],
-              "\nfailures:\n", ["join", ["get", "r", "failures"], "\n"],
-              "\ntail:\n", ["get", "r", "tail"]]]]
+          "if",
+          [
+            "eq",
+            [
+              "get",
+              "r",
+              "ok"
+            ],
+            false
+          ],
+          [
+            "sconcat",
+            "ERROR running ",
+            [
+              "get",
+              "cmd"
+            ],
+            ": ",
+            [
+              "if",
+              [
+                "isText",
+                [
+                  "get",
+                  "r",
+                  "error"
+                ]
+              ],
+              [
+                "get",
+                "r",
+                "error"
+              ],
+              "tool failed"
+            ]
+          ],
+          [
+            "if",
+            [
+              "eq",
+              [
+                "get",
+                "r",
+                "code"
+              ],
+              0
+            ],
+            [
+              "sconcat",
+              "PASS ",
+              [
+                "get",
+                "cmd"
+              ],
+              " (",
+              [
+                "toText",
+                [
+                  "get",
+                  "r",
+                  "output_bytes"
+                ]
+              ],
+              "B output sifted)"
+            ],
+            [
+              "sconcat",
+              "FAIL ",
+              [
+                "get",
+                "cmd"
+              ],
+              " [category ",
+              [
+                "if",
+                [
+                  "isText",
+                  [
+                    "get",
+                    "r",
+                    "category"
+                  ]
+                ],
+                [
+                  "get",
+                  "r",
+                  "category"
+                ],
+                "other"
+              ],
+              "]",
+              [
+                "if",
+                [
+                  "eq",
+                  [
+                    "get",
+                    "r",
+                    "timed_out"
+                  ],
+                  true
+                ],
+                " TIMED-OUT",
+                ""
+              ],
+              "\nfailures:\n",
+              [
+                "join",
+                [
+                  "get",
+                  "r",
+                  "failures"
+                ],
+                "\n"
+              ],
+              "\ntail:\n",
+              [
+                "get",
+                "r",
+                "tail"
+              ]
+            ]
+          ]
+        ]
       },
-      "output": { "kind": "text" }
+      "output": {
+        "kind": "text"
+      }
     }
   ],
   "edges": [
-    { "from": { "cell": "src", "port": "cmd" }, "to": { "cell": "run", "port": "cmd" } },
-    { "from": { "cell": "src", "port": "cwd" }, "to": { "cell": "run", "port": "cwd" } },
-    { "from": { "cell": "src", "port": "cmd" }, "to": { "cell": "fmt", "port": "cmd" } },
-    { "from": { "cell": "run", "port": "report" }, "to": { "cell": "fmt", "port": "r" } }
+    {
+      "from": {
+        "cell": "src",
+        "port": "cmd"
+      },
+      "to": {
+        "cell": "run",
+        "port": "cmd"
+      }
+    },
+    {
+      "from": {
+        "cell": "src",
+        "port": "cwd"
+      },
+      "to": {
+        "cell": "run",
+        "port": "cwd"
+      }
+    },
+    {
+      "from": {
+        "cell": "src",
+        "port": "cmd"
+      },
+      "to": {
+        "cell": "fmt",
+        "port": "cmd"
+      }
+    },
+    {
+      "from": {
+        "cell": "run",
+        "port": "report"
+      },
+      "to": {
+        "cell": "fmt",
+        "port": "r"
+      }
+    },
+    {
+      "from": {
+        "cell": "src",
+        "port": "timeout-ms"
+      },
+      "to": {
+        "cell": "run",
+        "port": "timeout-ms"
+      }
+    }
   ]
 }

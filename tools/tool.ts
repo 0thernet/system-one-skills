@@ -1,19 +1,23 @@
 #!/usr/bin/env bun
-// algal-skills-tool — deterministic tool implementations behind the
-// algal-skills `cmd:` registry. Reads { inputs, requestDigest, idempotencyKey }
+// system-one-skills-tool — deterministic tool implementations behind the
+// system-one-skills `cmd:` registry. Reads { inputs, requestDigest, idempotencyKey }
 // on stdin and prints a JSON object of output ports on stdout.
 //
-// Every implementation is reviewed code, not model output: commands are
-// fixed argv arrays (no string concatenation into shells), outputs are
-// byte-bounded, and failures return structured records instead of throwing.
+// Fixed probes use argv arrays. Test/check workflows execute the caller's exact
+// shell command with its existing authority. Captures are byte-bounded and
+// failures return structured records.
 
+import { AsyncLocalStorage } from "node:async_hooks";
+import { setTimeout as sleep } from "node:timers/promises";
 import { spawn, type ChildProcess } from "node:child_process";
-import { readdir, readFile, stat } from "node:fs/promises";
+import { open, readdir, readFile, realpath, stat } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 
 const MAX_STDIN = 64 * 1024;
 const DEFAULT_TIMEOUT = 60_000;
 const MAX_CMD_OUTPUT = 256 * 1024;
+const signals = new AsyncLocalStorage<AbortSignal | undefined>();
+export const withToolSignal = <T>(signal: AbortSignal | undefined, fn: () => Promise<T>): Promise<T> => signals.run(signal, fn);
 
 // ---------------------------------------------------------------- helpers --
 
@@ -28,42 +32,80 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
+type CommandResult = {
+  code: number; stdout: string; stderr: string; combined: string; timedOut: boolean;
+  stdoutBytes: number; stderrBytes: number; truncated: boolean;
+};
+
 function run(
   argv: string[],
-  opts: { cwd?: string; timeoutMs?: number; maxBytes?: number } = {},
-): Promise<{ code: number; stdout: string; stderr: string; timedOut: boolean }> {
+  opts: { cwd?: string; timeoutMs?: number; maxBytes?: number; captureTail?: boolean } = {},
+): Promise<CommandResult> {
   const maxBytes = opts.maxBytes ?? MAX_CMD_OUTPUT;
   return new Promise((res) => {
+    if (signals.getStore()?.aborted) {
+      res({ code: 124, stdout: "", stderr: "cancelled", combined: "", timedOut: true, stdoutBytes: 0, stderrBytes: 0, truncated: false });
+      return;
+    }
     const cmd = argv[0];
     if (!cmd) {
-      res({ code: 2, stdout: "", stderr: "empty argv", timedOut: false });
+      res({ code: 2, stdout: "", stderr: "empty argv", combined: "", timedOut: false, stdoutBytes: 0, stderrBytes: 0, truncated: false });
       return;
     }
     const child: ChildProcess = spawn(cmd, argv.slice(1), {
       cwd: opts.cwd,
       env: { ...process.env, GIT_CONFIG_NOSYSTEM: "1" },
       stdio: ["ignore", "pipe", "pipe"],
+      // Kill the owned shell and descendants together when a command expires.
+      detached: process.platform !== "win32",
     });
-    let stdout = "";
-    let stderr = "";
+    let stdout: Buffer = Buffer.alloc(0);
+    let stderr: Buffer = Buffer.alloc(0);
+    let combined: Buffer = Buffer.alloc(0);
+    let stdoutBytes = 0;
+    let stderrBytes = 0;
     let timedOut = false;
-    const timer = setTimeout(() => {
+    const retain = (previous: Buffer, chunk: Buffer, limit: number): Buffer => {
+      if (opts.captureTail) {
+        if (chunk.length >= limit) return Buffer.from(chunk.subarray(chunk.length - limit));
+        return Buffer.concat([previous.subarray(Math.max(0, previous.length + chunk.length - limit)), chunk]);
+      }
+      return previous.length >= limit ? previous : Buffer.concat([previous, chunk.subarray(0, limit - previous.length)]);
+    };
+    const result = (code: number): CommandResult => ({
+      code: timedOut ? 124 : code, stdout: stdout.toString("utf8"), stderr: stderr.toString("utf8"),
+      combined: combined.toString("utf8"), timedOut, stdoutBytes, stderrBytes,
+      truncated: stdoutBytes > maxBytes || stderrBytes > 8192 || stdoutBytes + stderrBytes > maxBytes,
+    });
+    const abort = () => {
       timedOut = true;
-      child.kill("SIGKILL");
-    }, opts.timeoutMs ?? DEFAULT_TIMEOUT);
-    child.stdout?.on("data", (d: { toString(e: string): string }) => {
-      if (stdout.length < maxBytes) stdout += d.toString("utf8");
+      try {
+        if (process.platform !== "win32" && child.pid) process.kill(-child.pid, "SIGKILL");
+        else child.kill("SIGKILL");
+      } catch { child.kill("SIGKILL"); }
+    };
+    const signal = signals.getStore();
+    signal?.addEventListener("abort", abort, { once: true });
+    const timer = setTimeout(abort, opts.timeoutMs ?? DEFAULT_TIMEOUT);
+    child.stdout?.on("data", (chunk: Buffer) => {
+      stdoutBytes += chunk.length;
+      stdout = retain(stdout, chunk, maxBytes);
+      combined = retain(combined, chunk, maxBytes);
     });
-    child.stderr?.on("data", (d: { toString(e: string): string }) => {
-      if (stderr.length < 8192) stderr += d.toString("utf8");
+    child.stderr?.on("data", (chunk: Buffer) => {
+      stderrBytes += chunk.length;
+      stderr = retain(stderr, chunk, 8192);
+      combined = retain(combined, chunk, maxBytes);
     });
-    child.on("error", (e: Error) => {
+    child.on("error", (error: Error) => {
       clearTimeout(timer);
-      res({ code: 127, stdout, stderr: String(e), timedOut });
+      signal?.removeEventListener("abort", abort);
+      res({ ...result(127), stderr: String(error) });
     });
     child.on("close", (code: number | null) => {
       clearTimeout(timer);
-      res({ code: code ?? 1, stdout, stderr, timedOut });
+      signal?.removeEventListener("abort", abort);
+      res(result(code ?? 1));
     });
   });
 }
@@ -76,7 +118,15 @@ function tail(s: string, maxLines: number): string {
 function clip(s: string, maxBytes: number): { text: string; truncated: boolean } {
   const buf = Buffer.from(s, "utf8");
   if (buf.length <= maxBytes) return { text: s, truncated: false };
-  return { text: buf.subarray(0, maxBytes).toString("utf8"), truncated: true };
+  return { text: new TextDecoder().decode(buf.subarray(0, maxBytes), { stream: true }), truncated: true };
+}
+
+function clipTail(s: string, maxBytes: number): string {
+  const bytes = Buffer.from(s);
+  if (bytes.length <= maxBytes) return s;
+  let start = bytes.length - maxBytes;
+  while (start < bytes.length && (bytes[start]! & 0xc0) === 0x80) start++;
+  return bytes.subarray(start).toString("utf8");
 }
 
 function safeCwd(u: unknown): string {
@@ -98,32 +148,43 @@ function int(u: unknown, d: number, lo: number, hi: number): number {
 async function gitDigest(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
   const maxRecent = int(inputs["max-recent"], 8, 1, 32);
-  const st = await run(["git", "-C", cwd, "status", "--porcelain=v1", "--branch"]);
+  const st = await run(["git", "-C", cwd, "status", "--porcelain=v1", "--branch", "-z"]);
   if (st.code !== 0) {
     return { ok: false, error: tail(st.stderr || st.stdout, 6) || "git status failed" };
   }
-  const lines = st.stdout.split("\n").filter(Boolean);
+  if (st.truncated) return { ok: false, error: "git status exceeded the capture bound; counts would be incomplete", truncated: true };
+  const lines = st.stdout.split("\0").filter(Boolean);
   const head = lines[0] ?? "## ";
-  const branchM = /^## ([^.\s]+)/.exec(head);
+  const branch = head.replace(/^## (?:No commits yet on |Initial commit on )?/, "").split("...")[0]?.split(" [")[0] ?? "?";
   const abM = /ahead (\d+).*behind (\d+)|ahead (\d+)|behind (\d+)/.exec(head);
-  const files = lines.slice(1);
+  const files: string[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const entry = lines[i]!;
+    files.push(entry);
+    if (/^[RC]|^.[RC]/.test(entry)) i++; // -z rename/copy has a second pathname.
+  }
   const staged = files.filter((l) => l[0] !== " " && l[0] !== "?").length;
   const unstaged = files.filter((l) => l[1] === "M" || l[1] === "D" || l[1] === "T").length;
   const untracked = files.filter((l) => l.startsWith("??")).length;
+  const unmerged = files.filter((l) => ["DD", "AU", "UD", "UA", "DU", "AA", "UU"].includes(l.slice(0, 2))).length;
   const log = await run(["git", "-C", cwd, "log", `-${maxRecent}`, "--pretty=%h %s (%cr)"]);
   const stat = await run(["git", "-C", cwd, "diff", "--stat", "HEAD"], { maxBytes: 16384 });
   const stash = await run(["git", "-C", cwd, "stash", "list"]);
   return {
     ok: true,
-    branch: branchM?.[1] ?? "?",
+    branch,
     ahead: abM ? Number(abM[1] ?? abM[3] ?? 0) : 0,
     behind: abM ? Number(abM[2] ?? abM[4] ?? 0) : 0,
     staged,
     unstaged,
     untracked,
+    unmerged,
     recent: log.code === 0 ? log.stdout.split("\n").filter(Boolean) : [],
-    stat: tail(stat.stdout, 40),
-    stash_count: stash.code === 0 ? stash.stdout.split("\n").filter(Boolean).length : 0,
+    stat: clip(tail(stat.stdout, 40), 12000).text,
+    stat_truncated: stat.truncated || stat.stdout.split("\n").length > 40 || Buffer.byteLength(tail(stat.stdout, 40)) > 12000,
+    stash_count: stash.code === 0 && !stash.truncated ? stash.stdout.split("\n").filter(Boolean).length : null,
+    truncated: log.truncated || stat.truncated || stash.truncated || stat.stdout.split("\n").length > 40 || Buffer.byteLength(tail(stat.stdout, 40)) > 12000,
+    warnings: [log.code !== 0 ? "history unavailable (possibly an unborn branch)" : "", stat.code !== 0 ? "HEAD diff unavailable" : "", stash.code !== 0 ? "stash count unavailable" : ""].filter(Boolean),
   };
 }
 
@@ -133,17 +194,21 @@ async function diffRead(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
   const maxBytes = int(inputs["max-bytes"], 24_000, 512, 128_000);
   const staged = inputs.staged === true;
-  const args = ["-C", cwd, "diff", "--find-renames"];
+  const args = ["-C", cwd, "diff", "--no-ext-diff", "--no-textconv", "--find-renames"];
   if (staged) args.push("--staged");
   const rev = str(inputs.rev);
-  if (rev && /^[a-zA-Z0-9._/-]{1,80}$/.test(rev)) args.push(rev);
+  if (rev && (!/^[a-zA-Z0-9][a-zA-Z0-9._/~^{}:@-]{0,199}$/.test(rev))) {
+    return { ok: false, error: "rev must be a revision or revision range, not a flag or path" };
+  }
+  if (rev) args.push(rev);
+  args.push("--");
   const d = await run(["git", ...args], { maxBytes: maxBytes + 1024 });
   if (d.code !== 0) return { ok: false, error: tail(d.stderr, 6) || "git diff failed" };
-  const stat = await run(["git", "-C", cwd, "diff", "--stat", ...(staged ? ["--staged"] : []), ...(rev ? [rev] : [])], {
-    maxBytes: 16384,
-  });
+  const stat = await run(["git", "-C", cwd, "diff", "--no-ext-diff", "--no-textconv", "--stat", ...(staged ? ["--staged"] : []), ...(rev ? [rev] : []), "--"], { maxBytes: 16384 });
+  if (stat.code !== 0) return { ok: false, error: tail(stat.stderr, 6) || "git diff stat failed" };
   const { text, truncated } = clip(d.stdout, maxBytes);
-  return { ok: true, stat: tail(stat.stdout, 60), diff: text, truncated, bytes: Buffer.from(d.stdout, "utf8").length };
+  return { ok: true, stat: clip(tail(stat.stdout, 60), 12000).text, diff: text, truncated: d.truncated || truncated, stat_truncated: stat.truncated || stat.stdout.split("\n").length > 60 || Buffer.byteLength(tail(stat.stdout, 60)) > 12000, bytes: d.stdoutBytes };
+
 }
 
 // -------------------------------------------------------------- test.run ---
@@ -164,11 +229,12 @@ const CATEGORY_RULES: Array<[string, RegExp]> = [
 
 async function testRun(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
-  const cmd = str(inputs.cmd).slice(0, 400);
+  const cmd = str(inputs.cmd);
   const timeoutMs = int(inputs["timeout-ms"], 300_000, 1000, 900_000);
-  if (!cmd) return { ok: false, error: "test.run.v1 requires cmd" };
-  const r = await run(["sh", "-c", cmd], { cwd, timeoutMs, maxBytes: MAX_CMD_OUTPUT });
-  const out = `${r.stdout}\n${r.stderr}`;
+  if (!cmd.trim()) return { ok: false, error: "test.run.v1 requires cmd" };
+  if (Buffer.byteLength(cmd) > 16384) return { ok: false, error: "cmd exceeds 16 KiB; refusing to execute a truncated command" };
+  const r = await run(["sh", "-c", cmd], { cwd, timeoutMs, maxBytes: MAX_CMD_OUTPUT, captureTail: true });
+  const out = r.combined;
   const failures = new Set<string>();
   for (const pat of FAIL_PATTERNS) {
     pat.lastIndex = 0;
@@ -193,8 +259,11 @@ async function testRun(inputs: Record<string, unknown>) {
     timed_out: r.timedOut,
     category,
     failures: [...failures],
-    tail: tail(out, 30),
-    output_bytes: Buffer.from(out, "utf8").length,
+    tail: clipTail(tail(out, 30), 12000),
+    tail_truncated: Buffer.byteLength(tail(out, 30)) > 12000,
+    output_bytes: r.stdoutBytes + r.stderrBytes,
+    output_truncated: r.truncated,
+    retained_bytes: Buffer.byteLength(out),
   };
 }
 
@@ -203,28 +272,33 @@ async function testRun(inputs: Record<string, unknown>) {
 async function ciStatus(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
   const waitMs = int(inputs["wait-ms"], 0, 0, 60_000);
-  if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
-  const r = await run(
-    ["gh", "run", "list", "--limit", "1", "--json", "databaseId,status,conclusion,url,headSha,displayTitle"],
-    { cwd, timeoutMs: 30_000 },
-  );
-  if (r.code !== 0) return { ok: false, error: tail(r.stderr, 6) || "gh run list failed" };
-  let list: Array<Record<string, unknown>>;
-  try {
-    list = JSON.parse(r.stdout);
-  } catch {
-    return { ok: false, error: "gh returned unparseable JSON" };
+  if (waitMs > 0) await sleep(waitMs, undefined, { signal: signals.getStore() });
+  const runId = str(inputs["run-id"]);
+  if (inputs["run-id"] === "") return { ok: false, done: "stop", status: "none", error: "no run was selected by the initial probe", run_id: "" };
+  if (runId && !/^\d+$/.test(runId)) return { ok: false, done: "stop", error: "run-id must be numeric", run_id: "" };
+  const fields = "databaseId,status,conclusion,url,headSha,displayTitle";
+  let argv: string[];
+  if (runId) argv = ["gh", "run", "view", runId, "--json", fields];
+  else {
+    const head = await run(["git", "rev-parse", "--verify", "HEAD"], { cwd });
+    if (head.code !== 0) return { ok: false, done: "stop", error: "cannot resolve current HEAD for CI", run_id: "" };
+    argv = ["gh", "run", "list", "--commit", head.stdout.trim(), "--limit", "1", "--json", fields];
   }
-  const latest = list[0];
-  if (!latest) return { ok: true, status: "none", conclusion: "", url: "", run_id: "" };
+  const r = await run(argv, { cwd, timeoutMs: 30_000 });
+  if (r.code !== 0) return { ok: false, done: "stop", error: tail(r.stderr, 6) || "gh run query failed", run_id: runId };
+  let latest: Record<string, unknown> | undefined;
+  try {
+    const parsed = JSON.parse(r.stdout);
+    latest = runId ? parsed : Array.isArray(parsed) ? parsed[0] : undefined;
+    if (latest && (typeof latest !== "object" || typeof latest.status !== "string" || latest.databaseId === undefined)) throw new Error("shape");
+  } catch {
+    return { ok: false, done: "stop", error: "gh returned invalid JSON", run_id: runId };
+  }
+  if (!latest) return { ok: false, done: "stop", status: "none", error: "no CI run for current HEAD", run_id: "" };
   return {
-    ok: true,
-    status: str(latest.status, "unknown"),
-    conclusion: str(latest.conclusion),
-    url: str(latest.url),
-    run_id: str(latest.databaseId) || String(latest.databaseId ?? ""),
-    head_sha: str(latest.headSha).slice(0, 12),
-    title: str(latest.displayTitle).slice(0, 120),
+    ok: true, done: latest.status === "completed" ? "stop" : "continue",
+    status: str(latest.status, "unknown"), conclusion: str(latest.conclusion), url: str(latest.url),
+    run_id: String(latest.databaseId), head_sha: str(latest.headSha), title: str(latest.displayTitle).slice(0, 120),
   };
 }
 
@@ -233,7 +307,7 @@ async function ciStatus(inputs: Record<string, unknown>) {
 const SKIP_DIRS = new Set([
   "node_modules", ".git", ".hg", ".svn", "dist", "build", "out", "target",
   ".next", ".nuxt", ".cache", ".turbo", "coverage", "__pycache__", ".venv",
-  "venv", ".idea", ".vscode-test", "vendor", "Pods", ".algal", ".morphogen",
+  "venv", ".idea", ".vscode-test", "vendor", "pods", ".algal", ".system-one", ".morphogen",
 ]);
 
 const MANIFEST_NAMES = new Set([
@@ -246,23 +320,28 @@ const MANIFEST_NAMES = new Set([
 
 async function repoSurvey(inputs: Record<string, unknown>) {
   const root = safeCwd(inputs.cwd);
+  try { if (!(await stat(root)).isDirectory()) return { ok: false, error: "cwd is not a directory" }; }
+  catch { return { ok: false, error: "cwd does not exist or is unreadable" }; }
   const maxEntries = int(inputs["max-entries"], 400, 16, 4000);
   const maxReadme = int(inputs["readme-bytes"], 3000, 256, 16000);
   const dirs: string[] = [];
   const manifests: string[] = [];
   const keyFiles: string[] = [];
   let files = 0;
+  let visited = 0;
   let truncated = false;
   const walk = async (dir: string, depth: number): Promise<void> => {
-    if (truncated || depth > 6) return;
+    if (truncated) return;
+    if (depth > 6) { truncated = true; return; }
     let entries;
     try {
       entries = await readdir(dir, { withFileTypes: true });
     } catch {
+      truncated = true;
       return;
     }
     for (const e of entries) {
-      if (files + dirs.length >= maxEntries) {
+      if (visited++ >= maxEntries) {
         truncated = true;
         return;
       }
@@ -284,132 +363,76 @@ async function repoSurvey(inputs: Record<string, unknown>) {
   };
   await walk(root, 0);
   let readmeHead = "";
+  let readmeTruncated = false;
   for (const name of ["README.md", "readme.md", "README.txt", "README"]){
     try {
       const p = join(root, name);
       const s = await stat(p);
       if (s.isFile()) {
-        readmeHead = (await readFile(p, "utf8")).slice(0, maxReadme);
+        const handle = await open(p, "r");
+        try {
+          const bytes = Buffer.alloc(maxReadme + 1);
+          const { bytesRead } = await handle.read(bytes, 0, bytes.length, 0);
+          const readme = clip(bytes.subarray(0, bytesRead).toString("utf8"), maxReadme);
+          readmeHead = readme.text;
+          readmeTruncated = s.size > maxReadme;
+        } finally { await handle.close(); }
         break;
       }
     } catch {
       /* no readme at this name */
     }
   }
-  return { ok: true, dirs: dirs.slice(0, 80), manifests: manifests.slice(0, 40), key_files: keyFiles, file_count: files, readme_head: readmeHead, truncated };
+  return { ok: true, dirs: dirs.slice(0, 80), manifests: manifests.slice(0, 40), key_files: keyFiles, file_count: files, readme_head: readmeHead, readme_truncated: readmeTruncated, truncated: truncated || dirs.length > 80 || manifests.length > 40 };
 }
 
 // ----------------------------------------------------------- search.slice --
 
-function globToRe(glob: string): RegExp | null {
-  if (!glob) return null;
-  let re = "";
-  for (let i = 0; i < glob.length; i++) {
-    const c = glob[i];
-    if (c === "*" && glob[i + 1] === "*") { re += ".*"; i++; }
-    else if (c === "*") re += "[^/]*";
-    else if (c === "?") re += "[^/]";
-    else if (c === "{") re += "(?:";
-    else if (c === "}") re += ")";
-    else if (c === ",") re += "|";
-    else if (c !== undefined) re += c.replace(/[.+^$[\]()\\|]/g, "\\$&");
-  }
-  try {
-    return new RegExp(glob.includes("/") ? `^${re}$` : `(^|/)${re}$`);
-  } catch {
-    return null;
-  }
-}
-
-async function jsGrep(
-  root: string,
-  re: RegExp,
-  globRe: RegExp | null,
-  maxMatches: number,
-  ctxLines: number,
-): Promise<{ matches: Array<Record<string, unknown>>; scanned: number; truncated: boolean }> {
-  const matches: Array<Record<string, unknown>> = [];
-  let scanned = 0;
-  let truncated = false;
-  const walk = async (dir: string, depth: number): Promise<void> => {
-    if (truncated || depth > 6 || scanned > 8000) return;
-    let entries;
-    try {
-      entries = await readdir(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-    for (const e of entries) {
-      if (truncated) return;
-      const full = join(dir, e.name);
-      const rel = full.slice(root.length + 1);
-      if (e.isDirectory()) {
-        if (!e.name.startsWith(".") && !SKIP_DIRS.has(e.name.toLowerCase())) await walk(full, depth + 1);
-        continue;
-      }
-      if (e.name.startsWith(".")) continue;
-      if (globRe && !globRe.test(rel) && !globRe.test(e.name)) continue;
-      scanned++;
-      let text: string;
-      try {
-        const s = await stat(full);
-        if (s.size > 512 * 1024) continue;
-        text = await readFile(full, "utf8");
-      } catch {
-        continue;
-      }
-      if (text.includes("\u0000")) continue;
-      const lines = text.split("\n");
-      for (let i = 0; i < lines.length; i++) {
-        if (matches.length >= maxMatches) { truncated = true; return; }
-        const line = lines[i] ?? "";
-        if (re.test(line)) {
-          const ctx: string[] = [];
-          for (let k = 1; k <= ctxLines; k++) {
-            if (i - k >= 0) ctx.unshift(lines[i - k] ?? "");
-            if (i + k < lines.length) ctx.push(lines[i + k] ?? "");
-          }
-          matches.push({ file: rel, line: i + 1, text: line.trim().slice(0, 200), ...(ctxLines ? { context: ctx.map((l) => l.trim().slice(0, 160)) } : {}) });
-        }
-      }
-    }
-  };
-  await walk(root, 0);
-  return { matches, scanned, truncated };
-}
-
 async function searchSlice(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
-  const pattern = str(inputs.pattern).slice(0, 200);
+  const pattern = str(inputs.pattern);
   const maxMatches = int(inputs["max-matches"], 24, 1, 100);
   const ctxLines = int(inputs["context-lines"], 0, 0, 5);
-  const glob = str(inputs.glob).slice(0, 80);
+  const glob = str(inputs.glob);
   if (!pattern) return { ok: false, error: "search.slice.v1 requires pattern" };
-  const argv = ["rg", "--line-number", "--no-heading", "--color=never", `-m${maxMatches}`];
-  if (ctxLines > 0) argv.push(`-C${ctxLines}`);
-  if (glob && /^[\w*?{}.[\]/!-]{1,80}$/.test(glob)) argv.push("-g", glob);
-  argv.push("-e", pattern, "--", ".");
-  const r = await run(argv, { cwd, timeoutMs: 30_000, maxBytes: 64_000 });
-  if (r.code === 127) {
-    let re: RegExp;
-    try {
-      re = new RegExp(pattern);
-    } catch {
-      return { ok: false, error: "search.slice.v1 pattern is not a valid regex" };
-    }
-    const g = await jsGrep(cwd, re, globToRe(glob), maxMatches, ctxLines);
-    return { ok: true, engine: "js", matches: g.matches, total: g.matches.length, scanned: g.scanned, truncated: g.truncated };
+  if (Buffer.byteLength(pattern) > 4096 || Buffer.byteLength(glob) > 1024) {
+    return { ok: false, error: "pattern or glob exceeds its bound; refusing to change query semantics" };
   }
-  if (r.code > 1) return { ok: false, error: tail(r.stderr, 6) || "rg failed" };
-  const matches = r.stdout
-    .split("\n")
-    .filter(Boolean)
-    .slice(0, maxMatches)
-    .map((line) => {
-      const m = /^([^:]+):(\d+):(.*)$/.exec(line);
-      return m ? { file: m[1], line: Number(m[2]), text: (m[3] ?? "").trim().slice(0, 200) } : { file: "?", line: 0, text: line.slice(0, 200) };
-    });
-  return { ok: true, matches, total: matches.length, truncated: r.stdout.split("\n").filter(Boolean).length > maxMatches };
+  // JSON records distinguish match/context/separator lines and preserve colon/newline paths.
+  // An extra match per file lets us report truncation even in a single large file.
+  const argv = ["rg", "--json", "--color=never", `-m${maxMatches + 1}`];
+  if (ctxLines > 0) argv.push(`-C${ctxLines}`);
+  if (glob) argv.push("-g", glob);
+  argv.push("-e", pattern, "--", ".");
+  const r = await run(argv, { cwd, timeoutMs: 30_000, maxBytes: 512_000 });
+  if (r.code === 127) return { ok: false, error: "ripgrep (rg) is required; a fallback with different ignore/regex semantics is not safe" };
+  if (r.code > 1 || r.timedOut) return { ok: false, error: tail(r.stderr, 6) || "rg failed" };
+  type Match = { file: string; line: number; text: string; text_truncated: boolean; context?: Array<{ line: number; text: string; text_truncated: boolean }> };
+  const matches: Match[] = [];
+  const contexts: Array<{ file: string; line: number; text: string; text_truncated: boolean }> = [];
+  let truncated = r.truncated;
+  const decode = (value: { text?: string; bytes?: string } | undefined): string => value?.text ?? (value?.bytes ? Buffer.from(value.bytes, "base64").toString("utf8") : "");
+  for (const line of r.stdout.split("\n").filter(Boolean)) {
+    let record;
+    try { record = JSON.parse(line); }
+    catch { truncated = true; continue; }
+    if (record.type !== "match" && record.type !== "context") continue;
+    const data = record.data;
+    const file = decode(data.path).replace(/^\.\//, "");
+    const bounded = clip(decode(data.lines).trimEnd(), 400);
+    if (record.type === "context") {
+      if (contexts.length < 1200) contexts.push({ file, line: data.line_number, text: bounded.text, text_truncated: bounded.truncated });
+      else truncated = true;
+    } else if (matches.length < maxMatches) {
+      matches.push({ file, line: data.line_number, text: bounded.text, text_truncated: bounded.truncated });
+    } else truncated = true;
+  }
+  if (ctxLines) for (const match of matches) {
+    match.context = contexts.filter((ctx) => ctx.file === match.file && Math.abs(ctx.line - match.line) <= ctxLines)
+      .map(({ line, text, text_truncated }) => ({ line, text, text_truncated }));
+  }
+  while (Buffer.byteLength(JSON.stringify(matches)) > 28000) { matches.pop(); truncated = true; }
+  return { ok: true, engine: "rg", matches, total: matches.length, truncated };
 }
 
 // -------------------------------------------------------------- web.fetch --
@@ -472,16 +495,17 @@ async function webFetch(inputs: Record<string, unknown>) {
   const timer = setTimeout(() => ctl.abort(), 30_000);
   try {
     const res = await fetch(url, {
-      signal: ctl.signal,
+      signal: signals.getStore() ? AbortSignal.any([ctl.signal, signals.getStore()!]) : ctl.signal,
       redirect: "follow",
-      headers: { "user-agent": "algal-skills/0.2 (+https://github.com/0thernet/algal-skills)", accept: "text/*,application/json,application/xhtml+xml" },
+      headers: { "user-agent": "system-one-skills/0.3 (+https://github.com/0thernet/system-one-skills)", accept: "text/*,application/json,application/xhtml+xml" },
     });
     const raw = await boundedResponseText(res, Math.min(512_000, maxBytes * 8));
     const ct = res.headers.get("content-type") ?? "";
+    if (ct && !/^(?:text\/|application\/(?:json|[^;]+\+json|xml|xhtml\+xml))/i.test(ct)) return { ok: false, status: res.status, content_type: ct.slice(0, 80), error: "unsupported non-text content type" };
     const isHtml = /html|xml/.test(ct);
     const body = isHtml ? htmlToText(raw.text) : raw.text;
     const clipped = clip(body, maxBytes);
-    return { ok: res.ok, status: res.status, content_type: ct.slice(0, 80), text: clipped.text, truncated: raw.truncated || clipped.truncated, source_bytes: raw.bytes, source_truncated: raw.truncated };
+    return { ok: res.ok, url: res.url || url, status: res.status, content_type: ct.slice(0, 80), text: clipped.text, truncated: raw.truncated || clipped.truncated, source_bytes: raw.bytes, source_truncated: raw.truncated };
   } catch (e) {
     return { ok: false, error: `fetch failed: ${String(e).slice(0, 200)}` };
   } finally {
@@ -518,7 +542,7 @@ async function researchBundle(inputs: Record<string, unknown>) {
     if (typeof source.text === "string") {
       const rawText = source.text.replace(/\r\n/g, "\n").trim();
       const boundedRaw = clip(rawText, Math.min(128_000, maxBytes * 8));
-      const text = /<[^>]+>/.test(boundedRaw.text) ? htmlToText(boundedRaw.text) : boundedRaw.text;
+      const text = boundedRaw.text; // Inline evidence is literal text; angle brackets may be code or mathematics.
       const clipped = clip(text, maxBytes);
       sources.push({ index, ok: true, url, title, text: clipped.text, truncated: boundedRaw.truncated || clipped.truncated, source_bytes: Buffer.byteLength(rawText), source_truncated: boundedRaw.truncated });
     } else if (url) {
@@ -554,6 +578,9 @@ async function writingAudit(inputs: Record<string, unknown>) {
     const path = resolve(root, inputs.path);
     if (path !== root && !path.startsWith(root + sep)) return { ok: false, error: "path escapes cwd" };
     try {
+      const canonicalRoot = await realpath(root);
+      const canonicalPath = await realpath(path);
+      if (canonicalPath !== canonicalRoot && !canonicalPath.startsWith(canonicalRoot + sep)) return { ok: false, error: "path symlink escapes cwd" };
       const info = await stat(path);
       if (!info.isFile() || info.size > maxBytes * 2) return { ok: false, error: "file is not a bounded text file" };
       text = await readFile(path, "utf8");
@@ -586,7 +613,7 @@ async function writingAudit(inputs: Record<string, unknown>) {
     .slice(0, 12)
     .map(([phrase, count]) => ({ phrase, count }));
   const longSentences = sentences
-    .map((sentence, index) => ({ line: index + 1, words: sentenceWords[index] ?? 0, text: sentence.slice(0, 180) }))
+    .map((sentence, index) => ({ sentence: index + 1, words: sentenceWords[index] ?? 0, text: sentence.slice(0, 180) }))
     .filter((sentence) => sentence.words > 30)
     .slice(0, 12);
   const claimLike = sentences.filter((sentence) => /\b\d+(?:\.\d+)?%?\b|\b(?:always|never|best|worst|only|proven)\b/i.test(sentence));
@@ -594,6 +621,7 @@ async function writingAudit(inputs: Record<string, unknown>) {
   return {
     ok: true,
     source,
+    ...(inputs["include-text"] === true ? { text } : {}),
     bytes: Buffer.byteLength(text),
     truncated: clipped.truncated,
     words: wordCount,
@@ -618,19 +646,24 @@ async function writingAudit(inputs: Record<string, unknown>) {
 async function checkRun(inputs: Record<string, unknown>) {
   const cwd = safeCwd(inputs.cwd);
   const timeoutMs = int(inputs["timeout-ms"], 600_000, 1000, 1_200_000);
-  const stages: Array<{ name: string; code: number; skipped: boolean; tail: string }> = [];
+  const commands = ["test", "lint", "typecheck", "build"].map((name) => str(inputs[`cmd-${name}`]));
+  if (!commands.some((cmd) => cmd.trim())) return { ok: false, passed: false, error: "no gate commands supplied", stages: [], failed_stage: "" };
+  if (commands.some((cmd) => Buffer.byteLength(cmd) > 16384)) return { ok: false, passed: false, error: "gate command exceeds 16 KiB; refusing to truncate it", stages: [], failed_stage: "" };
+  const stages: Array<{ name: string; code: number; skipped: boolean; tail: string; output_truncated?: boolean; tail_truncated?: boolean }> = [];
   for (const name of ["test", "lint", "typecheck", "build"] as const) {
-    const cmd = str(inputs[`cmd-${name}`]).slice(0, 400);
-    if (!cmd) {
+    const cmd = str(inputs[`cmd-${name}`]);
+    if (!cmd.trim()) {
       stages.push({ name, code: 0, skipped: true, tail: "" });
       continue;
     }
-    const r = await run(["sh", "-c", cmd], { cwd, timeoutMs, maxBytes: MAX_CMD_OUTPUT });
+    const r = await run(["sh", "-c", cmd], { cwd, timeoutMs, maxBytes: MAX_CMD_OUTPUT, captureTail: true });
     stages.push({
       name,
       code: r.timedOut ? 124 : r.code,
       skipped: false,
-      tail: tail(`${r.stdout}\n${r.stderr}`, 20),
+      tail: clipTail(tail(r.combined, 20), 8000),
+      tail_truncated: Buffer.byteLength(tail(r.combined, 20)) > 8000,
+      output_truncated: r.truncated,
     });
   }
   const ok = stages.every((s) => s.code === 0);
@@ -656,7 +689,7 @@ export async function main() {
   const name = process.argv[2];
   const impl = name ? TOOLS[name] : undefined;
   if (!impl) {
-    process.stderr.write(`algal-skills-tool: unknown tool "${name ?? ""}"; expected one of ${Object.keys(TOOLS).join(", ")}\n`);
+    process.stderr.write(`system-one-skills-tool: unknown tool "${name ?? ""}"; expected one of ${Object.keys(TOOLS).join(", ")}\n`);
     process.exit(2);
   }
   const raw = await readStdin();
@@ -664,7 +697,7 @@ export async function main() {
   try {
     payload = JSON.parse(raw);
   } catch {
-    process.stderr.write("algal-skills-tool: stdin is not JSON\n");
+    process.stderr.write("system-one-skills-tool: stdin is not JSON\n");
     process.exit(2);
   }
   try {
