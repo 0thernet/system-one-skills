@@ -1,6 +1,6 @@
 {
   "name": "algal-skills",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Token-efficient agent skills built on ALGAL programs: deterministic workflows that keep raw tool output out of the model's context, plus self-evolving habitats promoted by replayable evidence.",
   "license": "MIT",
   "repository": {
