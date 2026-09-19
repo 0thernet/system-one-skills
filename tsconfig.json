@@ -12,13 +12,13 @@
     "noEmit": true,
     "types": [
       "bun"
-    ]
+    ],
+    "allowJs": true,
+    "checkJs": true
   },
   "include": [
-    "bin/**/*.ts",
-    "src/**/*.ts",
-    "tools/**/*.ts",
-    "habitats/**/*.ts",
+    "bin/**/*.js",
+    "src/**/*.js",
     "bench/**/*.ts",
     "tests/**/*.ts",
     "scripts/**/*.ts",

@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { PKG } from "../src/run-program.ts";
+import { fileURLToPath } from "node:url";
+const PKG = fileURLToPath(new URL("../", import.meta.url));
 
 export function benchmarkFingerprint(): string {
   const hash = createHash("sha256");
@@ -12,7 +13,7 @@ export function benchmarkFingerprint(): string {
       else { hash.update(path); hash.update(readFileSync(join(PKG,path))); }
     }
   };
-  for (const dir of ["src","tools","programs","bin","habitats","fixtures"]) walk(dir);
+  for (const dir of ["src","bin","skills"]) walk(dir);
   for (const file of ["bench/run-bench.ts","bench/source-fingerprint.ts","package.json","bun.lock"]) {
     hash.update(file); hash.update(readFileSync(join(PKG,file)));
   }

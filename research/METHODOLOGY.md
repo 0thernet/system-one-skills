@@ -1,184 +1,157 @@
-# Assessing System One skills against real transcripts
+# Measuring the validation skill
 
-The evidence has three different jobs. Transcript aggregates identify repeated
-work that might benefit from a skill. Archived-output replay tests a reducer's
-payload size and specific preservation rules. A paired agent trial must test
-whether the complete intervention saves measured tokens while preserving the
-original task outcome. Passing either of the first two does not establish the
-third.
+System One Skills admits one use: reducing a known noisy validation command
+when the agent needs its exit status. Admission requires measured text-token
+savings after instruction and invocation overhead, preserved output contracts,
+and explicit negative cases. It does not establish billed savings or complete
+task correctness.
 
-## Corpus and privacy
+## Real transcript population
 
-`session-report.json` is a convenience sample from one consenting developer's
-local **Devin CLI, Claude Code, and Codex** records. Its fixed event interval is
-**2026-09-12 00:00 UTC inclusive through 2026-09-19 00:00 UTC exclusive**. This
-excludes the work that produced this assessment. It does not represent the
-distribution of all developers, repositories, languages, or agents.
+The public aggregates cover one consenting developer's retained **Devin CLI,
+Claude Code, and Codex** transcripts in two disjoint UTC windows:
 
-The analyzer reads local sources, emits allowlisted workflow names and numeric
-aggregates, and publishes SHA-256 fingerprints of the analyzer and selected
-evidence. It does not publish message bodies, commands, command arguments,
-repository names, local paths, transcript IDs, model reasoning, or credentials.
-Hashes identify the measured evidence; they are not a public substitute for
-the private corpus. Independent contributors can run the analyzer on their
-own authorized corpus and publish aggregates with the same schema.
+| Cohort | Inclusive start | Exclusive end | Report |
+| --- | --- | --- | --- |
+| Week | 2026-09-12 00:00 | 2026-09-19 00:00 | [session-report.json](session-report.json) |
+| Supplemental | 2026-09-19 00:00 | 2026-09-19 14:00 | [supplemental-session-report.json](supplemental-session-report.json) |
 
-JSONL discovery uses a file-modification-time prefilter at the window start;
-the report counts excluded files. Event timestamps then enforce the half-open
-window. A restored file with an old modification time can therefore be
-missed. Tool inputs are UTF-8 strings or canonical JSON arguments. Output
-measurement uses textual payloads, joining text blocks with newlines and
-excluding image/audio blocks and outer transcript records. These are **byte
-measurements**, not provider tokenization or billed cost.
+The supplemental window ends before work on this project began. Files use a
+modification-time prefilter followed by event timestamps; files restored with
+older modification times can be missed. Source groups and usage counts are
+provider-specific and must not be interpreted as equivalent user-task counts.
 
-Each provider reports its selected-evidence fingerprint, selected records by
-UTC day, session coverage, deduplication/exclusion counts, workflow tool-call
-counts, input bytes, and output bytes. The public report must remain aggregate
-only. Raw replay inputs and receipts are optional private artifacts in a
-directory outside the repository, created with restrictive permissions.
+| Provider | Selection and deduplication |
+| --- | --- |
+| Codex | Windowed response items; stable call IDs and output identities distinguish inherited copies from separate yields. Sum individual usage responses by `response_id`, not cumulative snapshots. `session_id` groups multiple agent threads; the report separately counts observed usage thread IDs. Nested completed shell events have a separate overlapping view, which must not be added to model-visible tool counts. |
+| Devin CLI | Read-only database snapshot, following the active parent chain. Deduplicate assistant usage by message ID and associate tool results with their own call IDs. Stale exports and inactive forest copies are excluded. Cache counters remain separate because their inclusion depends on model/backend. |
+| Claude Code | Latest observable main conversation ancestry, falling back to sidechain-only files. Deduplicate assistant messages and take maximum usage fields across blocks of one response. The selected leaf is a best-observable pointer, not an authoritative active-head export. |
 
-## Provider-specific correctness
+Current retained ancestry can omit compacted or rewound historical messages.
+Missing data is not zero activity. Workflow regexes locate opportunities; they
+do not prove a call was wasteful or safe to replace. Output bytes in the corpus
+reports describe textual payloads, not provider-billed tokens.
 
-| Provider | Selected evidence | Usage accounting |
-| --- | --- | --- |
-| Codex | Time-windowed response items across local rollout files; globally deduplicate calls by `call_id`. Output keys include call ID, output item ID (or timestamp plus ordinal), and content digest, retaining distinct identical yields. | Sum individual `token_usage_record.usage` records, deduplicated by `response_id`. Never sum cumulative `token_count` snapshots or maxima across forked sessions. Cached-input and reasoning-output fields are subsets, not additional tokens. Missing individual usage records mean missing coverage, not zero usage. |
-| Devin CLI | A read-only SQLite transaction; follow `sessions.main_chain_id` through `parent_node_id`. Read message/tool fields only for the resulting ancestry. Exclude stale JSON exports and forest copies. Copied nodes use original message timestamps when present. | Deduplicate assistant `metadata.metrics` by `message_id`. Keep input, cache creation, cache read, and output separately as recorded. Cache inclusion depends on the selected model/backend; do not infer an additive cross-model input total. Compacted-away messages are absent. |
-| Claude Code | Follow `parentUuid` from the latest main conversation message in each JSONL file; use the latest sidechain only in files without a main chain. Report other nodes as excluded. | Deduplicate globally by assistant `message.id`; take the maximum of each usage field across blocks of that same response, then sum responses. Keep input, cache creation, cache read, and output separate. The selected leaf is a best-observable branch, not an authoritative exported active-head pointer. |
+## Replay selection
 
-Current active ancestry may differ from the ancestry active at the historical
-cutoff, particularly after compaction or rewind. This is a study of the
-**retained historical evidence at collection time**, not a reconstruction of
-all work ever performed. Do not compare provider totals as if their coverage
-and token semantics were identical. The main session count describes
-**contributing execution/session groups** after deduplication, not every
-discovered file or the number of user tasks. Codex `session_meta.session_id`
-groups multiple agent threads; `recorded_usage_thread_count` separately counts
-distinct observed `token_usage_record.thread_id` values. Claude `sessionId`
-can include sidechains; Devin uses the database session identity. These are
-provider-specific groupings and must not be presented as equivalent task counts.
-Devin output identity is the message ID; Claude uses record UUID plus block
-index. If an output lacks any stable event identity, the analyzer falls back
-to call ID plus content and explicitly counts that limitation. Such a fallback
-can collapse identical repeated yields. Conversely, rewritten timestamps or
-ordinals can prevent deduplicating an inherited Codex event. These rules improve
-coverage accounting; they do not prove a perfect reconstruction of every
-model-visible delivery.
+The unchanged analyzer chooses up to 12 smallest-hash eligible outputs per
+provider per cohort. Eligibility requires a validation-class tool output with
+an explicit completed exit status, or a typed completed shell event. Missing
+status, ambiguous multi-result envelopes, and textual claims of success are
+not inferred into successful exits. Each replay row preserves its source view.
 
-Codex also exposes completed `CommandExecution` events for shell operations
-nested inside orchestration tools. The report publishes a **separate
-supplemental view**, deduplicated by event ID, with captured output bytes and
-workflow counts. These events overlap response-item tool results; never add
-the two views or call their combined bytes model-visible savings. Their typed
-exit status can supply archived-output replay evidence even when the enclosing
-orchestration history is compacted or only partially retained. A model response
-count is not an expected tool-call count: many responses contain no tool call.
+The report includes providers with zero eligible samples. Three-provider
+corpus coverage does not imply three-provider efficacy evidence. All selected
+samples remain visible, including short outputs that would cost more if the
+skill were invoked unnecessarily.
 
-The old report did not meet these rules: it included only two providers,
-mixed differently bounded populations, counted JSON-envelope characters,
-summed inherited cumulative usage, and attributed parallel Devin outputs to
-the first call in a step. Its values must not be used as savings claims.
+The replay reads archived text through the shipped pure reducer. **It never
+executes an archived command.** It simulates the runtime's memory capture
+bound, writes the complete archived excerpt to a private local file, and
+measures the reducer's exact presented text, including the artifact path.
+Replay paths contain a cohort label, opaque sample hash, and temporary-directory
+nonce. They are longer than the default CLI log path, adding conservative path
+overhead. The frozen report counts the paths actually rendered; a fresh nonce
+can slightly change token counts on rerun.
+Original provider metadata can remain in an excerpt, and prior truncation or
+stdout/stderr ordering cannot be reconstructed.
 
-## Workflow classification and additional opportunities
+These examples form a **development/calibration cohort**: an observed 8,207-byte
+counterexample was used to tune the success excerpt. They are not independent
+held-out evaluation tasks.
 
-Tool names map to a closed list of workflows. Shell commands are classified
-using documented regular expressions, including commands found as static
-strings inside Codex orchestration calls. No historical command is executed.
-Operations with multiple detected workflow classes are recorded as
-`mixed_shell`; unsupported wrappers, dynamic commands, and unknown tools
-remain `shell_other` or `other`. Tool outputs without a selected matching call
-are counted as `unmatched_output`, not assigned to a guessed workflow.
+## Token accounting
 
-These heuristics locate opportunities, not proven waste. A command mentioning
-`test` may be inspecting tests; a search result may be essential evidence.
-Input/output byte counts also do not measure how often cached material was
-reused later. Audit representative private examples before building a skill
-for a high-frequency class. Preserve zeros, unmatched data, and negative
-results in published assessments.
+The assessment uses pinned [`tiktoken`](https://github.com/openai/tiktoken)
+0.12.0 with the named `o200k_base` text encoding, entirely locally. It counts
+actual strings rather than dividing bytes by four. These are exact counts for
+that encoding, not claims about Devin or Claude tokenization, current model
+billing, or complete agent-task usage.
 
-Beyond the existing Git, search, validation, and research skills, use measured
-workflow counts to prioritize these hypotheses:
+For each case:
 
-| Observed class | Candidate System One skill | Required preservation rule before claiming utility |
-| --- | --- | --- |
-| `file_read` plus `repository_search` | Symbol-scoped evidence packets with referenced file/line slices and expansion on demand. | Correct source identity, requested symbol, relevant callers, and explicit omissions; an exact slice must remain retrievable. |
-| `process_wait` plus `ci_status` | Change-only process or CI watchers that return a terminal condition once. | Exact owned process/run identity, terminal status, timeout/cancellation, and actionable failure evidence. A wait count alone does not prove redundant polling. |
-| `coordination` | Compact worker-result receipts and changed-state summaries. | Owner, input revision, result revision, required checks, unresolved blockers, and independent integration review. Summarizing a worker claim is not verifying it. |
-| `dependency_build` plus `validation` | Diagnostic grouping by failing target, package, or compiler error. | Exit status, first actionable diagnostic, affected target, truncation, and an escalation path to raw logs. |
-| `mixed_shell` and `shell_other` | Better instrumentation and command attribution before a new reducer. | Retain operation boundaries and distinguish reads from mutation. High unknown volume is a measurement gap, not an invitation to automate unknown commands. |
-
-No transcript count alone justifies implementing or enabling any of these
-candidates. Check actual frequencies in `session-report.json`; zero or sparse
-coverage should lower priority. Writing style judgments, research truth, and
-architecture choices need separate quality labels even if a typed model
-returns schema-valid answers.
-
-## Archived-output replay
-
-`replay_validation.ts` runs the actual packaged `test-sift` program on a
-deterministic smallest-hash sample of at most 12 eligible outputs per provider.
-Eligibility requires an explicit completed exit status in the provider
-envelope or result metadata. `is_error`, a textual “passed” message, a pending
-process, or missing usage is not treated as an exit code. Multi-result
-envelopes without an unambiguous single result are excluded.
-
-The private replay command only prints the recorded text and returns its
-recorded exit status. **Original commands are never run.** Each sample has a
-fresh private receipt store. Portable exit statuses outside 0–255 and excerpts
-over 256 KiB are excluded with a recorded reason. Provider metadata can remain
-in an archived excerpt; lost stdout/stderr ordering and output already
-truncated by the original agent cannot be reconstructed.
-Codex samples can come from the supplemental completed-command view; each
-public sample identifies its source view. The corpus-wide model-visible byte
-counts and these nested command samples answer different questions.
-
-The measured intervention is exactly `JSON.stringify(compactReport(receipt,
-manifest)) + "\n"`, the default CLI payload. The baseline is the archived log
-excerpt alone, without its original tool envelope. Every selected case is
-reported, including cases where the compact result is larger, exclusions,
-and harness errors. `ceil(bytes / 4)` is labeled only as a rough token proxy;
-there is no measured tokenizer or provider billing in replay.
-
-Preservation checks cover the recorded exit status, pass/fail result, emitted
-byte count, and the final 30 newline-separated records after trimming when
-they fit the 12 KB tail bound. This deliberately narrow check does **not**
-prove that an agent could diagnose the original error, choose the right fix,
-or complete the task from the reduced evidence. Source hashes tie results to
-the tested runtime and formatter. Rerun after relevant changes.
-
-## End-to-end acceptance
-
-For an actual token-savings claim, pair a baseline agent run with a skill run
-on the same frozen task/repository fixture, independently label success and
-evidence quality, and collect real provider usage for **all** turns. Include
-skill instructions, invocation overhead, typed-model calls, cache reads and
-writes, retries, repairs, and later context expansion. Use the same provider,
-model/version, budgets, and cache policy; randomize run order and repeat pairs
-instead of comparing unrelated transcripts. Keep private evidence local and
-publish the method, cohort counts, provider-specific usage deltas, uncertainty,
-failures, and exclusions. An independent task-success gate must pass before
-positive payload compression is described as an optimization.
-
-Typed Jev decisions and router evolution need real live evaluation to claim
-quality or token savings. Scripted decisions establish parser and contract
-behavior only. Read the repository's benchmark and paired-trial tools for
-the currently implemented gates; this transcript study supplies opportunity
-and replay evidence, not a blanket correctness or net-savings endorsement.
-
-## Reproduction
-
-Run only against transcripts you are authorized to inspect. Choose an explicit
-cutoff and use the repository's host scheduler when required by local policy.
-
-```sh
-python3 -m unittest discover -s tests -p 'transcript*_test.py' -v
-python3 research/analyze_sessions.py \
-  --since 2026-09-12T00:00:00Z --until 2026-09-19T00:00:00Z \
-  --private-samples ../private-evidence
-bun research/replay_validation.ts \
-  ../private-evidence/validation-replay-inputs.json \
-  research/replay-report.json research/session-report.json
+```text
+net tokens saved = archived output tokens − presented output tokens
+                 − full skill-file tokens − catalog name/description tokens
+                 − (skill invocation tokens − native invocation tokens)
 ```
 
-Paths to each provider source are configurable. The analyzer is local and
-offline; private replay receipts and samples are never package artifacts.
-Do not upload or commit them to reproduce this study.
+The full skill and catalog description are charged on every case; setup is
+never amortized to make a case pass. The report records both representative
+invocations and their token counts. The original complete user/system prompts
+were not retained with the replay samples. A plainly labeled common task
+instruction estimate is charged equally to both arms and cancels in the
+difference; it is not a fabricated historical prompt. Chat framing, reasoning,
+cache treatment, loading interactions, retries, and later log retrieval remain
+unmeasured.
+
+## Selection rule and admission
+
+The user-facing rule is to invoke only when earlier runs already establish at
+least **8 KiB** of ordinary validation output and the task needs the exit status.
+Do not run a command just to measure it, or rerun it to retrieve omitted output.
+
+Replay simulates this selection using the archived output size as the available
+prior observation. It does not prove what the historical agent knew, whether
+an agent selects correctly, or whether the next run produces similar output.
+Selection is independent of observed token savings: an eligible-size case
+cannot be silently removed because the runtime passed it through or it failed
+the margin.
+
+Every selected case must save **at least 128 tokens** after the counted overhead.
+Every case must pass the preservation checks. The public admission gate also
+requires retained nonselected negative examples and reports threshold
+sensitivity. A failed case requires a transparent runtime/routing change and
+remeasurement; it must not become an unreported exclusion.
+
+## What correctness checks establish
+
+Replay checks source/presented byte counts, exact short-output passthrough,
+declared exit status and omissions for compacted text, the byte guard, capture
+bound disclosure, a complete saved archived excerpt, and private artifact
+permissions. The saved-excerpt check validates the replay harness's artifact;
+it is not proof of live CLI capture. Separate CLI integration tests validate
+one-time command execution, exit propagation, private logging, timeouts,
+interruption, and resource limits.
+
+An independent synthetic forward check preserved the failure exit and single
+execution, but needed a targeted saved-log read to diagnose an early colored
+error. It prompted a diagnostic-matching fix and regression; it remains
+development evidence rather than a holdout or a real transcript sample. Include
+such follow-up reads in future paired agent-task accounting.
+
+Neither set proves that the excerpt contains every diagnostic needed for the
+original task. Inspect the saved log when failure diagnosis, warnings, coverage,
+or detailed evidence matters. The current calibration set must be supplemented
+with independent paired agent tasks before claiming generalization or net
+end-to-end savings. Those tasks should hold repository state, model, budgets,
+and cache policy fixed, count every turn including retrieval and repair, and
+independently judge task success.
+
+CI polling is not admitted: observed status-call frequency does not establish
+redundant same-run polling or a benefit over native `gh run watch`.
+
+## Privacy and reproduction
+
+Public reports contain closed workflow labels, counts, booleans, and opaque
+hashes. They contain no raw prompts, commands, log excerpts, private paths,
+credentials, or transcript IDs. Raw samples and rendered outputs stay outside
+the repository. Hashes bind the sources and reports and detect drift; they are
+not independent proof of the measurements.
+
+To reproduce on authorized local transcripts, create an isolated Python
+environment and install `research/requirements.txt`. Run the analyzer with
+explicit windows and an outside-repository private sample directory, then:
+
+```sh
+node research/replay_validation.mjs ../private-evidence/admission-input.json \
+  week=../private-evidence/validation-replay-inputs.json \
+  supplemental=../private-evidence/supplemental/validation-replay-inputs.json
+python research/assess_admission.py ../private-evidence/admission-input.json \
+  --corpus research/session-report.json \
+  --corpus research/supplemental-session-report.json
+bun research/validate-admission.ts
+```
+
+Use the required host scheduler for applicable local workloads. The public gate
+needs no private input; rerendering and retokenizing the evidence does.
