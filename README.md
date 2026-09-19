@@ -6,6 +6,8 @@ One focused skill for **Devin, Claude Code, and Codex**: run a noisy test or bui
 command once, return its exit status and compact evidence, and keep the full log
 locally for inspection. No model call, API key, or runtime dependency.
 
+[Skills guide](https://sys1.io/skills) · [Source](https://github.com/0thernet/system-one-skills) · [SYS1](https://sys1.io)
+
 ```sh
 system-one-skills check --timeout-ms 900000 -- bun test
 ```
@@ -121,6 +123,18 @@ agent can spend its context on the task. [TypeSafe's introduction to System One
 models and Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev)
 is related background; this independent collection requires neither a model
 backend nor a TypeSafe account.
+
+## Related project: SYS1
+
+[SYS1](https://sys1.io) provides typed model decisions for your application:
+yes/no answers, choices, and scores across local models, hosted Jev, and
+compatible servers. Use its Node/Bun client, embedded Bun router, or local
+HTTP daemon. [View the SYS1 source](https://github.com/hraness/sys1).
+
+System One Skills handles deterministic log reduction. It works without SYS1;
+installing either project does not configure the other. The
+[skills guide on sys1.io](https://sys1.io/skills) explains the workflow,
+installation, and relationship between the projects.
 
 ## Development and assessment
 
