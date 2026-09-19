@@ -1,329 +1,316 @@
 {
- "codex": {
-  "sessions": 1197,
-  "subagent_sessions": 1166,
-  "compactions": 793,
-  "tool_calls": {
-   "exec": 8396,
-   "send_message": 2415,
-   "wait_agent": 465,
-   "sleep": 185,
-   "wait": 137,
-   "list_agents": 136,
-   "followup_task": 99,
-   "spawn_agent": 37,
-   "js": 9,
-   "interrupt_agent": 1
+  "schema_version": 2,
+  "window": {
+    "since_inclusive_utc": "2026-09-12T00:00:00Z",
+    "until_exclusive_utc": "2026-09-19T00:00:00Z"
   },
-  "tool_in_bytes": {
-   "exec": 10411675,
-   "send_message": 2224307,
-   "followup_task": 108684,
-   "spawn_agent": 39723,
-   "wait_agent": 9433,
-   "wait": 7689,
-   "sleep": 3859,
-   "js": 996,
-   "list_agents": 272,
-   "interrupt_agent": 70
+  "population": "One consenting developer's local CLI transcripts; convenience sample, not representative of all agents or tasks.",
+  "measurement": "UTF-8 bytes of tool inputs and textual output payloads after provider/call deduplication; transcript JSON envelopes excluded. Bytes are not measured tokens or billed cost.",
+  "usage_semantics": {
+    "codex": "Sum per-response token_usage_record.usage, deduplicated by response_id. input_tokens includes cached_input_tokens; cached and reasoning fields are subsets, not additive. Cumulative token_count snapshots are not summed. Responses without individual usage records are absent from usage totals.",
+    "devin": "Active DB ancestry only; assistant metadata.metrics deduplicated by message_id. input_tokens, cache_read_tokens and cache_creation_tokens are reported separately as recorded. Cache inclusion depends on the selected model/backend; no additive cross-model input total is inferred. Export final_metrics and inactive forest copies are excluded. Compacted-away history is unavailable on this chain.",
+    "claude": "Selected latest parentUuid ancestry per JSONL file. Assistant message.usage deduplicated globally by message.id; max per field across blocks of one message. input_tokens, cache_read_input_tokens and cache_creation_input_tokens are distinct buckets; context-input proxy is their sum. This is a best-observable branch selection, not an authoritative exported active-head pointer."
   },
-  "tool_out_bytes": {
-   "exec": 56523119,
-   "?": 36364943,
-   "send_message": 13889283,
-   "wait_agent": 901850,
-   "sleep": 774452,
-   "followup_task": 621046
+  "providers": {
+    "codex": {
+      "sessions_with_selected_evidence": 44,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "recorded_usage_thread_count": 917,
+      "unique_tool_calls": 229,
+      "unique_output_fragments": 258,
+      "unique_usage_responses": 6807,
+      "recorded_usage_fields": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 527116928,
+        "input_tokens": 640252403,
+        "output_tokens": 840399,
+        "reasoning_output_tokens": 366379
+      },
+      "workflow_counts": {
+        "repository_search": {
+          "tool_calls": 18,
+          "tool_input_bytes": 5787,
+          "output_fragments": 19,
+          "tool_output_bytes": 16887
+        },
+        "file_read": {
+          "tool_calls": 42,
+          "tool_input_bytes": 18739,
+          "output_fragments": 46,
+          "tool_output_bytes": 358740
+        },
+        "git_state": {
+          "tool_calls": 7,
+          "tool_input_bytes": 1815,
+          "output_fragments": 7,
+          "tool_output_bytes": 16401
+        },
+        "diff_review": {
+          "tool_calls": 1,
+          "tool_input_bytes": 541,
+          "output_fragments": 1,
+          "tool_output_bytes": 12524
+        },
+        "coordination": {
+          "tool_calls": 43,
+          "tool_input_bytes": 31668,
+          "output_fragments": 43,
+          "tool_output_bytes": 353
+        },
+        "mixed_shell": {
+          "tool_calls": 49,
+          "tool_input_bytes": 20617,
+          "output_fragments": 53,
+          "tool_output_bytes": 266183
+        },
+        "shell_other": {
+          "tool_calls": 69,
+          "tool_input_bytes": 75856,
+          "output_fragments": 89,
+          "tool_output_bytes": 597566
+        }
+      },
+      "supplemental_completed_commands": {
+        "unique_events": 150,
+        "measurement": "Nested Codex shell telemetry; overlaps response-item tool outputs and MUST NOT be summed with model-visible tool-call counts or bytes.",
+        "workflow_counts": {
+          "ci_status": {
+            "completed_command_events": 1,
+            "captured_output_bytes": 190
+          },
+          "diff_review": {
+            "completed_command_events": 2,
+            "captured_output_bytes": 11924
+          },
+          "file_read": {
+            "completed_command_events": 37,
+            "captured_output_bytes": 308029
+          },
+          "git_state": {
+            "completed_command_events": 5,
+            "captured_output_bytes": 861
+          },
+          "mixed_shell": {
+            "completed_command_events": 13,
+            "captured_output_bytes": 63305
+          },
+          "repository_search": {
+            "completed_command_events": 23,
+            "captured_output_bytes": 26390
+          },
+          "shell_other": {
+            "completed_command_events": 68,
+            "captured_output_bytes": 500973
+          },
+          "web_research": {
+            "completed_command_events": 1,
+            "captured_output_bytes": 7639
+          }
+        }
+      },
+      "selection_and_exclusions": {
+        "cumulative_token_count_events_not_summed": 7402,
+        "discovered_transcript_files": 8051,
+        "duplicate_calls_excluded": 289,
+        "duplicate_completed_command_events_excluded": 239,
+        "duplicate_output_fragments_excluded": 260,
+        "duplicate_usage_records_excluded": 323,
+        "files_with_mtime_before_window_excluded": 6805,
+        "transcript_files_scanned": 1246
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-12": 2064,
+        "2026-09-13": 2771,
+        "2026-09-14": 1065,
+        "2026-09-15": 1255,
+        "2026-09-17": 250,
+        "2026-09-18": 39
+      },
+      "selected_evidence_sha256": "409905714fe4c15f1b16eace4dc477f56bddc603e1a7451bf60409eb719ffe35"
+    },
+    "claude": {
+      "sessions_with_selected_evidence": 21,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "unique_tool_calls": 30,
+      "unique_output_fragments": 36,
+      "unique_usage_responses": 57,
+      "recorded_usage_fields": {
+        "cache_creation_input_tokens": 1983454,
+        "cache_read_input_tokens": 1844491,
+        "input_tokens": 190,
+        "output_tokens": 14318
+      },
+      "workflow_counts": {
+        "repository_search": {
+          "tool_calls": 1,
+          "tool_input_bytes": 145,
+          "output_fragments": 1,
+          "tool_output_bytes": 96
+        },
+        "file_read": {
+          "tool_calls": 9,
+          "tool_input_bytes": 1690,
+          "output_fragments": 9,
+          "tool_output_bytes": 5787
+        },
+        "edits": {
+          "tool_calls": 1,
+          "tool_input_bytes": 294,
+          "output_fragments": 1,
+          "tool_output_bytes": 144
+        },
+        "mixed_shell": {
+          "tool_calls": 5,
+          "tool_input_bytes": 1263,
+          "output_fragments": 7,
+          "tool_output_bytes": 5555
+        },
+        "shell_other": {
+          "tool_calls": 12,
+          "tool_input_bytes": 1134,
+          "output_fragments": 16,
+          "tool_output_bytes": 63863
+        },
+        "other": {
+          "tool_calls": 2,
+          "tool_input_bytes": 4,
+          "output_fragments": 2,
+          "tool_output_bytes": 648
+        }
+      },
+      "supplemental_completed_commands": null,
+      "selection_and_exclusions": {
+        "branch_nodes_outside_selected_ancestry": 31385,
+        "discovered_transcript_files": 681,
+        "duplicate_calls_excluded": 26,
+        "duplicate_output_fragments_excluded": 14,
+        "duplicate_usage_records_excluded": 99,
+        "files_with_mtime_before_window_excluded": 570,
+        "transcript_files_scanned": 111,
+        "transcript_files_with_selected_ancestry": 110
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-13": 2,
+        "2026-09-16": 1,
+        "2026-09-17": 120
+      },
+      "selected_evidence_sha256": "b948330221e7dfbd7454acfd243d796a21654841ad5d735974af179a29340502"
+    },
+    "devin": {
+      "sessions_with_selected_evidence": 38,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "unique_tool_calls": 2992,
+      "unique_output_fragments": 2992,
+      "unique_usage_responses": 2845,
+      "recorded_usage_fields": {
+        "cache_creation_tokens": 459207,
+        "cache_read_tokens": 257568245,
+        "input_tokens": 12761711,
+        "output_tokens": 873237
+      },
+      "workflow_counts": {
+        "validation": {
+          "tool_calls": 52,
+          "tool_input_bytes": 16203,
+          "output_fragments": 52,
+          "tool_output_bytes": 88342
+        },
+        "repository_search": {
+          "tool_calls": 196,
+          "tool_input_bytes": 32321,
+          "output_fragments": 196,
+          "tool_output_bytes": 288652
+        },
+        "file_read": {
+          "tool_calls": 480,
+          "tool_input_bytes": 100462,
+          "output_fragments": 480,
+          "tool_output_bytes": 1343635
+        },
+        "git_state": {
+          "tool_calls": 90,
+          "tool_input_bytes": 16586,
+          "output_fragments": 90,
+          "tool_output_bytes": 49756
+        },
+        "diff_review": {
+          "tool_calls": 19,
+          "tool_input_bytes": 2549,
+          "output_fragments": 19,
+          "tool_output_bytes": 99002
+        },
+        "ci_status": {
+          "tool_calls": 76,
+          "tool_input_bytes": 14681,
+          "output_fragments": 76,
+          "tool_output_bytes": 116355
+        },
+        "web_research": {
+          "tool_calls": 26,
+          "tool_input_bytes": 9101,
+          "output_fragments": 26,
+          "tool_output_bytes": 45812
+        },
+        "dependency_build": {
+          "tool_calls": 5,
+          "tool_input_bytes": 488,
+          "output_fragments": 5,
+          "tool_output_bytes": 2352
+        },
+        "edits": {
+          "tool_calls": 312,
+          "tool_input_bytes": 345996,
+          "output_fragments": 312,
+          "tool_output_bytes": 359807
+        },
+        "coordination": {
+          "tool_calls": 47,
+          "tool_input_bytes": 48320,
+          "output_fragments": 47,
+          "tool_output_bytes": 29539
+        },
+        "process_wait": {
+          "tool_calls": 494,
+          "tool_input_bytes": 29047,
+          "output_fragments": 494,
+          "tool_output_bytes": 1378914
+        },
+        "mixed_shell": {
+          "tool_calls": 806,
+          "tool_input_bytes": 202471,
+          "output_fragments": 806,
+          "tool_output_bytes": 1053286
+        },
+        "shell_other": {
+          "tool_calls": 368,
+          "tool_input_bytes": 99990,
+          "output_fragments": 368,
+          "tool_output_bytes": 365442
+        },
+        "other": {
+          "tool_calls": 21,
+          "tool_input_bytes": 654,
+          "output_fragments": 21,
+          "tool_output_bytes": 18012
+        }
+      },
+      "supplemental_completed_commands": null,
+      "selection_and_exclusions": {
+        "active_nodes_inserted_before_window_excluded": 1038,
+        "database_sessions_considered": 52,
+        "forest_nodes_outside_active_ancestry": 562603,
+        "replay_eligible_completed_validation_outputs": 25,
+        "replay_validation_outputs_without_explicit_exit_excluded": 27
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-15": 1,
+        "2026-09-16": 327,
+        "2026-09-17": 6113,
+        "2026-09-18": 2388
+      },
+      "selected_evidence_sha256": "4f5d714bab4eee8cff3f5f99907d8330fb3e7efa114c4c23e7d419b034f61bb8"
+    }
   },
-  "cmd_heads": {
-   "sed": 1153,
-   "other": 1061,
-   "rg": 930,
-   "cat": 812,
-   "python3": 753,
-   "bin:const": 627,
-   "bun test": 263,
-   "tail": 243,
-   "git diff": 224,
-   "bun": 203,
-   "git status": 182,
-   "shasum": 152,
-   "oompa-host-run": 139,
-   "ls": 130,
-   "bin:nl": 121,
-   "bun run": 84,
-   "node": 82,
-   "bin:oompa-host-queue": 82,
-   "pwd": 75,
-   "find": 75,
-   "gh pr": 72,
-   "gh api": 50,
-   "curl": 49,
-   "git show": 48,
-   "gh run": 46,
-   "git add": 36,
-   "bunx": 32,
-   "jq": 31,
-   "git log": 29,
-   "git": 28,
-   "for": 27,
-   "git fetch": 23,
-   "diff": 22,
-   "mkdir": 22,
-   "wc": 21,
-   "tsc": 21,
-   "seq": 21,
-   "git rev-parse": 19,
-   "git branch": 19,
-   "head": 17,
-   "export": 17,
-   "bin:set": 15,
-   "bin:sha256sum": 14,
-   "git push": 12,
-   "bin:yt-dlp": 12,
-   "bun x": 11,
-   "bin:stat": 10,
-   "bin:rustfmt": 9,
-   "test": 9,
-   "bin:ffprobe": 9,
-   "python3 countpy": 9,
-   "ln": 8,
-   "env": 8,
-   "bin:impeccable": 8,
-   "git ls-tree": 7,
-   "rm": 7,
-   "ps": 7,
-   "bin:d": 7,
-   "bun install": 7,
-   "bin:google": 7,
-   "bin:await": 6,
-   "bun build": 6,
-   "git worktree": 6,
-   "printf": 6,
-   "git remote": 6,
-   "vercel inspect": 6,
-   "vercel api": 6,
-   "devin list": 6,
-   "if": 5,
-   "cp": 5,
-   "git ls-files": 5,
-   "git switch": 5,
-   "gh repo": 5,
-   "sqlite3": 5,
-   "sleep": 3,
-   "bin:tmp": 3,
-   "bin:application": 3,
-   "cargo test": 3,
-   "eslint": 3,
-   "git checkout": 3
-  },
-  "tasks": {
-   "subagent:*": 1171,
-   "feature/implement": 419,
-   "bugfix/debug": 193,
-   "release/publish/deploy": 178,
-   "other": 67,
-   "test/verify": 65,
-   "review/audit": 26,
-   "config/setup": 22,
-   "refactor/cleanup": 9,
-   "explore/find": 3,
-   "docs/explain": 1
-  },
-  "tokens": {
-   "input": 2911196894,
-   "output": 6661918,
-   "cached": 2680052096
-  },
-  "session_input_max": 201343953,
-  "meta": {
-   "originator": {
-    "Codex Desktop": 1243,
-    "codex_exec": 35,
-    "codex-tui": 11
-   },
-   "source": {
-    "subagent": 1171,
-    "vscode": 83,
-    "exec": 29,
-    "cli": 6
-   }
-  },
-  "read_paths_bytes": 0,
-  "session_input_p50": 305302,
-  "session_input_p90": 5301698
- },
- "devin": {
-  "sessions": 52,
-  "subagent_sessions": 0,
-  "compactions": 0,
-  "tool_calls": {
-   "exec": 3468,
-   "edit": 1414,
-   "get_output": 723,
-   "read": 714,
-   "grep": 329,
-   "todo_write": 174,
-   "find_file_by_name": 86,
-   "write": 77,
-   "webfetch": 68,
-   "skill": 38,
-   "run_subagent": 37,
-   "read_subagent": 36,
-   "web_search": 30,
-   "kill_shell": 19,
-   "ask_user_question": 12,
-   "browser_preview": 2,
-   "write_to_process": 2,
-   "mcp_list_servers": 2,
-   "close_browser_preview": 1,
-   "code_search": 1
-  },
-  "tool_in_bytes": {
-   "edit": 1271236,
-   "exec": 859870,
-   "write": 479123,
-   "todo_write": 115090,
-   "run_subagent": 101924,
-   "read": 71531,
-   "grep": 60356,
-   "get_output": 30775,
-   "find_file_by_name": 7557,
-   "ask_user_question": 7335,
-   "webfetch": 4918,
-   "skill": 2653,
-   "web_search": 2431,
-   "read_subagent": 1828,
-   "kill_shell": 418,
-   "code_search": 380,
-   "browser_preview": 133,
-   "write_to_process": 96,
-   "close_browser_preview": 54,
-   "mcp_list_servers": 4
-  },
-  "tool_out_bytes": {
-   "exec": 4999739,
-   "read": 2962366,
-   "get_output": 2279988,
-   "edit": 1709925,
-   "grep": 869952,
-   "webfetch": 404985,
-   "find_file_by_name": 289211,
-   "web_search": 148021,
-   "skill": 143821,
-   "todo_write": 127971,
-   "write": 72268,
-   "mcp_list_servers": 38781,
-   "run_subagent": 24816,
-   "code_search": 10168,
-   "ask_user_question": 3669,
-   "read_subagent": 2769,
-   "kill_shell": 982,
-   "browser_preview": 339,
-   "write_to_process": 86,
-   "close_browser_preview": 85
-  },
-  "cmd_heads": {
-   "other": 1260,
-   "gh pr": 187,
-   "git status": 179,
-   "git diff": 156,
-   "bun run": 152,
-   "sleep": 108,
-   "gh run": 75,
-   "git log": 71,
-   "bun test": 68,
-   "oompa-host-run": 67,
-   "grep": 62,
-   "git add": 62,
-   "ls": 60,
-   "gh api": 58,
-   "curl": 41,
-   "git show": 37,
-   "bun": 33,
-   "cargo fmt": 33,
-   "git push": 32,
-   "for": 29,
-   "python3": 29,
-   "git fetch": 28,
-   "bunx": 26,
-   "bin:sysone-live-e2e": 23,
-   "vercel ai-gateway": 21,
-   "git switch": 20,
-   "bin:ffmpeg": 19,
-   "git checkout": 18,
-   "ps": 17,
-   "bin:gobstopper": 17,
-   "bin:token": 16,
-   "git commit": 16,
-   "git branch": 15,
-   "which": 14,
-   "node": 14,
-   "vercel env": 14,
-   "bin:op": 14,
-   "bun scriptssync-readmets": 14,
-   "bin:platonik": 14,
-   "tail": 12,
-   "find": 11,
-   "git tag": 11,
-   "gh release": 10,
-   "sed": 10,
-   "cargo test": 10,
-   "cp": 9,
-   "bin:pgrep": 8,
-   "git rev-parse": 8,
-   "bin:oompa-host-queue": 8,
-   "cat": 7,
-   "cargo clippy": 7,
-   "git ls-remote": 7,
-   "bin:tokscale": 6,
-   "node mythology-capturemjs": 6,
-   "bin:ffprobe": 6,
-   "shasum": 6,
-   "printf": 6,
-   "npm install": 6,
-   "npm view": 5,
-   "git config": 5,
-   "vercel project": 5,
-   "bin:du": 5,
-   "algal": 5,
-   "gh repo": 4,
-   "git pull": 4,
-   "bin:ruby": 4,
-   "git worktree": 4,
-   "cargo build": 4,
-   "bin:application": 4,
-   "bin:gpgconf": 4,
-   "bun distclijs": 4,
-   "wc": 3,
-   "gh issue": 3,
-   "mkdir": 3,
-   "python3 build-mythologypy": 3,
-   "git merge": 3,
-   "vercel inspect": 3,
-   "bun install": 3,
-   "rm": 3,
-   "git rebase": 3
-  },
-  "tasks": {
-   "other": 35,
-   "release/publish/deploy": 4,
-   "git/branch/merge": 1,
-   "feature/implement": 1,
-   "config/setup": 1,
-   "docs/explain": 1
-  },
-  "tokens": {
-   "input": 1133582546,
-   "output": 2356010,
-   "cached": 1107144051
-  },
-  "session_input_max": 153210852,
-  "meta": {
-   "originator": {}
-  },
-  "read_paths_bytes": 48255,
-  "session_input_p50": 7546531,
-  "session_input_p90": 64553271
- }
+  "analyzer_sha256": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+  "corpus_evidence_sha256": "fdf07beb022de539761c4d77ebb8da9ba069b8688c9aface3967fcd67ce6edda"
 }

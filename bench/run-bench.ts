@@ -1,14 +1,13 @@
 #!/usr/bin/env bun
-// run-bench — the algal-skills measured comparison.
+// run-bench — the system-one-skills measured comparison.
 //
 // For every workflow we measure what actually enters a model's context:
 //
 //   baseline — the raw bytes an agent ingests doing the same job by hand
 //              (git status+diff+log dumps, full test logs, unbounded grep,
 //              repeated gh polls, whole-diff reviews, doc-reading routing).
-//   algal    — the bytes of the program's compact interface output, plus the
-//              evidence bytes any model cell actually saw, plus receipt
-//              agent-call / work-unit counts.
+//   system one — actual compact CLI JSON plus all observed nested model
+//                request/response envelopes; provider billing is not measured.
 //
 // Token figures are labeled estimates: est = ceil(bytes / 4). This is evidence
 // about bytes, calls, and steps — not a billing claim. Deterministic fixtures
@@ -18,7 +17,23 @@ import { execSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { runProgram, PROGRAMS_DIR, PKG } from "../src/run-program.ts";
+import { runProgram as executeProgram, PROGRAMS_DIR, PKG, packageTools } from "../src/run-program.ts";
+
+import { compactReport } from "../src/report.ts";
+import { benchmarkFingerprint } from "./source-fingerprint.ts";
+
+const observed = new WeakMap<object, {cli: number; request: number; response: number; receipt: number}>();
+async function runProgram(opts: Parameters<typeof executeProgram>[0]) {
+  let request = 0, response = 0;
+  const r = await executeProgram({...opts, observeEffect: (req, res) => {
+    request += Buffer.byteLength(JSON.stringify(req));
+    response += Buffer.byteLength(JSON.stringify(res));
+  }});
+  if (r.outcome !== "complete") throw new Error(`benchmark run failed: ${JSON.stringify(r.failure)}`);
+  const manifest = JSON.parse(readFileSync(opts.manifestPath, "utf8"));
+  observed.set(r, {cli: Buffer.byteLength(JSON.stringify(compactReport(r, manifest))+"\n"), request, response, receipt: Buffer.byteLength(JSON.stringify(r)+"\n")});
+  return r;
+}
 
 const program = (id: string) => join(PROGRAMS_DIR, `${id}.algal.json`);
 const bytes = (s: string) => Buffer.byteLength(s, "utf8");
@@ -44,10 +59,14 @@ type Row = {
   workflow: string;
   kind: "fixed" | "semi" | "habitat";
   baseline_context_bytes: number;
-  algal_context_bytes: number;
+  system_one_context_bytes: number;
+  cli_stdout_bytes: number;
+  model_request_envelope_bytes: number;
+  model_response_envelope_bytes: number;
+  full_receipt_bytes: number;
   context_reduction_pct: number;
   est_baseline_tokens: number;
-  est_algal_tokens: number;
+  est_system_one_tokens: number;
   agent_calls: number;
   baseline_agent_calls: number;
   work_units: number;
@@ -59,18 +78,23 @@ function row(
   workflow: string,
   kind: Row["kind"],
   baseline: string | number,
-  algalBytes: number,
   receipt: Receipt,
   extra: { baseline_agent_calls?: number; quality: string; detail: string },
 ): Row {
+  const observation = observed.get(receipt)!;
+  const algalBytes = observation.cli + observation.request + observation.response;
   const b = typeof baseline === "string" ? bytes(baseline) : baseline;
   return {
     workflow, kind,
     baseline_context_bytes: b,
-    algal_context_bytes: algalBytes,
+    system_one_context_bytes: algalBytes,
+    cli_stdout_bytes: observation.cli,
+    model_request_envelope_bytes: observation.request,
+    model_response_envelope_bytes: observation.response,
+    full_receipt_bytes: observation.receipt,
     context_reduction_pct: b ? Math.round((1 - algalBytes / b) * 1000) / 10 : 0,
     est_baseline_tokens: est(b),
-    est_algal_tokens: est(algalBytes),
+    est_system_one_tokens: est(algalBytes),
     agent_calls: receipt.work.agentCalls,
     baseline_agent_calls: extra.baseline_agent_calls ?? 0,
     work_units: receipt.work.units,
@@ -79,7 +103,6 @@ function row(
   };
 }
 
-const out = (r: Receipt, cell: string) => String(r.cells[cell]?.outputs?.out ?? "");
 
 async function main() {
   // -------- fixture repo: committed files + dirty diff + noisy test log ----
@@ -117,8 +140,8 @@ async function main() {
       args: { src: { cwd: repo } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
     })) as unknown as Receipt;
-    rows.push(row("git-digest", "fixed", baseline, bytes(out(r, "fmt")), r, {
-      quality: "same fields as the raw commands (verified in tests)",
+    rows.push(row("git-digest", "fixed", baseline, r, {
+      quality: "bounded status counts/recent/stat; file-level details omitted",
       detail: "status+log+stat+stash dumps vs summary",
     }));
   }
@@ -131,7 +154,7 @@ async function main() {
       args: { src: { cmd: "cat testlog.txt && exit 1", cwd: repo } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
     })) as unknown as Receipt;
-    rows.push(row("test-sift", "fixed", baseline, bytes(out(r, "fmt")), r, {
+    rows.push(row("test-sift", "fixed", baseline, r, {
       quality: "verdict+failure lines+tail preserved; filler dropped",
       detail: "full test log vs sifted verdict",
     }));
@@ -148,8 +171,8 @@ async function main() {
       args: { src: { cwd: repo } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
     })) as unknown as Receipt;
-    rows.push(row("repo-survey", "fixed", baseline, bytes(out(r, "fmt")), r, {
-      quality: "same dirs/manifests/readme fields",
+    rows.push(row("repo-survey", "fixed", baseline, r, {
+      quality: "repository orientation only; file contents omitted",
       detail: "find+ls+cat chain vs survey summary",
     }));
   }
@@ -162,8 +185,8 @@ async function main() {
       args: { src: { pattern: "marker alpha", cwd: repo, "max-matches": 12 } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
     })) as unknown as Receipt;
-    rows.push(row("search-slice", "fixed", baseline, bytes(out(r, "fmt")), r, {
-      quality: "top-12 of 40 matches, identical ordering",
+    rows.push(row("search-slice", "fixed", baseline, r, {
+      quality: "at most 12 of 40 matches; incomplete search, ordering is not guaranteed",
       detail: "unbounded grep (40 hits) vs 12-match slice",
     }));
   }
@@ -181,10 +204,9 @@ async function main() {
       dir: mkdtempSync(join(tmpdir(), "bench-")),
       executorSpecs: [`scripted:${join(respDir, "r.json")}`],
     })) as unknown as Receipt;
-    const algal = bytes(out(r, "evidence")) + bytes(out(r, "fmt"));
-    rows.push(row("diff-review", "semi", rawDiff, algal, r, {
+    rows.push(row("diff-review", "semi", rawDiff, r, {
       baseline_agent_calls: 3,
-      quality: "schema-verified verdict on identical diff",
+      quality: "scripted schema plumbing only; clipped diff and no semantic review quality measurement",
       detail: "whole diff + assumed 3-call read-review loop vs 1 bounded call",
     }));
   }
@@ -197,15 +219,11 @@ async function main() {
       args: { src: { cwd: repo, "wait-ms": 0 } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
       tools: new Map([["ci.status.v1", {
-        signature: {
-          inputs: { cwd: { type: "text", optional: true }, "wait-ms": { type: "json", optional: true } },
-          outputs: { report: { type: "json" } },
-          effect: "read", cost: 120, maxOutputBytes: 8192,
-        },
-        tool: async () => ({ report: { ok: true, status: "completed", conclusion: "success", url: "https://ci/x", run_id: "1", head_sha: "abc", title: "checks" } }),
+        signature: packageTools().get("ci.status.v1")!.signature,
+        tool: async () => ({ report: { ok: true, status: "completed", conclusion: "success", url: "https://ci/x", run_id: "1", head_sha: "abc", title: "checks", done: "stop" } }),
       }]]),
     })) as unknown as Receipt;
-    rows.push(row("ci-watch", "fixed", poll.repeat(5), bytes(out(r, "fmt")), r, {
+    rows.push(row("ci-watch", "fixed", poll.repeat(5), r, {
       quality: "terminal status identical to final poll",
       detail: "5 polls of gh JSON vs terminal summary (stubbed tool)",
     }));
@@ -220,7 +238,6 @@ async function main() {
     const baseline = cases.reduce((n, c) => n + docBytes + bytes(c.args.task), 0);
     const routerManifest = JSON.parse(readFileSync(program("router"), "utf8"));
     const prompt = routerManifest.cells.find((c: { id: string }) => c.id === "route").prompt as string;
-    const algal = cases.reduce((n, c) => n + bytes(prompt) + bytes(c.args.task), 0);
     // quality: scripted executor answers the expected lane per case — the run
     // measures call count + work; accuracy on the SAME cases is what evolve
     // reports, so we run the habitat eval for the real number.
@@ -236,8 +253,8 @@ async function main() {
       executorSpecs: [`scripted:${join(respDir, "r.json")}`],
     })) as unknown as Receipt;
     const score = r.cells["score"]?.outputs?.out as { score?: number } | undefined;
-    rows.push(row("router-habitat", "habitat", baseline, algal + bytes(JSON.stringify(routerManifest)), r, {
-      quality: `measured score ${score?.score ?? "?"} on ${cases.length} labeled cases (see evolve for promotion policy)`,
+    rows.push(row("router-habitat", "habitat", baseline, r, {
+      quality: `scripted labels score ${score?.score ?? "?"} on ${cases.length} training cases; no independent accuracy evidence`,
       detail: "per-case doc-reading agent vs classifier + spawned eval loop",
     }));
   }
@@ -245,7 +262,7 @@ async function main() {
   {
     const rawSources = [0, 1, 2].map((i) => ({
       title: `Source ${i + 1}`,
-      text: `<html><nav>${"navigation filler ".repeat(700)}</nav><article>${`Evidence ${i + 1} supports the bounded research question. `.repeat(260)}</article><script>${"tracking ".repeat(900)}</script></html>`,
+      text: `<html><article>${`Evidence ${i + 1} supports the bounded research question. `.repeat(260)}</article><nav>${"navigation filler ".repeat(700)}</nav><script>${"tracking ".repeat(900)}</script></html>`,
     }));
     const baseline = rawSources.map((source) => source.text).join("\n");
     const respDir = mkdtempSync(join(tmpdir(), "bench-resp-"));
@@ -256,14 +273,17 @@ async function main() {
         source_quality: { score: 4, confidence: 0.8, probabilities: { "1": 0.01, "2": 0.04, "3": 0.15, "4": 0.7, "5": 0.1 } },
       } },
     }));
-    const r = (await runProgram({
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: string | URL | Request) => new Response(rawSources[Number(String(url).split("/").pop())]?.text ?? "", {headers:{"content-type":"text/html"}})) as typeof fetch;
+    let r: Receipt;
+    try { r = (await runProgram({
       manifestPath: program("research-triage"),
-      args: { src: { sources: rawSources, question: "Does the evidence support the claim?", "max-bytes-per-source": 4000 } },
+      args: { src: { sources: rawSources.map((_, i)=>`https://fixture.invalid/${i}`), question: "Does the evidence support the claim?", "max-bytes-per-source": 4000 } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
       executorSpecs: [`scripted:${join(respDir, "r.json")}`],
     })) as unknown as Receipt;
-    const algal = bytes(JSON.stringify(r.cells["gather"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
-    rows.push(row("research-triage", "semi", baseline, algal, r, {
+    } finally { globalThis.fetch = originalFetch; }
+    rows.push(row("research-triage", "semi", baseline, r, {
       baseline_agent_calls: 1,
       quality: "scripted typed relevance/sufficiency/quality answers over the same three sources",
       detail: "raw HTML sources vs stripped byte-capped evidence + one typed decision",
@@ -277,8 +297,7 @@ async function main() {
       args: { src: { text: draft } },
       dir: mkdtempSync(join(tmpdir(), "bench-")),
     })) as unknown as Receipt;
-    const algal = bytes(JSON.stringify(r.cells["audit"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
-    rows.push(row("writing-audit", "fixed", draft, algal, r, {
+    rows.push(row("writing-audit", "fixed", draft, r, {
       quality: "mechanical audit signals preserved; semantic editing still requires selected prose",
       detail: "whole draft scan vs deterministic bounded audit record",
     }));
@@ -300,8 +319,7 @@ async function main() {
       dir: mkdtempSync(join(tmpdir(), "bench-")),
       executorSpecs: [`scripted:${join(respDir, "r.json")}`],
     })) as unknown as Receipt;
-    const algal = bytes(JSON.stringify(r.cells["probe"]?.outputs?.report ?? {})) + bytes(out(r, "fmt"));
-    rows.push(row("change-triage", "semi", rawDiff, algal, r, {
+    rows.push(row("change-triage", "semi", rawDiff, r, {
       baseline_agent_calls: 1,
       quality: "typed risk/readiness/quality answers over the same bounded diff",
       detail: "whole diff vs capped evidence + one Jev-compatible typed decision",
@@ -312,25 +330,26 @@ async function main() {
   const totals = rows.reduce(
     (a, r) => ({
       baseline_context_bytes: a.baseline_context_bytes + r.baseline_context_bytes,
-      algal_context_bytes: a.algal_context_bytes + r.algal_context_bytes,
+      system_one_context_bytes: a.system_one_context_bytes + r.system_one_context_bytes,
       agent_calls: a.agent_calls + r.agent_calls,
       baseline_agent_calls: a.baseline_agent_calls + r.baseline_agent_calls,
       work_units: a.work_units + r.work_units,
     }),
-    { baseline_context_bytes: 0, algal_context_bytes: 0, agent_calls: 0, baseline_agent_calls: 0, work_units: 0 },
+    { baseline_context_bytes: 0, system_one_context_bytes: 0, agent_calls: 0, baseline_agent_calls: 0, work_units: 0 },
   );
   const report = {
+    source_fingerprint: benchmarkFingerprint(),
     generated_by: "bench/run-bench.ts — deterministic fixtures, no live model calls",
     methodology: {
       baseline: "raw bytes an agent ingests doing the same job by hand (command dumps, unbounded logs, doc reads)",
-      algal: "interface-output bytes + model-visible evidence bytes; agent_calls and work_units from the run receipt",
+      algal: "exact default CLI stdout bytes + observed serialized model request/response envelopes for every nested executor call; not provider tokenization",
       tokens: "est = ceil(bytes/4) — a byte estimate, not provider usage",
       caveats: [
         "baselines measure the evidence-ingestion half of a workflow, not the agent's reasoning cost",
         "byte reduction is not a token/billing guarantee; cache effects depend on provider",
-        "fixture repos are small by construction; real repos make baselines larger, not smaller",
+        "fixture size is selected; real inputs can be smaller and produce negative savings",
         "diff-review baseline assumes a typical 3-call read-review loop (labeled assumption)",
-        "bounded programs only win when raw evidence exceeds the cap: on a 1.4KB diff diff-review measured -18.9% (overhead, not savings) — the fixture diff is ~35KB to measure the intended regime",
+        "historical -18.9% small-diff result used the old selected-output measurement; rerun real small inputs and count current full CLI + nested envelopes",
         "Jev-compatible rows use scripted typed answers: they validate orchestration and bytes, not live provider quality, latency, or billing",
         "writing-audit preserves mechanical signals, not the draft's full semantic content; semantic editing still requires selected prose",
       ],
@@ -338,9 +357,9 @@ async function main() {
     workflows: rows,
     totals: {
       ...totals,
-      context_reduction_pct: Math.round((1 - totals.algal_context_bytes / totals.baseline_context_bytes) * 1000) / 10,
+      context_reduction_pct: Math.round((1 - totals.system_one_context_bytes / totals.baseline_context_bytes) * 1000) / 10,
       est_baseline_tokens: est(totals.baseline_context_bytes),
-      est_algal_tokens: est(totals.algal_context_bytes),
+      est_system_one_tokens: est(totals.system_one_context_bytes),
     },
   };
   mkdirSync(join(PKG, "bench", "report"), { recursive: true });

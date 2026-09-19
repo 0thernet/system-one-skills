@@ -30,7 +30,7 @@ const manifestJson = (id: string) =>
 let repo = "";
 beforeAll(() => {
   repo = mkdtempSync(join(tmpdir(), "algal-skills-test-"));
-  execSync("git init -q && git config user.email t@t && git config user.name t", { cwd: repo });
+  execSync("git init -q -b main && git config user.email t@t && git config user.name t", { cwd: repo });
   writeFileSync(join(repo, "a.ts"), "export const a = 1;\nexport const b = 2;\n");
   writeFileSync(join(repo, "README.md"), "# fixture repo\n\nline two\n");
   writeFileSync(join(repo, "package.json"), '{"name":"fixture","version":"0.0.0"}\n');
@@ -79,7 +79,7 @@ describe("tools", () => {
     expect(r.untracked).toBe(1);
     expect((r.recent as string[]).length).toBe(1);
   });
-  test("search.slice.v1 falls back to the bounded JS engine without rg", async () => {
+  test("search.slice.v1 uses rg with bounded match results", async () => {
     const r = await tool("search.slice.v1")({ pattern: "needle", cwd: repo, glob: "*.ts", "max-matches": 5 });
     expect(r.ok).toBe(true);
     const m = r.matches as Array<{ file: string }>;

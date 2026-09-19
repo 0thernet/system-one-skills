@@ -2,7 +2,7 @@
   "contract": "algal.organism.v1",
   "key": "organism:router",
   "name": "Skill router",
-  "note": "One classifier call maps a task description to the algal-skills lane that should handle it. This manifest is the malleable genotype: router-habitat evolves prompt and label set against labeled cases.",
+  "note": "One classifier call maps a task description to the system-one-skills lane that should handle it. This manifest is the malleable genotype: router-habitat evolves its prompt against labeled cases.",
   "budgets": { "maxSteps": 8, "maxAgentCalls": 1, "maxWork": 40000 },
   "interface": {
     "inputs": {
