@@ -493,7 +493,7 @@ export const TOOLS: Record<string, (i: Record<string, unknown>) => Promise<Recor
   "check.run.v1": checkRun,
 };
 
-async function main() {
+export async function main() {
   const name = process.argv[2];
   const impl = name ? TOOLS[name] : undefined;
   if (!impl) {

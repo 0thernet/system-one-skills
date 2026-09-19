@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "algal-skills": "./bin/algal-skills.ts",
-    "algal-skills-tool": "./tools/tool.ts"
+    "algal-skills": "./bin/algal-skills.js",
+    "algal-skills-tool": "./tools/tool.js"
   },
   "exports": {
     ".": "./src/run-program.ts",
@@ -24,7 +24,8 @@
     "fixtures",
     "bench",
     "docs",
-    "research",
+    "research/analyze_sessions.py",
+    "research/session-report.json",
     "README.md",
     "LICENSE",
     "AGENTS.md"
@@ -33,7 +34,8 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "check": "bun scripts/check.ts",
-    "bench": "bun bench/run-bench.ts"
+    "bench": "bun bench/run-bench.ts",
+    "prepublishOnly": "bun scripts/check.ts"
   },
   "engines": {
     "bun": ">=1.3.0"
