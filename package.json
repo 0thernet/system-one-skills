@@ -1,0 +1,61 @@
+{
+  "name": "algal-skills",
+  "version": "0.1.0",
+  "description": "Token-efficient agent skills built on ALGAL programs: deterministic workflows that keep raw tool output out of the model's context, plus self-evolving habitats promoted by replayable evidence.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "algal-skills": "./bin/algal-skills.ts",
+    "algal-skills-tool": "./tools/tool.ts"
+  },
+  "exports": {
+    "./programs": "./programs/manifest.json",
+    "./metrics": "./bench/report/bench-report.json"
+  },
+  "files": [
+    "bin",
+    "tools",
+    "programs",
+    "skills",
+    "habitats",
+    "bench",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "AGENTS.md"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint bin tools bench scripts test",
+    "test": "bun test",
+    "check": "bun scripts/check.ts",
+    "bench": "bun bench/run-bench.ts",
+    "verify": "bun scripts/verify-all.ts"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "dependencies": {
+    "@hraness/algal": "github:hraness/algal#b54b5129844637eed59713ca0419a01ee035ec6c"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "agent-skills",
+    "claude-skills",
+    "devin-skills",
+    "codex-skills",
+    "token-efficiency",
+    "algal",
+    "llm",
+    "agentic-workflows",
+    "hraness"
+  ]
+}
