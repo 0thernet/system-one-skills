@@ -5,6 +5,17 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-19 — clearer impact summary
+
+The README and [plain-language results](RESULTS.md) now lead with **82% fewer
+tokens for noisy check results**, scoped immediately to an initial replay of
+three successful Devin logs. This is the existing aggregate result expressed
+as a percentage: `(9,731 − 931 − 774) / 9,731 = 82.48%`. It includes counted
+skill overhead. No new trial, broader efficacy claim, or runtime change is
+implied. Technical methods and unfavorable cases remain in the linked reports.
+The next evidence needed is complete unused noisy-check tasks against strong
+native baselines, not a larger raw transcript count alone.
+
 ## 2026-09-19 — full inventory and separate evidence axes
 
 **Distribution:** one shipped skill, `system-one-verify`; ten research
