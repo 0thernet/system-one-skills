@@ -5,11 +5,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0thernet/system-one-skills.git"
+    "url": "git+https://github.com/hraness/system-one-skills.git"
   },
-  "homepage": "https://github.com/0thernet/system-one-skills#readme",
+  "homepage": "https://github.com/hraness/system-one-skills#readme",
   "bugs": {
-    "url": "https://github.com/0thernet/system-one-skills/issues"
+    "url": "https://github.com/hraness/system-one-skills/issues"
   },
   "type": "module",
   "bin": {
