@@ -86,9 +86,9 @@ error will be selected.
 The local macOS ARM64 / Node 24.18.1 runtime run retained all 594 command runs,
 including warmups. All nine fixtures passed the declared contracts and median
 latency budget. Per-fixture median candidate-minus-baseline time ranged from
--0.23 ms to +11.65 ms; the 1 MiB early-error fixture added 8.70 ms. The full
-distribution, including slower individual observations (up to +135.29 ms),
-remains in the report. The earlier pre-integration run is also retained.
+-4.90 ms to +10.49 ms; the 1 MiB early-error fixture added 4.85 ms. The full
+distribution, including slower individual observations (up to +39.23 ms),
+remains in the report. Earlier pre-integration runs are also retained.
 
 ## Verify
 
