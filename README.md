@@ -6,7 +6,7 @@ A focused skill for **Devin, Claude Code, and Codex**. Run a verbose test or bui
 once, give the agent a compact result, and keep the full log locally for inspection.
 No model call, API key, or runtime dependency.
 
-[Skills guide](https://sys1.io/skills) · [Source](https://github.com/0thernet/system-one-skills) · [SYS1](https://sys1.io)
+[Skills guide](https://sys1.io/skills) · [Source](https://github.com/hraness/system-one-skills) · [SYS1](https://sys1.io)
 
 ## 82% fewer tokens for noisy check results
 
@@ -33,11 +33,11 @@ system-one-skills check --timeout-ms 900000 -- bun test
 Requires **Node.js 20+ on macOS or Linux**.
 
 ```sh
-npm install --global https://github.com/0thernet/system-one-skills/releases/download/v0.4.0/system-one-skills-0.4.0.tgz
+npm install --global https://github.com/hraness/system-one-skills/releases/download/v0.4.0/system-one-skills-0.4.0.tgz
 system-one-skills install-skills --target .agents/skills
 ```
 
-The [versioned release](https://github.com/0thernet/system-one-skills/releases/tag/v0.4.0)
+The [versioned release](https://github.com/hraness/system-one-skills/releases/tag/v0.4.0)
 includes a SHA-256 checksum. Bun can install the same artifact. Use your agent’s
 skill directory, such as `.claude/skills` or `.devin/skills`, where appropriate.
 Existing modified skill files are never silently overwritten.
@@ -54,7 +54,7 @@ Short output passes through unchanged; long output is reduced only when it is at
 least 50% and 4 KiB smaller. Do not run a check twice just to measure its size.
 Timeouts and capture problems are reported as failures. Required repository gates
 still apply. Tested preservation behavior and local processing cost are documented
-in the [results notes](https://github.com/0thernet/system-one-skills/blob/main/docs/RESULTS.md).
+in the [results notes](https://github.com/hraness/system-one-skills/blob/main/docs/RESULTS.md).
 
 ## All skills
 
@@ -76,9 +76,9 @@ join the package.
 | `system-one-evolve` | Routing-policy evaluation | Research |
 | `system-one` | Skill selection | Research |
 
-The [full catalog](https://github.com/0thernet/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
+The [full catalog](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
 explains the proposed benefit, native alternative, and evidence needed for each.
-The [research log](https://github.com/0thernet/system-one-skills/blob/main/docs/RESEARCH-LOG.md)
+The [research log](https://github.com/hraness/system-one-skills/blob/main/docs/RESEARCH-LOG.md)
 publishes positive and negative findings. New skills must save tokens on complete
 tasks while meeting correctness and latency requirements.
 
@@ -125,14 +125,14 @@ not configure the other. [SYS1 source](https://github.com/hraness/sys1).
     tokens. `(9,731 − 1,705) / 9,731 = 82.48%`, rounded to 82%. Counts use
     `o200k_base`; retries, later log reads, and complete agent usage were not
     measured. These examples helped tune the implementation.
-    [Calculation and limits](https://github.com/0thernet/system-one-skills/blob/main/docs/RESULTS.md).
+    [Calculation and limits](https://github.com/hraness/system-one-skills/blob/main/docs/RESULTS.md).
 
 [^2]: **Short checks can cost more.** The 21 short development replays and 14
     selected replays from an unused Claude/Devin cohort did not qualify. Wrapping
     them adds instruction overhead without reducing their output. Installing a
     skill can also add catalog overhead on tasks that never use it. Faster task
     completion and better task success remain unproven.
-    [Negative results](https://github.com/0thernet/system-one-skills/blob/main/docs/HOLDOUT.md).
+    [Negative results](https://github.com/hraness/system-one-skills/blob/main/docs/HOLDOUT.md).
 
 <details>
 <summary><strong>Development and assessment</strong></summary>
@@ -145,7 +145,7 @@ bun bench/assess-trials.ts private-observed-trials.json
 ```
 
 The aggregate gate checks runtime behavior, skill footprint, evidence freshness,
-privacy, and package contents. The [trial protocol](https://github.com/0thernet/system-one-skills/blob/main/bench/TRIALS.md)
+privacy, and package contents. The [trial protocol](https://github.com/hraness/system-one-skills/blob/main/bench/TRIALS.md)
 requires a strong native baseline, unused tasks, complete token accounting,
 independent correctness evaluation, and measured completion time. Correctness
 or material latency regressions block adoption. Synthetic tests check behavior;
