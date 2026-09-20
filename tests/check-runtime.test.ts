@@ -369,7 +369,9 @@ describe('one-shot argv execution', () => {
     for (const stream of ['stdout', 'stderr']) {
       const first = 'FAIL early evidence é😀\nExpected: 17\nReceived: 12\n';
       const tail = 'passed unrelated check\n'.repeat(18000) + 'final diagnostic\n';
-      const script = `process.${stream}.write(${JSON.stringify(first + tail)});process.exitCode=7`;
+      // Build the noisy body in the child: Linux limits each argv entry to
+      // about 128 KiB, independent of the process's total argument budget.
+      const script = `process.${stream}.write(${JSON.stringify(first)} + "passed unrelated check\\n".repeat(18000) + "final diagnostic\\n");process.exitCode=7`;
       const result = await check({ argv: [node, '-e', script], logPath: path(`early-${stream}.log`) });
       expect(result.code).toBe(7);
       expect(result.rendered.text).toContain(first);
