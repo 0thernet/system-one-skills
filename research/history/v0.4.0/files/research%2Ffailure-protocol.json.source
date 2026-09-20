@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-20T02:24:25.741823+00:00",
+  "purpose": "Retrospective diagnostic stress audit of the frozen v0.4.0 reducer; overlaps previously examined historical periods. Not a held-out task experiment or independent public preregistration.",
+  "window": {
+    "since_inclusive_utc": "2026-08-01T00:00:00Z",
+    "until_exclusive_utc": "2026-09-19T00:00:00Z"
+  },
+  "selection": "Use the frozen validation classifier, explicit completed-output exit parser and provider ancestry rules. Retain only explicit nonzero excerpts with at least 8192 UTF-8 bytes. Per provider sort opaque sample hashes, deduplicate equal text plus exit, then take first 12. Retain every selected case, including archived truncation markers; count all completion candidates and exclusions. Do not execute archived commands.",
+  "annotation": "Before replay, inspect selected raw excerpts and record exact source lines identifying the first actionable failure and all distinct actionable failures where feasible. Root independently reviews raw evidence blind to compacted output. Annotation is independently agent-reviewed and descriptive, not an automated correctness oracle; no generic error token counts as actionable identity. Count source truncation separately from runtime capture limits. If source context is ambiguous, mark unassessable.",
+  "measures": [
+    "Exact o200k_base archived/presented tokens with 258 first-use incremental tokens per case",
+    "Exit status/omission/log path disclosure and exact archived log preservation",
+    "First actionable failure retained, all annotated actionable spans retained, compacted output requiring full-log lookup to recover annotated evidence",
+    "Sensitivity charging one full archived-log retrieval when required, before retrieval invocation/reasoning costs"
+  ],
+  "decision_rule": "Publish every selected row and omission; no claim of diagnostic completeness from token savings alone. A missing actionable span means the compact result is insufficient for that annotated detail and requires log lookup; a generic pass/fail use remains separate. Do not tune reducer against this cohort and call it held-out.",
+  "frozen_sources": {
+    "research/analyze_sessions.py": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+    "research/replay_validation.mjs": "0bb4926807590bb040e7d902e39259a6d8ba6d7ad64ff6c5e45cd1f3776d6efa",
+    "research/assess_admission.py": "73adc87df2ebfbfc7bd4ad463b9e8bbe9cdfc95feb0d19d31c0b004e81604734",
+    "research/requirements.txt": "ac785205f5d97970c4a7f8aef135c62cfda01985ba2000973008c823ccc01d2f",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "bin/system-one-skills.js": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+    "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+    "src/process.js": "5ae33286cad9830fef6aa42a471b2620c5c5c50cb7571d288a027645fa6b1845",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+    "research/collect_holdout.py": "0c424045e3db71bfda2b7f4a416ae8373b7d670fb8df514b818839154f48a85e",
+    "research/failure_collect.py": "422574023fbc6134c84396bfd664c49f897233f38b3506cba51fc5fb92f41cd2"
+  },
+  "tokenizer": "tiktoken 0.12.0/o200k_base",
+  "runtime_release": "v0.4.0",
+  "first_use_incremental_tokens": 258,
+  "amendments": [
+    {
+      "recorded_at_utc": "2026-09-20T02:30:37.445937+00:00",
+      "stage": "After corpus selection and raw annotation; before reducer replay or token outcomes",
+      "reason": "The selected Vitest excerpt includes SGR color/format codes; compare a constructed color-free text baseline so formatting noise is not silently credited as unique skill value.",
+      "change": "Secondary sensitivity removes only ANSI SGR sequences matching ESC [ [0-9;:]* m from archived text. Primary frozen raw replay and selection stay unchanged; this is text normalization, not observed execution of NO_COLOR or a native quiet reporter. The normalized text is also replayed through the same frozen reducer; report its 8KiB routing eligibility and net cost if wrapped separately, retaining the same original cohort.",
+      "initial_protocol_sha256": "03e770228bed8990105fb0c74a7da568107cd5aac75fb8904fcda45262f9e2fa",
+      "finalized_before_replay_at_utc": "2026-09-20T02:32:12.507687+00:00"
+    },
+    {
+      "recorded_at_utc": "2026-09-20T02:35:33.896849+00:00",
+      "stage": "After primary and normalized replay outcomes",
+      "before_clarification_protocol_sha256": "2d84f5cd796d708b9514a57a30d612710d3ab4c599a62fa77c4aad8b03df953f",
+      "change": "Terminology correction only: the annotation author and independent root reviewer were AI agents, not human reviewers. Selection, source text, annotations, replay outputs and metrics remain unchanged."
+    }
+  ],
+  "annotation_lock_protocol_sha256": "2d84f5cd796d708b9514a57a30d612710d3ab4c599a62fa77c4aad8b03df953f"
+}

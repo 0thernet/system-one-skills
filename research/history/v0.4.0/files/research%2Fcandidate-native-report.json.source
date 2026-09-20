@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "plan": {
+    "recorded_before_execution_utc": "2026-09-20T02:31:18Z",
+    "scope": "One inspected current repository check, not a historical command or agent task. The tested assessor uses synthetic unit-test inputs; those inputs are not efficacy observations.",
+    "command": [
+      "bun",
+      "test",
+      "tests/trial-assessment.test.ts"
+    ],
+    "selection": "One fixed existing test file chosen before reporter output measurement because it is self-contained and has no historical project command execution. No added/repeated test cases to inflate output.",
+    "order": [
+      "normal",
+      "dots",
+      "only_failures"
+    ],
+    "repetitions_per_mode": 1,
+    "terminal_environment": {
+      "NO_COLOR": "1",
+      "FORCE_COLOR": "0",
+      "TERM": "dumb"
+    },
+    "measurement": "Combined stdout/stderr UTF-8 text, exact o200k_base tokens plus exact literal invocation tokens. All three modes reported. No elapsed-time comparison because order is fixed and repetitions are insufficient.",
+    "correctness_scope": "Recorded exit code and parsed aggregate pass/fail/assertion counts only. Passing this file does not prove preserved warning visibility, historical-project compatibility or failure diagnosis.",
+    "tokenizer": {
+      "package": "tiktoken",
+      "version": "0.12.0",
+      "encoding": "o200k_base"
+    }
+  },
+  "source_files_sha256": {
+    "research/candidate_native.py": "6587727c35bbab5b7e1518d1fa4237084a1362a51fcbe81f8c3b51d638fcde93",
+    "tests/trial-assessment.test.ts": "cde0249c5dd79642de6908d4634b15301ea825ea44bb55e2968a27a80c067981",
+    "bench/assess-trials.ts": "93c865f8735ffa5d2d6168dcf18fec92e41ccb22b7121f25bae46b1213107e18",
+    "package.json": "eefc2242ece8d7449fdaf67a2214794e354754627578affe4e36ef746c4f710d",
+    "bun.lock": "b090e990babbef4a0d68a84d3c97b1a9a9292867018a35337c8286ba86460fec"
+  },
+  "collected_at_utc": "2026-09-20T02:31:37.492649+00:00",
+  "bun_version": "1.3.14",
+  "results": [
+    {
+      "mode": "normal",
+      "argv": [
+        "bun",
+        "test",
+        "tests/trial-assessment.test.ts"
+      ],
+      "exit_code": 0,
+      "test_counts": {
+        "pass": 21,
+        "fail": 0,
+        "assertions": 106
+      },
+      "output_bytes": 2029,
+      "output_tokens": 457,
+      "invocation_tokens": 9,
+      "total_text_tokens": 466,
+      "output_sha256": "3cb2c819399d35ab4fb541a5125ecc7313767193b2827b14643497cb15e04524",
+      "tokens_fewer_than_normal": 0,
+      "same_observed_exit_and_counts_as_normal": true
+    },
+    {
+      "mode": "dots",
+      "argv": [
+        "bun",
+        "test",
+        "tests/trial-assessment.test.ts",
+        "--dots"
+      ],
+      "exit_code": 0,
+      "test_counts": {
+        "pass": 21,
+        "fail": 0,
+        "assertions": 106
+      },
+      "output_bytes": 123,
+      "output_tokens": 44,
+      "invocation_tokens": 11,
+      "total_text_tokens": 55,
+      "output_sha256": "e2aeea269e474f41baef5f35b33872091abb0ef9be1849307b8cf91a90a3c9cd",
+      "tokens_fewer_than_normal": 411,
+      "same_observed_exit_and_counts_as_normal": true
+    },
+    {
+      "mode": "only_failures",
+      "argv": [
+        "bun",
+        "test",
+        "tests/trial-assessment.test.ts",
+        "--only-failures"
+      ],
+      "exit_code": 0,
+      "test_counts": {
+        "pass": 21,
+        "fail": 0,
+        "assertions": 106
+      },
+      "output_bytes": 104,
+      "output_tokens": 45,
+      "invocation_tokens": 14,
+      "total_text_tokens": 59,
+      "output_sha256": "f96534eb571bf91d2410b15c2f710caa90d4f67fc43c72b03741bfa518474a46",
+      "tokens_fewer_than_normal": 407,
+      "same_observed_exit_and_counts_as_normal": true
+    }
+  ],
+  "private_capture_sha256": "9aa86058a6fdc4d2318327bf583ec906b03ea461d3faeecb41960e7dc0cca302",
+  "outcome": "native-reporter-demonstration-not-skill-efficacy",
+  "integrity_check_amendments": [
+    {
+      "recorded_at_utc": "2026-09-20T02:39:10.568610+00:00",
+      "scope": "Checker-only hardening after independent review: require exact pass/fail/assertions keys, nonnegative integer-or-null counts and integer exit codes. Original captured outputs, measurements, command runs and collection timestamp are unchanged. No test command was rerun.",
+      "previous_checker_sha256": "853a361e7aea2d16962806118e9fdf640bc0f102dd47842e792a1b49fa6fd2cf",
+      "updated_checker_sha256": "6587727c35bbab5b7e1518d1fa4237084a1362a51fcbe81f8c3b51d638fcde93"
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+{
+  "assessment": {
+    "plan": {
+      "provider": "codex",
+      "cli_version": "0.155.0",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "ultra",
+      "case_count": 1,
+      "max_session_launches": 2,
+      "order": [
+        "reduced",
+        "native"
+      ],
+      "counterbalanced": false,
+      "immutable_provider_checkpoint": null,
+      "whole_coding_task": false,
+      "private_payload_execution_authorized": true
+    },
+    "all_attempts_included": true,
+    "launch_inventory_count": 1,
+    "attempts": [
+      {
+        "sequence": 1,
+        "arm": "reduced",
+        "attempt_id_sha256": "530f40793272629759d24ad25b02de7299534f6232ebdf1b9654f045dc631726",
+        "capture_sha256": "ba3b0b8065bd58791aecab4b3b92c36769cc2a555cdcfb2b1e46c00b1d63e084",
+        "stdout_sha256": "078f4f759cdf6023ff475b949be1ef1e7729271d5c48b818a7119a4685db1e08",
+        "stderr_sha256": "442dcfcd1c8eca04038efd9b8f2acd820d920c82897be5a18dec5f3356ea6d5a",
+        "session_id_sha256": "591a95dc226964f4b532df773ac354f701fc2620fc8ae24e4cc2eae1eb0e44bd",
+        "started_at_utc": "2026-09-20T15:21:56.808778+00:00",
+        "ended_at_utc": "2026-09-20T15:22:27.631721+00:00",
+        "elapsed_ms": 30818,
+        "exit_code": 0,
+        "status": "completed",
+        "model_request_observed": true,
+        "isolation_attested": false,
+        "capture_complete": true,
+        "usage_coverage": "complete",
+        "usage_semantics": "cumulative-cli-session-total",
+        "usage_snapshots": [
+          {
+            "input_tokens": 23649,
+            "cached_input_tokens": 11648,
+            "output_tokens": 644,
+            "reasoning_output_tokens": 401,
+            "cache_write_input_tokens": 0
+          }
+        ],
+        "answer_sha256": "86e4506c1b3ad109dbc6102d3c1870d496a0600eedfbf7707d577c818a0c2786",
+        "rubric": {
+          "failure_status_correct": null,
+          "failed_test_count_correct": null,
+          "observed_error_identified": null,
+          "evidence_quote_and_line_supported": null,
+          "safe_next_investigation": null,
+          "no_unproven_root_cause_claim": null
+        },
+        "rubric_review_sha256": null
+      }
+    ],
+    "private_provenance": {
+      "original_plan_sha256": "35935f7d0564fa5513db433f0c0b3cfd1d0c4c7a516e1a5eb947fde0d2098163",
+      "execution_plan_sha256": "abc136189571630436636e2228f5287d0065be07915dd2369de6e23cc5f0d693",
+      "runner_sha256": "15708b2612029b6c36cd143db41055b9d56eb5f386258e3822ec68272906a1ae",
+      "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+      "source_log_sha256": "325946a2e8f2a3f467fae330ee75f988f19634b30b27b4f09b006632de3a693c",
+      "source_annotation_sha256": "8f50d9c87fd2e22be03fd780ddfa5bcd8ca13b2e27144e81ffe357375a1a1a68",
+      "replay_sha256": "5234862e36d1a5cecd30b1897590812133933aad752388ecfe5c80c0522a8af5",
+      "capture_manifest_sha256": "5ed4a034b8807d1dd28ffbb9b266f250c4c96bc0d508d75a289d88e49b057a65",
+      "blind_review_sha256": null
+    },
+    "schema_version": 1,
+    "evidence_kind": "observed-exploratory-log-diagnosis-pilot",
+    "source_files_sha256": {
+      "research/assess_diagnosis.py": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+      "research/diagnosis-pilot-report.json": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+      "research/failure-report.json": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+      "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+      "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381"
+    },
+    "accounting": {
+      "kind": "provider-reported-cli-counters",
+      "input_tokens_include_cached_input": true,
+      "output_tokens_include_reasoning_output": true,
+      "total_formula": "input_tokens + output_tokens; cached and reasoning subsets are not added",
+      "multiple_snapshots": "Latest cumulative session snapshot only; repeated cumulative values are not summed.",
+      "missing_counter": null,
+      "estimated_skill_overhead_added": 0,
+      "billing_claim": false,
+      "scope": "Planned scope: explicit skill-body load and log diagnosis. Actual observed interaction and isolation depend on each attempt capture. Natural skill discovery and the original coding task are outside the experiment.",
+      "elapsed_scope": "Launcher wall duration includes startup and shutdown; it is not diagnosis latency unless a complete task interval is separately observed.",
+      "no_event_stream": "No observed model event is not proof of zero upstream requests or cost; request status remains unknown when capture is absent."
+    },
+    "assessed_at_utc": "2026-09-20T15:32:01.274303+00:00",
+    "summary": {
+      "operational_status": "operationally-incomplete",
+      "planned_launches": 2,
+      "launched_attempts": 1,
+      "unlaunched_arms": [
+        "native"
+      ],
+      "model_requests_observed": 1,
+      "model_request_status_unknown": 0,
+      "completed_cli_answers": 1,
+      "fully_scored_answers": 0,
+      "answers_passing_all_criteria": 0,
+      "complete_usage_attempts": 1,
+      "isolation_attested_attempts": 0,
+      "prepared_cases": 1,
+      "completed_comparison_cases": 0,
+      "complete_usage_and_correct_answer_pair": false,
+      "per_arm": {
+        "reduced": {
+          "sequence": 1,
+          "arm": "reduced",
+          "usage": {
+            "snapshots": 1,
+            "counters_nondecreasing": true,
+            "latest": {
+              "input_tokens": 23649,
+              "cached_input_tokens": 11648,
+              "output_tokens": 644,
+              "reasoning_output_tokens": 401,
+              "cache_write_input_tokens": 0,
+              "non_cached_input_tokens": 12001,
+              "input_plus_output_tokens": 24293
+            }
+          },
+          "rubric": {
+            "scored_criteria": 0,
+            "passed_criteria": 0,
+            "all_criteria_passed": false
+          },
+          "successful_answer": false,
+          "complete_usage": true
+        }
+      },
+      "observed_native_minus_reduced_counters": null,
+      "observed_native_minus_reduced_elapsed_ms": null,
+      "counter_delta_is_complete_usage": false,
+      "counter_delta_semantics_known": false,
+      "admission": "not-admitted-single-exploratory-pair",
+      "causal_token_or_latency_improvement_demonstrated": false,
+      "reliability_improvement_demonstrated": false
+    }
+  },
+  "attempt_metadata": [
+    {
+      "sequence": 1,
+      "requested_model": "gpt-6-astra",
+      "requested_effort": "ultra",
+      "observed_model": null,
+      "observed_effort": null,
+      "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+      "config_sha256": "fea825841f73a9c573c214dc13df5392b12ecfa1f5e2038e35a5645a9b369c14",
+      "input_manifest_sha256": "997897c7287dcc283402d7b40bff59584733c38d4a94a9312e39bf7809e57370",
+      "limits": {
+        "total_wall_seconds": 600,
+        "startup_without_session_or_turn_event_seconds": 60,
+        "combined_stdout_stderr_bytes": 8388608
+      },
+      "first_start_elapsed_ms": 1053,
+      "completion_event_count": 1,
+      "tool_access_status": "unavailable"
+    }
+  ],
+  "blind_review_projection": null,
+  "schema_version": 1,
+  "evidence_kind": "retry-exploratory-log-diagnosis-pilot",
+  "source_files_sha256": {
+    "research/assess_diagnosis.py": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+    "research/diagnosis-pilot-report.json": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+    "research/failure-report.json": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+    "research/assess_diagnosis_retry.py": "cb6221153a4aef8f02c64d64031237d0f4750e20a4e2fe3c7177ae06065a1a49",
+    "research/diagnosis-observed-report.json": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b",
+    "research/diagnosis-retry-protocol.json": "85198bd8052130eabceba7eee5d12ea9d7fad31edd7075ba2b93874b790a7db2"
+  },
+  "protocol_sha256": "85198bd8052130eabceba7eee5d12ea9d7fad31edd7075ba2b93874b790a7db2",
+  "protocol_path": "research/diagnosis-retry-protocol.json",
+  "prior_retry_report": null,
+  "previous_report": {
+    "path": "research/diagnosis-observed-report.json",
+    "sha256": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b"
+  },
+  "derived_metadata": [
+    {
+      "sequence": 1,
+      "arm": "reduced",
+      "observed_configuration": "unverified",
+      "tool_access_status": "unavailable",
+      "first_event_after_launch_ms": 1053,
+      "observed_turn_interval_ms": null,
+      "launcher_wall_ms": 30818
+    }
+  ],
+  "interpretation": {
+    "operational_status": "operationally-incomplete",
+    "retry_attempts": 1,
+    "historical_timeout_retained_separately": true,
+    "observed_configuration_mismatch": false,
+    "tool_access_unavailable": true,
+    "tool_unavailable_attempts": 1,
+    "both_observed_configurations_confirmed": false,
+    "descriptive_native_minus_reduced_counters": null,
+    "descriptive_native_minus_reduced_turn_interval_ms": null,
+    "complete_usage_and_correct_answer_pair": false,
+    "admission": "not-admitted-single-exploratory-retry-pair",
+    "causal_token_or_latency_improvement_demonstrated": false,
+    "reliability_improvement_demonstrated": false,
+    "limits": [
+      "one archived task",
+      "fixed arm order",
+      "cache effects not controlled",
+      "no immutable provider checkpoint",
+      "natural skill discovery not measured",
+      "prior request transmission unknown",
+      "no whole coding task comparison"
+    ]
+  },
+  "assessed_at_utc": "2026-09-20T15:32:01.274303+00:00",
+  "retry_cost_accounting": {
+    "recorded_retry_launches": 1,
+    "launches_with_known_counter_semantics": 1,
+    "known_counter_totals": {
+      "input_tokens": 23649,
+      "cached_input_tokens": 11648,
+      "output_tokens": 644,
+      "reasoning_output_tokens": 401,
+      "cache_write_input_tokens": 0,
+      "non_cached_input_tokens": 12001,
+      "input_plus_output_tokens": 24293
+    },
+    "known_counter_observation_counts": {
+      "input_tokens": 1,
+      "cached_input_tokens": 1,
+      "output_tokens": 1,
+      "reasoning_output_tokens": 1,
+      "cache_write_input_tokens": 1,
+      "non_cached_input_tokens": 1,
+      "input_plus_output_tokens": 1
+    },
+    "counter_totals_scope": "Each total sums only observed values; its observation count must be compared with recorded_retry_launches. Missing values are not zero.",
+    "all_retry_usage_complete": true,
+    "includes_tool_unavailable_retry": true,
+    "original_120_second_timeout_usage": null,
+    "complete_cost_including_original_timeout_known": false
+  }
+}

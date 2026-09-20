@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "registered_at_utc": "2026-09-19T17:17:36.345815+00:00",
+  "purpose": "Previously unexamined replay cohort with fixed v0.4 reducer and routing rule; not a randomized agent-task experiment or population-level proof.",
+  "window": {
+    "since_inclusive_utc": "2026-09-01T00:00:00Z",
+    "until_exclusive_utc": "2026-09-12T00:00:00Z"
+  },
+  "selection": "Unchanged analyzer; up to12 smallest opaque-hash eligible completed validation outputs per provider. Retain all providers and selected rows, including negatives. Never execute archived commands.",
+  "minimum_expected_output_bytes": 8192,
+  "minimum_net_token_margin": 128,
+  "tokenizer": "tiktoken0.12.0/o200k_base",
+  "runtime_release": "v0.4.0",
+  "runtime_artifact_sha256": "e4ddb2258724d93555934cbfd3c5409f29555693841a750ba5017f68e87daf81",
+  "evaluated_source_sha256": {
+    "research/analyze_sessions.py": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+    "research/replay_validation.mjs": "0bb4926807590bb040e7d902e39259a6d8ba6d7ad64ff6c5e45cd1f3776d6efa",
+    "research/assess_admission.py": "73adc87df2ebfbfc7bd4ad463b9e8bbe9cdfc95feb0d19d31c0b004e81604734",
+    "research/requirements.txt": "ac785205f5d97970c4a7f8aef135c62cfda01985ba2000973008c823ccc01d2f",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "bin/system-one-skills.js": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+    "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+    "src/process.js": "5ae33286cad9830fef6aa42a471b2620c5c5c50cb7571d288a027645fa6b1845",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381"
+  },
+  "decision_rule": "Publish every selected result. A routed margin or invariant failure blocks expanded efficacy claims. Fixes tuned against this cohort turn it into development data and require a new predeclared cohort for confirmation. Do not change the threshold or exclude cases in response to outcomes.",
+  "initial_protocol_sha256": "8f4d406365e5b7eb2d9e1efde84c561883c3841ff87f307f7051e9b50cd4a296",
+  "collector_adapter_sha256": "0c424045e3db71bfda2b7f4a416ae8373b7d670fb8df514b818839154f48a85e",
+  "amendments": [
+    {
+      "recorded_at_utc": "2026-09-19T17:30:54.112722+00:00",
+      "stage": "collection failed before a complete corpus report or replay sample was produced",
+      "failure": "Claude non-object tool metadata caused AttributeError in the frozen analyzer when explicit exit status was unavailable.",
+      "change": "A separate source-hashed collector adapter replaces unsupported non-object metadata with an empty mapping and records a normalization counter. It preserves explicit text statuses and never infers an exit from unknown metadata. The original analyzer, sampling rule, runtime, tokenizer, routing and margins remain frozen.",
+      "selection_effect": "Records with no recoverable explicit exit remain ineligible. No completed measurement or unfavorable row was removed."
+    }
+  ]
+}

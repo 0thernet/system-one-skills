@@ -9,6 +9,7 @@ from unittest import mock
 from pathlib import Path
 import sys
 import unittest
+from historical_evidence_fixture import historical_sources
 
 RESEARCH = Path(__file__).resolve().parents[1] / 'research'
 sys.path.insert(0, str(RESEARCH))
@@ -66,6 +67,18 @@ class AnnotationEvidence(unittest.TestCase):
 
 
 class PublicIntegrity(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        context = historical_sources(assessment)
+        context.__enter__()
+        cls.addClassCleanup(context.__exit__, None, None, None)
+
+    def setUp(self):
+        # Establish a valid fixture outside each mutation's assertRaises block,
+        # so unrelated source drift cannot make a negative test pass vacuously.
+        with contextlib.redirect_stdout(io.StringIO()):
+            assessment.check()
+
     def modified_report(self, change):
         corpus=json.loads(assessment.CORPUS.read_text())
         report=json.loads(assessment.REPORT.read_text())
@@ -94,6 +107,16 @@ class PublicIntegrity(unittest.TestCase):
     def test_missing_source_binding_is_rejected(self):
         def change(corpus,report): del report['evaluated_source_sha256']['research/assess_holdout.py']
         with self.assertRaises(AssertionError): self.modified_report(change)
+    def test_changed_historical_runtime_source_is_rejected(self):
+        source = assessment.ROOT / 'src/reduce.js'
+        original = source.read_bytes()
+        try:
+            source.write_bytes(original + b'\n// changed historical fixture\n')
+            with self.assertRaisesRegex(AssertionError, 'Report source drift: src/reduce.js'):
+                assessment.check()
+        finally:
+            source.write_bytes(original)
+
     def test_unchanged_public_report_passes(self):
         self.modified_report(lambda c,r:None)
 

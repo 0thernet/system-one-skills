@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "registered_at_utc": "2026-09-20T21:14:53Z",
+  "purpose": "Current-source artifact qualification for bounded early-error retention; synthetic local process cost, not whole-task efficacy or billing evidence.",
+  "baseline_commit": "49c9ba49212f465c6a7d6054208bed7f39e9b813",
+  "measured_pairs_per_fixture": 20,
+  "warmup_pairs_per_fixture": 2,
+  "arms": ["native", "baseline", "candidate"],
+  "fixture_ids": ["short-success", "short-failure", "passing-lines", "early-failure", "late-failure", "blank-lines", "giant-line", "error-flood", "invalid-utf8"],
+  "ordering": "Rotate fixtures each round and rotate the three arms within each fixture; no trimming or outlier removal.",
+  "material_regression_rule": "For each fixture, median paired candidate-minus-baseline wall time must not exceed max(20 ms, 25% of baseline median wall time). This is an explicit artifact acceptance budget for this local experiment, not a latency guarantee or inferred task-speed benefit.",
+  "median_extra_ms_floor": 20,
+  "median_extra_baseline_fraction": 0.25,
+  "requirements": ["exact original exit", "one child execution per arm", "private full log byte equality", "short binary passthrough", "early marker retained for declared applicable fixtures", "complete source-bound report", "all cases and measurements retained"],
+  "limitations": ["Fixtures and thresholds are development decisions, not an unused task holdout.", "The prior sampler overhead observation motivated an optimization; this is qualification after that development, not independent confirmation.", "Shared-host timing is noisy; report every observation and do not discard an unfavorable run.", "Native quiet reporters, model behavior, later log reads, and whole-task cost are not measured."]
+}

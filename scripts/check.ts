@@ -42,19 +42,11 @@ gate("synthetic-contract-report",()=>{
   if(r.source_fingerprint!==benchmarkFingerprint())throw new Error("Source changed; regenerate bun bench/run-bench.ts");
   return `${r.cases.length} synthetic reducer probes; not savings evidence`;
 });
-gate("transcript-token-admission",()=>run("bun",["research/validate-admission.ts"]));
-gate("portfolio-and-unused-cohort",()=>run("bun",["research/validate-evidence.ts"]));
-gate("runtime-measurement-integrity",()=>run("node",["bench/measure-runtime.mjs","--check"]));
-gate("ci-pilot-integrity",()=>run("python3",["research/ci_pilot.py","--check"]));
-gate("candidate-screen-integrity",()=>run("python3",["research/candidate_screen.py","--check"]));
-gate("native-reporter-integrity",()=>run("python3",["research/candidate_native.py","--check"]));
-gate("failure-replay-integrity",()=>run("python3",["research/failure_assess.py","--check"]));
-gate("diagnosis-attempt-integrity",()=>run("python3",["research/assess_diagnosis.py","--check"]));
-gate("diagnosis-retry-integrity",()=>{
-  run("python3",["research/assess_diagnosis_retry.py","--check"]);
-  run("python3",["research/assess_diagnosis_retry.py","--check","--output","research/diagnosis-retry-tools-report.json"]);
-  return "both retry reports valid; failed setup retained";
-});
+// Historical reports remain bound to the original evaluated implementation.
+// New runtime changes must separately qualify against exact current source.
+gate("historical-v0.4-integrity",()=>run("node",["research/validate-history.mjs"]));
+gate("current-paired-replay",()=>run("node",["research/early-diagnostics-replay.mjs","--check"]));
+gate("current-runtime-qualification",()=>run("node",["bench/measure-early-diagnostics.mjs","--check"]));
 gate("privacy-scan",()=>{
   const walk=(d:string):string[]=>readdirSync(d,{withFileTypes:true}).filter(e=>e.name!=="__pycache__" && !e.name.endsWith(".pyc")).flatMap(e=>e.isDirectory()?walk(join(d,e.name)):[join(d,e.name)]);
   const patterns=[/\/Users\/bg\//,/\/Users\/[a-z]+\/\.codex\/sessions/,/sk-[a-zA-Z0-9]{20,}/,/ghp_[a-zA-Z0-9]{20,}/,/npm_[a-zA-Z0-9]{20,}/];

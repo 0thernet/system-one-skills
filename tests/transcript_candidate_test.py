@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from historical_evidence_fixture import historical_sources
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'research'))
@@ -88,8 +89,19 @@ class CandidateScreenTests(unittest.TestCase):
         self.assertEqual(native.counts('finished successfully'), {'pass': None, 'fail': None, 'assertions': None})
         self.assertIsNone(native.counts('21 pass\n21 pass\n')['pass'])
 
+
+class NativeReporterIntegrity(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        context = historical_sources(native)
+        context.__enter__()
+        cls.addClassCleanup(context.__exit__, None, None, None)
+
+    def setUp(self):
+        native.check(json.loads((native.ROOT / 'research/candidate-native-report.json').read_text()))
+
     def test_native_report_rejects_changed_token_difference_or_counts(self):
-        report = json.loads((ROOT / 'research/candidate-native-report.json').read_text())
+        report = json.loads((native.ROOT / 'research/candidate-native-report.json').read_text())
         native.check(report)
         wrong_difference = copy.deepcopy(report)
         wrong_difference['results'][1]['tokens_fewer_than_normal'] += 1
@@ -101,7 +113,7 @@ class CandidateScreenTests(unittest.TestCase):
             native.check(wrong_parity)
 
     def test_native_parity_requires_complete_typed_counts_and_exit(self):
-        report = json.loads((ROOT / 'research/candidate-native-report.json').read_text())
+        report = json.loads((native.ROOT / 'research/candidate-native-report.json').read_text())
         missing = copy.deepcopy(report)
         for row in missing['results']:
             row['test_counts'] = {}

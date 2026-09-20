@@ -1,0 +1,1234 @@
+{
+  "schema_version": 1,
+  "purpose": "Complete skill inventory and research priorities; workflow prevalence motivates experiments and never proves efficacy.",
+  "population": "One consenting developer's local CLI transcripts; convenience sample, not representative of all agents or tasks.",
+  "source_files_sha256": {
+    "research/session-report.json": "c7f7f31da730024ec1ec88035352205a024b45416a6df90d22362dc569c6a611",
+    "research/supplemental-session-report.json": "2f00ec42a91c1efa4b05b88683eb3b5a477d2776162fbe4abcc54d8603684600",
+    "research/admission-report.json": "e070421f35cbbb554c899e078d013f325e340f323bb7cf4912bc2b1614753ddb",
+    "bench/report/runtime-report.json": "3675275759cd55bffda87172453dbd8beb64e116315fca23bf394e3bbd105676"
+  },
+  "inventory_source": {
+    "git_commit": "d0c532cc60dd1c918724c82d03577429e33c0ad7",
+    "skill_files_sha256": {
+      "skills/system-one-ci/SKILL.md": "dfd762e15e1a88834a75d6346a155933bfebd9b31c71854c1ba2387830f00dc6",
+      "skills/system-one-diff/SKILL.md": "b54a5cfea466ca45a2c85021d34e517a1f25187996234d0824380733a17c1499",
+      "skills/system-one-digest/SKILL.md": "0fce63e4cbad8b2c452a7fae4cb5fba13ec0ae8f69e3bb3f801462c8374ef3c4",
+      "skills/system-one-evolve/SKILL.md": "a17c8f471b519bb7087c9985965ff28c0fe2f3e0b280ea1fd911956d3830c36b",
+      "skills/system-one-explore/SKILL.md": "e75b3bee7a06b5ee7a65b7c63803ff15fed15dbf67e43843bc6e2088a5721158",
+      "skills/system-one-fetch/SKILL.md": "b6b1f28158504ff60198cfa3c1f5bbe787170322c70dd51be0be43764febe446",
+      "skills/system-one-research/SKILL.md": "1798c8d72eda785f870fe4bfc96cd54e33f1fd4c7772bf4b684870e61c42edca",
+      "skills/system-one-triage/SKILL.md": "f14f3cc1a7997b5b77929ae5e1d3ce08dd343c9b9dde8019ab50b32083829b89",
+      "skills/system-one-verify/SKILL.md": "1460a53b07a396dbfbd3b9832bd5a2a2543d62ccbeb33e5feb0248f8f7e0a3e9",
+      "skills/system-one-writing/SKILL.md": "ad8ecc4acb6403533107dfc97290b65f2404e5fb5d9c98c71812e33704f6ffa1",
+      "skills/system-one/SKILL.md": "ff847defecbdf32be0660ee5655b132b764039fe70052099fa2cb7eb52679f49"
+    }
+  },
+  "cohorts": [
+    {
+      "source": "research/session-report.json",
+      "window": {
+        "since_inclusive_utc": "2026-09-12T00:00:00Z",
+        "until_exclusive_utc": "2026-09-19T00:00:00Z"
+      },
+      "corpus_evidence_sha256": "fdf07beb022de539761c4d77ebb8da9ba069b8688c9aface3967fcd67ce6edda"
+    },
+    {
+      "source": "research/supplemental-session-report.json",
+      "window": {
+        "since_inclusive_utc": "2026-09-19T00:00:00Z",
+        "until_exclusive_utc": "2026-09-19T14:00:00Z"
+      },
+      "corpus_evidence_sha256": "5fd2bb17460dacb0e86ed907ebf26a783bdc5336ed41964b18efc1a54bbaa559"
+    }
+  ],
+  "aggregation_rules": [
+    "Only model-visible workflow_counts from the two disjoint UTC windows are added. Tool calls, fragments, input bytes and output bytes are separate quantities.",
+    "Missing workflow categories are rendered as zero observed calls for each provider; this does not establish zero real-world activity or coverage completeness.",
+    "Workflow categories are coarse analyzer labels. Call frequency and output bytes are neither wasted tokens nor intervention-eligible tasks.",
+    "Skill workflow mappings overlap. Never add per-skill totals; fetch/research share web research and triage shares diff/research proxies.",
+    "Nested Codex completed-command telemetry overlaps the model-visible view and is reported separately, never added.",
+    "Session groups and provider usage counters are not summed across providers or interpreted as comparable user-task counts. Cached/reasoning tokens and cumulative snapshots are not added to primary token totals.",
+    "No raw transcript content, identifiers, private paths or historical commands are included."
+  ],
+  "observed_model_visible_workflows": {
+    "total": {
+      "tool_calls": 7807,
+      "tool_input_bytes": 3139718,
+      "output_fragments": 7842,
+      "tool_output_bytes": 15143111
+    },
+    "by_provider": {
+      "codex": {
+        "tool_calls": 229,
+        "tool_input_bytes": 155023,
+        "output_fragments": 258,
+        "tool_output_bytes": 1268654
+      },
+      "claude": {
+        "tool_calls": 32,
+        "tool_input_bytes": 4587,
+        "output_fragments": 38,
+        "tool_output_bytes": 76399
+      },
+      "devin": {
+        "tool_calls": 7546,
+        "tool_input_bytes": 2980108,
+        "output_fragments": 7546,
+        "tool_output_bytes": 13798058
+      }
+    },
+    "by_workflow": {
+      "ci_status": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 128,
+            "tool_input_bytes": 22056,
+            "output_fragments": 128,
+            "tool_output_bytes": 257030
+          }
+        },
+        "total": {
+          "tool_calls": 128,
+          "tool_input_bytes": 22056,
+          "output_fragments": 128,
+          "tool_output_bytes": 257030
+        }
+      },
+      "coordination": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 43,
+            "tool_input_bytes": 31668,
+            "output_fragments": 43,
+            "tool_output_bytes": 353
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 141,
+            "tool_input_bytes": 120468,
+            "output_fragments": 141,
+            "tool_output_bytes": 93156
+          }
+        },
+        "total": {
+          "tool_calls": 184,
+          "tool_input_bytes": 152136,
+          "output_fragments": 184,
+          "tool_output_bytes": 93509
+        }
+      },
+      "dependency_build": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 23,
+            "tool_input_bytes": 8180,
+            "output_fragments": 23,
+            "tool_output_bytes": 11690
+          }
+        },
+        "total": {
+          "tool_calls": 23,
+          "tool_input_bytes": 8180,
+          "output_fragments": 23,
+          "tool_output_bytes": 11690
+        }
+      },
+      "diff_review": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 1,
+            "tool_input_bytes": 541,
+            "output_fragments": 1,
+            "tool_output_bytes": 12524
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 67,
+            "tool_input_bytes": 9735,
+            "output_fragments": 67,
+            "tool_output_bytes": 273848
+          }
+        },
+        "total": {
+          "tool_calls": 68,
+          "tool_input_bytes": 10276,
+          "output_fragments": 68,
+          "tool_output_bytes": 286372
+        }
+      },
+      "edits": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 1,
+            "tool_input_bytes": 294,
+            "output_fragments": 1,
+            "tool_output_bytes": 144
+          },
+          "devin": {
+            "tool_calls": 1514,
+            "tool_input_bytes": 1703419,
+            "output_fragments": 1514,
+            "tool_output_bytes": 1751683
+          }
+        },
+        "total": {
+          "tool_calls": 1515,
+          "tool_input_bytes": 1703713,
+          "output_fragments": 1515,
+          "tool_output_bytes": 1751827
+        }
+      },
+      "file_read": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 42,
+            "tool_input_bytes": 18739,
+            "output_fragments": 46,
+            "tool_output_bytes": 358740
+          },
+          "claude": {
+            "tool_calls": 9,
+            "tool_input_bytes": 1690,
+            "output_fragments": 9,
+            "tool_output_bytes": 5787
+          },
+          "devin": {
+            "tool_calls": 1149,
+            "tool_input_bytes": 183918,
+            "output_fragments": 1149,
+            "tool_output_bytes": 3777859
+          }
+        },
+        "total": {
+          "tool_calls": 1200,
+          "tool_input_bytes": 204347,
+          "output_fragments": 1204,
+          "tool_output_bytes": 4142386
+        }
+      },
+      "git_state": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 7,
+            "tool_input_bytes": 1815,
+            "output_fragments": 7,
+            "tool_output_bytes": 16401
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 217,
+            "tool_input_bytes": 40870,
+            "output_fragments": 217,
+            "tool_output_bytes": 114924
+          }
+        },
+        "total": {
+          "tool_calls": 224,
+          "tool_input_bytes": 42685,
+          "output_fragments": 224,
+          "tool_output_bytes": 131325
+        }
+      },
+      "mixed_shell": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 49,
+            "tool_input_bytes": 20617,
+            "output_fragments": 53,
+            "tool_output_bytes": 266183
+          },
+          "claude": {
+            "tool_calls": 5,
+            "tool_input_bytes": 1263,
+            "output_fragments": 7,
+            "tool_output_bytes": 5555
+          },
+          "devin": {
+            "tool_calls": 1412,
+            "tool_input_bytes": 323758,
+            "output_fragments": 1412,
+            "tool_output_bytes": 1732838
+          }
+        },
+        "total": {
+          "tool_calls": 1466,
+          "tool_input_bytes": 345638,
+          "output_fragments": 1472,
+          "tool_output_bytes": 2004576
+        }
+      },
+      "other": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 2,
+            "tool_input_bytes": 4,
+            "output_fragments": 2,
+            "tool_output_bytes": 648
+          },
+          "devin": {
+            "tool_calls": 128,
+            "tool_input_bytes": 5464,
+            "output_fragments": 128,
+            "tool_output_bytes": 135281
+          }
+        },
+        "total": {
+          "tool_calls": 130,
+          "tool_input_bytes": 5468,
+          "output_fragments": 130,
+          "tool_output_bytes": 135929
+        }
+      },
+      "process_wait": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 809,
+            "tool_input_bytes": 45278,
+            "output_fragments": 809,
+            "tool_output_bytes": 2329026
+          }
+        },
+        "total": {
+          "tool_calls": 809,
+          "tool_input_bytes": 45278,
+          "output_fragments": 809,
+          "tool_output_bytes": 2329026
+        }
+      },
+      "repository_search": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 18,
+            "tool_input_bytes": 5787,
+            "output_fragments": 19,
+            "tool_output_bytes": 16887
+          },
+          "claude": {
+            "tool_calls": 3,
+            "tool_input_bytes": 202,
+            "output_fragments": 3,
+            "tool_output_bytes": 402
+          },
+          "devin": {
+            "tool_calls": 552,
+            "tool_input_bytes": 99910,
+            "output_fragments": 552,
+            "tool_output_bytes": 1031356
+          }
+        },
+        "total": {
+          "tool_calls": 573,
+          "tool_input_bytes": 105899,
+          "output_fragments": 574,
+          "tool_output_bytes": 1048645
+        }
+      },
+      "shell_other": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 69,
+            "tool_input_bytes": 75856,
+            "output_fragments": 89,
+            "tool_output_bytes": 597566
+          },
+          "claude": {
+            "tool_calls": 12,
+            "tool_input_bytes": 1134,
+            "output_fragments": 16,
+            "tool_output_bytes": 63863
+          },
+          "devin": {
+            "tool_calls": 1028,
+            "tool_input_bytes": 335408,
+            "output_fragments": 1028,
+            "tool_output_bytes": 1378332
+          }
+        },
+        "total": {
+          "tool_calls": 1109,
+          "tool_input_bytes": 412398,
+          "output_fragments": 1133,
+          "tool_output_bytes": 2039761
+        }
+      },
+      "validation": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 283,
+            "tool_input_bytes": 62949,
+            "output_fragments": 283,
+            "tool_output_bytes": 519516
+          }
+        },
+        "total": {
+          "tool_calls": 283,
+          "tool_input_bytes": 62949,
+          "output_fragments": 283,
+          "tool_output_bytes": 519516
+        }
+      },
+      "web_research": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 95,
+            "tool_input_bytes": 18695,
+            "output_fragments": 95,
+            "tool_output_bytes": 391519
+          }
+        },
+        "total": {
+          "tool_calls": 95,
+          "tool_input_bytes": 18695,
+          "output_fragments": 95,
+          "tool_output_bytes": 391519
+        }
+      }
+    }
+  },
+  "supplemental_nonadditive_codex_telemetry": [
+    {
+      "source": "research/session-report.json",
+      "unique_events": 150,
+      "measurement": "Nested Codex shell telemetry; overlaps response-item tool outputs and MUST NOT be summed with model-visible tool-call counts or bytes.",
+      "workflow_counts": {
+        "ci_status": {
+          "completed_command_events": 1,
+          "captured_output_bytes": 190
+        },
+        "diff_review": {
+          "completed_command_events": 2,
+          "captured_output_bytes": 11924
+        },
+        "file_read": {
+          "completed_command_events": 37,
+          "captured_output_bytes": 308029
+        },
+        "git_state": {
+          "completed_command_events": 5,
+          "captured_output_bytes": 861
+        },
+        "mixed_shell": {
+          "completed_command_events": 13,
+          "captured_output_bytes": 63305
+        },
+        "repository_search": {
+          "completed_command_events": 23,
+          "captured_output_bytes": 26390
+        },
+        "shell_other": {
+          "completed_command_events": 68,
+          "captured_output_bytes": 500973
+        },
+        "web_research": {
+          "completed_command_events": 1,
+          "captured_output_bytes": 7639
+        }
+      }
+    },
+    {
+      "source": "research/supplemental-session-report.json",
+      "unique_events": 0,
+      "measurement": "Nested Codex shell telemetry; overlaps response-item tool outputs and MUST NOT be summed with model-visible tool-call counts or bytes.",
+      "workflow_counts": {}
+    }
+  ],
+  "shipped_skill_count": 1,
+  "research_only_skill_count": 10,
+  "shipped_calibration_result": {
+    "source": "research/admission-report.json",
+    "providers": {
+      "codex": {
+        "sampled_cases": 0,
+        "routed_cases": 0,
+        "nonrouted_cases_retained": 0,
+        "runtime_compacted_cases": 0,
+        "all_cases_net_tokens_if_invoked_every_time": 0,
+        "all_cases_with_negative_net": 0,
+        "routed_archived_output_tokens": 0,
+        "routed_presented_output_tokens": 0,
+        "routed_first_use_incremental_tokens": 0,
+        "routed_net_tokens_saved": 0,
+        "routed_minimum_net_tokens_saved": null,
+        "routed_cases_below_margin": 0,
+        "invariant_failures": 0,
+        "recorded_nonzero_exits": 0
+      },
+      "claude": {
+        "sampled_cases": 0,
+        "routed_cases": 0,
+        "nonrouted_cases_retained": 0,
+        "runtime_compacted_cases": 0,
+        "all_cases_net_tokens_if_invoked_every_time": 0,
+        "all_cases_with_negative_net": 0,
+        "routed_archived_output_tokens": 0,
+        "routed_presented_output_tokens": 0,
+        "routed_first_use_incremental_tokens": 0,
+        "routed_net_tokens_saved": 0,
+        "routed_minimum_net_tokens_saved": null,
+        "routed_cases_below_margin": 0,
+        "invariant_failures": 0,
+        "recorded_nonzero_exits": 0
+      },
+      "devin": {
+        "sampled_cases": 24,
+        "routed_cases": 3,
+        "nonrouted_cases_retained": 21,
+        "runtime_compacted_cases": 3,
+        "all_cases_net_tokens_if_invoked_every_time": 2608,
+        "all_cases_with_negative_net": 21,
+        "routed_archived_output_tokens": 9731,
+        "routed_presented_output_tokens": 931,
+        "routed_first_use_incremental_tokens": 774,
+        "routed_net_tokens_saved": 8026,
+        "routed_minimum_net_tokens_saved": 1167,
+        "routed_cases_below_margin": 0,
+        "invariant_failures": 0,
+        "recorded_nonzero_exits": 4
+      }
+    },
+    "summary": {
+      "sampled_cases": 24,
+      "routed_cases": 3,
+      "nonrouted_cases_retained": 21,
+      "runtime_compacted_cases": 3,
+      "all_cases_net_tokens_if_invoked_every_time": 2608,
+      "all_cases_with_negative_net": 21,
+      "routed_archived_output_tokens": 9731,
+      "routed_presented_output_tokens": 931,
+      "routed_first_use_incremental_tokens": 774,
+      "routed_net_tokens_saved": 8026,
+      "routed_minimum_net_tokens_saved": 1167,
+      "routed_cases_below_margin": 0,
+      "invariant_failures": 0,
+      "recorded_nonzero_exits": 4
+    },
+    "claims_limit": "Development/calibration text-token reduction and scoped preservation only. No measured end-to-end task, billed-token, comparative reliability or latency improvement."
+  },
+  "priority_experiments": [
+    "system-one-explore",
+    "system-one-ci"
+  ],
+  "skills": [
+    {
+      "name": "system-one-verify",
+      "distribution": "shipped",
+      "workflow_categories": [
+        "validation"
+      ],
+      "workflow_mapping": "Validation-class calls are a workflow proxy; only completed explicit-exit outputs qualify for replay. Dependency/build and mixed-shell calls are not silently reclassified.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 283,
+            "tool_input_bytes": 62949,
+            "output_fragments": 283,
+            "tool_output_bytes": 519516
+          }
+        },
+        "total": {
+          "tool_calls": 283,
+          "tool_input_bytes": 62949,
+          "output_fragments": 283,
+          "tool_output_bytes": 519516
+        }
+      },
+      "proposed_mechanism": "Run one known noisy validation command once; show a compact exit-status report and relevant excerpt, retain the full private local log, and disclose omissions. Fewer model-visible log tokens are the measured mechanism; better diagnosis and faster tasks remain hypotheses.",
+      "best_native_baseline": "Run the same command with the project-supported quiet or summary reporter when it preserves required evidence; otherwise use the native execution tool with a saved log and targeted reads.",
+      "correctness_invariants": [
+        "Execute the authorized command only once.",
+        "Preserve the child exit status and distinguish wrapper timeouts, cancellation, spawn errors and logging limits.",
+        "Pass short output through exactly; disclose omitted bytes and incomplete capture.",
+        "Keep the complete local log unless a disclosed resource failure prevents it; never treat an excerpt as diagnostic completeness."
+      ],
+      "evidence": {
+        "token_usage": "calibration_text_reduction_only",
+        "reliability": "scoped_preservation_and_runtime_tests_only",
+        "performance": "synthetic_local_cli_overhead_measured_whole_task_unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Held-out complete agent tasks, native quiet-reporter baseline, provider-native usage, skill discovery/loading interactions, cache effects and every follow-up read or repair.",
+        "reliability": "Independent task success and failure diagnosis on new long failing logs; selection accuracy and next-run verbosity stability across all three agents.",
+        "performance": "Paired whole-agent task duration, tool/model-call count and time to a correct diagnosis, including follow-up reads. Local synthetic CLI overhead is measured separately; no end-to-end speedup is demonstrated."
+      },
+      "bounded_next_experiment": "Freeze the current implementation and a prior-observation routing rule; pre-register 12 new paired noisy-check tasks, balanced successful and failing outcomes when authorized data permits. Compare native best-practice and skill arms on identical repository states; blind-score exit interpretation and diagnosis; count all text, retrievals, repairs and elapsed time. Report missing provider strata without substitutions.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-explore",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "repository_search"
+      ],
+      "workflow_mapping": "Search calls across all three providers motivate a bounded-search experiment. The category does not establish redundant search, excessive output, or adequate answer coverage.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 18,
+            "tool_input_bytes": 5787,
+            "output_fragments": 19,
+            "tool_output_bytes": 16887
+          },
+          "claude": {
+            "tool_calls": 3,
+            "tool_input_bytes": 202,
+            "output_fragments": 3,
+            "tool_output_bytes": 402
+          },
+          "devin": {
+            "tool_calls": 552,
+            "tool_input_bytes": 99910,
+            "output_fragments": 552,
+            "tool_output_bytes": 1031356
+          }
+        },
+        "total": {
+          "tool_calls": 573,
+          "tool_input_bytes": 105899,
+          "output_fragments": 574,
+          "tool_output_bytes": 1048645
+        }
+      },
+      "proposed_mechanism": "Return a bounded repository inventory or search result with file/line provenance, counts and explicit truncation; potentially combine repeated discovery reads. The narrower first experiment is exact search-result retrieval, not general repository understanding.",
+      "best_native_baseline": "Use native repository search with a focused path/glob and bounded matches, then read only relevant lines; reuse a repository map when one exists.",
+      "correctness_invariants": [
+        "Preserve query syntax, exit/error distinction, path and line identities.",
+        "Disclose ignored files, truncation and match-count limits; never equate a bounded result with no other matches.",
+        "Preserve an explicit next page or native fallback for necessary missing matches."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Actual query-to-answer paired cases and full routing/discovery/pagination overhead; fewer visible bytes alone do not show lower task tokens.",
+        "reliability": "Answer completeness versus all expected matching locations, including ignored files, multiple languages and matches beyond the first page.",
+        "performance": "Search runtime and time to correct location compared with one well-scoped native search; setup must not dominate short queries."
+      },
+      "bounded_next_experiment": "Pre-register 20 authorized real location-finding tasks from all represented provider strata where available. Freeze repository snapshots and answer-location sets. Compare a focused native search against one bounded-result prototype; include empty results, invalid patterns and matches beyond the cap. Require correct locations and count follow-up reads plus elapsed time.",
+      "next_experiment_priority": 1
+    },
+    {
+      "name": "system-one-ci",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "ci_status"
+      ],
+      "workflow_mapping": "CI-status calls motivate identity-linked analysis only. Aggregates do not reveal repeated polling of the same run; generic process waits are excluded.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 128,
+            "tool_input_bytes": 22056,
+            "output_fragments": 128,
+            "tool_output_bytes": 257030
+          }
+        },
+        "total": {
+          "tool_calls": 128,
+          "tool_input_bytes": 22056,
+          "output_fragments": 128,
+          "tool_output_bytes": 257030
+        }
+      },
+      "proposed_mechanism": "Resolve one exact CI run and wait locally, returning run identity, commit, terminal conclusion or an explicit bounded timeout; potentially avoid repeated model turns for unchanged status.",
+      "best_native_baseline": "Use the provider CLI native run-watch operation for an explicit run ID, preserving the exit result; use a focused status query when waiting is unnecessary.",
+      "correctness_invariants": [
+        "Pin the run ID and expected commit; never switch to a newer run silently.",
+        "Distinguish missing run, permission/API failure, nonterminal timeout, cancelled result and terminal success.",
+        "Do not treat one successful run as every required repository check passing."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Identity-linked real polling sequences and paired full-task usage versus native run-watch; status-call frequency alone is insufficient.",
+        "reliability": "Exact-run/commit correctness through concurrent new runs, reruns, API failures and timeouts; required-check completeness remains a caller responsibility.",
+        "performance": "End-to-end wait time, API request count, model turns and terminal-state detection delay versus the native watch interval."
+      },
+      "bounded_next_experiment": "First privately annotate at most 20 CI-status sequences with opaque same-run identities. Proceed only if redundant model polling is observed. Replay recorded status transitions in a deterministic fixture against a native-watch baseline; include rerun, missing run and nonterminal timeout cases. Do not claim live-provider latency from the replay.",
+      "next_experiment_priority": 2
+    },
+    {
+      "name": "system-one-digest",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "git_state"
+      ],
+      "workflow_mapping": "Git-state calls are counted; aggregate records do not show that all proposed digest fields were needed together.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 7,
+            "tool_input_bytes": 1815,
+            "output_fragments": 7,
+            "tool_output_bytes": 16401
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 217,
+            "tool_input_bytes": 40870,
+            "output_fragments": 217,
+            "tool_output_bytes": 114924
+          }
+        },
+        "total": {
+          "tool_calls": 224,
+          "tool_input_bytes": 42685,
+          "output_fragments": 224,
+          "tool_output_bytes": 131325
+        }
+      },
+      "proposed_mechanism": "Collect only requested repository-state fields in one compact report; potentially avoid multiple model/tool round trips.",
+      "best_native_baseline": "Use native machine-readable git status for current state, adding focused log or diff-stat queries only when the task requires them.",
+      "correctness_invariants": [
+        "Distinguish staged, unstaged, untracked and conflicted state.",
+        "Preserve repository/branch/commit identity and ahead/behind semantics; disclose missing upstream or unborn branch.",
+        "Avoid implying atomic consistency if the repository changes between reads."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Paired tasks showing a digest beats a single concise native status query after skill overhead; small outputs may become more expensive.",
+        "reliability": "State accuracy with detached HEAD, conflicts, missing upstream, unusual filenames and concurrent changes.",
+        "performance": "Subprocess startup and report time versus the minimal native query, plus any avoided model turns."
+      },
+      "bounded_next_experiment": "Select 12 real state-inspection tasks with a declared required-field set. Replay frozen repository fixtures, including dirty and conflicted states. Compare exactly required fields against native porcelain output and count full-task tokens and time before considering installation.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-diff",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "diff_review"
+      ],
+      "workflow_mapping": "Diff-review calls are a coarse review-workflow proxy; they do not establish safe patch clipping or benefits from a second model.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 1,
+            "tool_input_bytes": 541,
+            "output_fragments": 1,
+            "tool_output_bytes": 12524
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 67,
+            "tool_input_bytes": 9735,
+            "output_fragments": 67,
+            "tool_output_bytes": 273848
+          }
+        },
+        "total": {
+          "tool_calls": 68,
+          "tool_input_bytes": 10276,
+          "output_fragments": 68,
+          "tool_output_bytes": 286372
+        }
+      },
+      "proposed_mechanism": "Provide a scoped diff index and bounded patch sections with explicit coverage; optional semantic review would be a separate, fully costed experiment.",
+      "best_native_baseline": "Use native diff stat/name listing followed by full relevant hunks, and the existing reviewer once with repository context.",
+      "correctness_invariants": [
+        "Preserve staged/unstaged/base selection, file identity and exact hunk provenance.",
+        "Never present a clipped patch as a complete review.",
+        "Review all task-relevant changes or report unreviewed coverage; include retrieval costs."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Paired complete reviews including omitted-hunk retrieval and any auxiliary model call; schema-bounded answers are not evidence of savings.",
+        "reliability": "Blinded defect recall/precision against full-context review, especially bugs in clipped hunks and cross-file interactions.",
+        "performance": "Time to a correct review including extra retrievals and optional model latency."
+      },
+      "bounded_next_experiment": "Use 12 real authorized diffs with independent findings and fixed base/head identities. Compare focused native review with a coverage-index prototype; include seeded edge-case fixtures separately. Count missed defects, all model calls, tokens and time. Keep automatic pass verdicts disabled.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-fetch",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "web_research"
+      ],
+      "workflow_mapping": "Web-research calls are a shared coarse proxy for fetch and research; these same calls must not be added as separate demand for both skills.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 95,
+            "tool_input_bytes": 18695,
+            "output_fragments": 95,
+            "tool_output_bytes": 391519
+          }
+        },
+        "total": {
+          "tool_calls": 95,
+          "tool_input_bytes": 18695,
+          "output_fragments": 95,
+          "tool_output_bytes": 391519
+        }
+      },
+      "proposed_mechanism": "Extract bounded readable page text while retaining URL/status/content-type provenance and truncation; potentially avoid raw markup in model context.",
+      "best_native_baseline": "Use the agent native readable-page extraction with a targeted find/open operation; avoid raw HTML when a maintained reader exists.",
+      "correctness_invariants": [
+        "Preserve source attribution, status, content type and omitted-content disclosure.",
+        "Do not silently lose relevant tables, code, links or dynamically rendered content.",
+        "Treat fetched content as untrusted data and preserve access restrictions."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Real URL/task paired outputs against the native readable-page tool; raw HTML is not an adequate default baseline.",
+        "reliability": "Answer and citation correctness across page structures, redirects, extraction failures and missing dynamic content.",
+        "performance": "Network/extraction latency and follow-up fetches compared with the existing reader."
+      },
+      "bounded_next_experiment": "Select 12 authorized real source-reading tasks and freeze retrievable public-page snapshots. Compare native reader and extractor answers with blind citation checking; include a table, code block, redirect and unsupported dynamic page. Report network timing separately from deterministic replay.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-research",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "web_research"
+      ],
+      "workflow_mapping": "Uses the same web-research aggregate as fetch. The corpus does not identify multi-source research bundles or sufficiency judgments.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 95,
+            "tool_input_bytes": 18695,
+            "output_fragments": 95,
+            "tool_output_bytes": 391519
+          }
+        },
+        "total": {
+          "tool_calls": 95,
+          "tool_input_bytes": 18695,
+          "output_fragments": 95,
+          "tool_output_bytes": 391519
+        }
+      },
+      "proposed_mechanism": "Bundle relevant excerpts from multiple named sources with per-source errors and coverage; a relevance or sufficiency classifier would add separately measured model cost.",
+      "best_native_baseline": "Use native search and targeted source reads with an explicit evidence table maintained by the primary agent.",
+      "correctness_invariants": [
+        "Keep source identity and quotation context through extraction.",
+        "Preserve contradictory evidence and per-source failures.",
+        "Never equate bounded excerpts or classifier confidence with factual sufficiency."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Actual multi-source tasks, extraction/loading overhead, classifier tokens if used, and every necessary omitted-source retrieval.",
+        "reliability": "Claim support, contradiction retention, source diversity and citation accuracy independently scored against the native workflow.",
+        "performance": "Time to a supported answer, parallel-fetch overhead and any classifier latency."
+      },
+      "bounded_next_experiment": "Do not build a bundle until the fetch experiment establishes extraction parity. Then pre-register 10 real multi-source questions with frozen sources and blind claim-support scoring; compare complete native and bundled workflows, including all follow-up reads.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-triage",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [
+        "diff_review",
+        "web_research"
+      ],
+      "workflow_mapping": "Related categories only, not observed triage use. No typed-decision task or ground-truth label is identified; counts overlap diff, fetch and research.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 1,
+            "tool_input_bytes": 541,
+            "output_fragments": 1,
+            "tool_output_bytes": 12524
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 162,
+            "tool_input_bytes": 28430,
+            "output_fragments": 162,
+            "tool_output_bytes": 665367
+          }
+        },
+        "total": {
+          "tool_calls": 163,
+          "tool_input_bytes": 28971,
+          "output_fragments": 163,
+          "tool_output_bytes": 677891
+        }
+      },
+      "proposed_mechanism": "A small typed classifier could route a clearly defined decision to a cheaper process, with abstention for uncertainty; structured output alone does not make judgments accurate.",
+      "best_native_baseline": "Use deterministic repository gates for objective decisions and the primary agent with the same evidence for judgments; avoid an extra model call without demonstrated benefit.",
+      "correctness_invariants": [
+        "Preserve evidence and uncertainty; abstain rather than invent missing facts.",
+        "Never use uncalibrated confidence as authorization to merge, publish or skip checks.",
+        "Separate schema validity from semantic correctness and include the cost of mistakes."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "A concrete labeled decision family, all classifier and escalation costs, and comparison against deterministic/native alternatives.",
+        "reliability": "Held-out decision accuracy, calibration, false-negative impact and abstention coverage, stratified by decision type.",
+        "performance": "Model/service latency, fallback latency and end-to-end task duration; external calls can make the task slower."
+      },
+      "bounded_next_experiment": "First define one transcript-grounded decision family and label 30 authorized cases with independent adjudication. Freeze a held-out split before implementation. Compare deterministic rules and the primary-agent baseline; add a classifier only if there is a measured gap, with a mandatory abstain path.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-writing",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [],
+      "workflow_mapping": "No dedicated writing-workflow label exists in the current reports. File reads and edits cannot be assumed to be draft audits.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          }
+        },
+        "total": {
+          "tool_calls": 0,
+          "tool_input_bytes": 0,
+          "output_fragments": 0,
+          "tool_output_bytes": 0
+        }
+      },
+      "proposed_mechanism": "Surface exact mechanical draft issues such as placeholders or repeated phrases with offsets, leaving semantic editing to a reader; an optional quality judge would incur extra model cost.",
+      "best_native_baseline": "Use an existing text linter or a focused native search for the named issue, then read the affected prose.",
+      "correctness_invariants": [
+        "Preserve exact text locations and context; label heuristics as suggestions.",
+        "Do not infer truth, quality or readiness from readability scores or passive-voice markers.",
+        "Retain intentional repetition, quotations and domain terminology unless the task requests change."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Real writing-task corpus, issue prevalence, lint false positives, instruction overhead and semantic follow-up costs.",
+        "reliability": "Human-adjudicated useful findings versus false positives and missed issues; no workflow-specific evidence is available.",
+        "performance": "Audit and editing time versus a focused linter/search; no measured speedup."
+      },
+      "bounded_next_experiment": "Wait for an authorized writing cohort. Label 12 real draft-audit tasks and required mechanical issues before building a prototype; compare an existing linter and focused native search, reporting false positives, editing outcomes, tokens and time.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one-evolve",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [],
+      "workflow_mapping": "No observed router-evolution workflow or fitness/holdout evidence is identified. Coordination counts are not a proxy for optimization efficacy.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          }
+        },
+        "total": {
+          "tool_calls": 0,
+          "tool_input_bytes": 0,
+          "output_fragments": 0,
+          "tool_output_bytes": 0
+        }
+      },
+      "proposed_mechanism": "Search over candidate routing policies with recorded lineage and deterministic evaluation; optimization may amortize future cost only if held-out performance persists.",
+      "best_native_baseline": "Use a fixed, reviewed routing rule and a static evaluation set before running any optimization loop.",
+      "correctness_invariants": [
+        "Keep an untouched holdout and prevent training/evaluation leakage.",
+        "Count every search, scoring and validation call, including rejected candidates.",
+        "Promote only after independent correctness and cost gates; retain rollback and do not treat training fitness as deployment proof."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "A transcript-grounded routing task, optimization cost, held-out benefit and sufficient future use to repay search overhead.",
+        "reliability": "Independent generalization, leakage resistance, stability and regression detection; none is demonstrated by current corpus counts.",
+        "performance": "Search/evaluation time plus deployment latency; optimization overhead may outweigh all recurring savings."
+      },
+      "bounded_next_experiment": "Defer until a fixed router has real labeled tasks and a paired baseline. Pre-register a finite search budget and untouched holdout; compare total training-plus-use cost over an explicit usage horizon, publishing every rejected candidate and regression.",
+      "next_experiment_priority": null
+    },
+    {
+      "name": "system-one",
+      "distribution": "research_only_not_installed",
+      "workflow_categories": [],
+      "workflow_mapping": "An umbrella router has no independent observed workflow in these reports. Summing the other candidate categories would double count overlapping uses.",
+      "observed_workflow_coverage": {
+        "by_provider": {
+          "codex": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "claude": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          },
+          "devin": {
+            "tool_calls": 0,
+            "tool_input_bytes": 0,
+            "output_fragments": 0,
+            "tool_output_bytes": 0
+          }
+        },
+        "total": {
+          "tool_calls": 0,
+          "tool_input_bytes": 0,
+          "output_fragments": 0,
+          "tool_output_bytes": 0
+        }
+      },
+      "proposed_mechanism": "Select the smallest applicable skill or native tool; could reduce wrong-skill invocation but also adds catalog and routing overhead.",
+      "best_native_baseline": "Expose only the relevant small skill description and let the primary agent choose native tools directly.",
+      "correctness_invariants": [
+        "Allow no-skill and abstain outcomes.",
+        "Preserve skill-specific preconditions and route ambiguous or unsupported work to the native tool.",
+        "Do not load unrelated skill bodies or imply that all catalog entries are installed."
+      ],
+      "evidence": {
+        "token_usage": "unmeasured",
+        "reliability": "unmeasured",
+        "performance": "unmeasured"
+      },
+      "missing_evidence": {
+        "token_usage": "Measured selection accuracy and catalog-loading cost versus the current one-skill setup; no independent saving is established.",
+        "reliability": "False activations, missed useful activations and correct no-skill decisions on held-out agent tasks.",
+        "performance": "Routing latency and model turns versus direct invocation."
+      },
+      "bounded_next_experiment": "Defer until at least two independently admitted skills exist. Then use 20 held-out real task prompts with useful-skill or native-only labels; compare direct descriptions against an umbrella router and include its entire always-visible footprint.",
+      "next_experiment_priority": null
+    }
+  ],
+  "shipped_runtime_result": {
+    "source": "bench/report/runtime-report.json",
+    "evidence_type": "synthetic local CLI measurement; transcript-shaped sizes and success/failure only",
+    "measured_at_utc": "2026-09-19T17:26:57.655Z",
+    "environment": {
+      "platform": "darwin",
+      "architecture": "arm64",
+      "kernel_release": "25.5.0",
+      "node": "v24.20.0",
+      "bun": "1.3.14",
+      "package_version": "0.4.0",
+      "scheduler": "oompa-host-run --mode=shared --lane=compute",
+      "machine_isolation": "shared scheduler admission; other processes and background activity were not isolated"
+    },
+    "fixture_count": 7,
+    "measured_pairs": 140,
+    "warmup_pairs_excluded": 14,
+    "paired_overhead_all_fixtures": {
+      "n": 140,
+      "min_ms": 31.921166,
+      "median_ms": 41.815105,
+      "p95_ms": 48.372791,
+      "max_ms": 51.334667
+    },
+    "exact_exit_full_log_and_one_execution_verified_in_every_pair": true,
+    "runtime_suite": {
+      "passed_tests": 25,
+      "failed_tests": 0,
+      "assertions": 125
+    },
+    "claims_limit": "Synthetic local CLI overhead and deterministic contract checks on one shared host. Not archived task timing, whole-agent latency, task-success improvement, or a performance guarantee."
+  }
+}

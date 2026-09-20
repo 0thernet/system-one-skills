@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-19T17:41:34.370994+00:00",
+  "window": {
+    "since_inclusive_utc": "2026-09-12T00:00:00Z",
+    "until_exclusive_utc": "2026-09-19T14:00:00Z"
+  },
+  "population": "One consenting developer; current retained Devin active ancestry only. Other providers are not part of this pilot.",
+  "source_files_sha256": {
+    "research/analyze_sessions.py": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+    "research/ci_pilot.py": "865cb344852f0af728d2780c1424b37c445c511ef5e00142b5800828d7d5067a",
+    "research/session-report.json": "c7f7f31da730024ec1ec88035352205a024b45416a6df90d22362dc569c6a611",
+    "research/supplemental-session-report.json": "2f00ec42a91c1efa4b05b88683eb3b5a477d2776162fbe4abcc54d8603684600"
+  },
+  "method": {
+    "access": "Read-only SQLite transaction, indexed current active parent chain; matching assistant calls and their own outputs only. A 120-second collection budget aborts without publishing partial results.",
+    "classification": "Unchanged analyzer ci_status workflow; mixed-shell and generic process-wait calls excluded.",
+    "identity": "Literal numeric run ID plus explicit repo option or absolute call/leading-cd cwd; session context never pooled across sessions. No identity inference from run lists, PR checks, variables or output prose.",
+    "selection": "At most 20 repeated exact-identity groups, smallest opaque digest first. Single-observation groups counted but not inspected as repeated sequences.",
+    "baseline": "Native provider run-watch for one explicit run; it already waits without repeated model polling. Different query details may have a legitimate purpose.",
+    "provenance": "Opaque digests bind selected record signatures and output content within this read transaction; no database file hash is claimed for a live WAL database."
+  },
+  "original_aggregate_ci_calls": 128,
+  "difference_from_original_aggregate": 0,
+  "result": {
+    "collection": {
+      "sessions_considered": 52
+    },
+    "observed_ci_calls": 128,
+    "selected_records_by_utc_day": {
+      "2026-09-17": 58,
+      "2026-09-18": 18,
+      "2026-09-19": 52
+    },
+    "unresolved_calls": 96,
+    "resolution_exclusions": {
+      "compound_or_filtered_command": 17,
+      "dynamic_or_multiline_shell": 21,
+      "not_explicit_run_view_or_watch": 55,
+      "run_id_not_literal_first_position": 1,
+      "unsupported_option_or_extra_argument": 2
+    },
+    "identity_resolved_calls": 32,
+    "identity_resolved_groups": 30,
+    "repeated_identity_groups": 2,
+    "selected_sequence_count": 2,
+    "selected_sequences": [
+      {
+        "sequence_id": "6fded108bc84158d3cab58f4e5d70efb5c0bff4bf30039f72839ab3c4e9cc3db",
+        "observations": 2,
+        "span_seconds": 1096.954,
+        "identity_basis": "repo",
+        "view_calls": 2,
+        "native_watch_calls": 0,
+        "status_only_queries": 0,
+        "single_output_parsed_states": 0,
+        "adjacent_same_query_pairs": 0,
+        "adjacent_same_parsed_state_pairs": 0,
+        "avoidable_model_turns_established": false
+      },
+      {
+        "sequence_id": "a1148c465009099de4ba90c3e54d117c450f250898e7e49048fdb89695a0752b",
+        "observations": 2,
+        "span_seconds": 4.291,
+        "identity_basis": "explicit_cwd",
+        "view_calls": 2,
+        "native_watch_calls": 0,
+        "status_only_queries": 0,
+        "single_output_parsed_states": 0,
+        "adjacent_same_query_pairs": 0,
+        "adjacent_same_parsed_state_pairs": 0,
+        "avoidable_model_turns_established": false
+      }
+    ],
+    "selected_sequence_digest": "e790efa4d78c1e256072d1739607c1f19b257a8aa591cc5e1485d2becf65ac01",
+    "source_snapshot_evidence_sha256": "c6f71716d4f9a4b4530bdc69af295d1c4109f9dc02d6b1269d1383023ad941b4"
+  },
+  "outcome": "inconclusive-no-comparative-efficacy-evidence",
+  "measured_avoidable_model_turns": null,
+  "measured_token_savings": null,
+  "measured_latency_change": null,
+  "measured_reliability_change": null,
+  "limitations": [
+    "Exploratory identity-resolution pilot, not a randomized experiment, independent task holdout, or token benchmark.",
+    "Current active ancestry can differ from earlier snapshots after compaction or rewinds; differences from the original 128-call aggregate remain explicit.",
+    "Conservative syntax exclusions leave unresolved work. Unresolved or absent repeated groups do not prove no repeated polling occurred.",
+    "Same run/context and even identical parsed state do not prove an avoidable model turn: task intent, intervening work, retries and required evidence were not adjudicated.",
+    "Native run watching is already a strong zero-model-polling baseline. No new skill is admitted and no saving is inferred from status-call frequency.",
+    "Only exact JSON status objects are parsed; human-readable output, filtered scalars and ambiguous multiple outputs remain unknown. No archived command executes.",
+    "This pilot does not measure provider usage, agent completion time, CI latency, API load or diagnostic correctness."
+  ]
+}
