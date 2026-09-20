@@ -5,6 +5,30 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-20 UTC — Codex comparison completed after setup repairs
+
+Two fresh Codex CLI runs diagnosed the same real Devin failure log. Both answers
+passed all six criteria in an AI review blinded to arm labels and token usage.
+The compact-result arm used **47,840 recorded input-plus-output tokens**; focused
+native reads used **49,803**. The descriptive difference is **1,963 (3.94%)**.
+The compact arm made four read commands versus three and took **37,974 ms versus
+28,625 ms** from launch to process exit. Neither better reliability nor faster
+completion is demonstrated. [Plain-language results](DIAGNOSIS-RESULTS.md).
+
+The original startup timeout remains unchanged. A first retry using initialized
+default state started successfully but exposed a disabled tool-host setting;
+its **24,293 recorded tokens** and unusable result remain in a separate report.
+Enabling the installed stable tool host allowed the completed pair. All three
+retry launches total **121,936 recorded tokens**; original-timeout usage remains
+unknown. No failed attempt is removed or assigned an invented zero cost.
+
+Both setups had private plans frozen before their launches and later public
+protocol projections. Inputs, schema, skill, model request, and rubric remained
+fixed. New reports bind the plan, captures, and locked blind review. One case,
+fixed order, cache differences, unversioned model identity, and imperfect
+isolation attestation prevent causal or general benefit claims. No new skill
+or expanded use case is admitted; the v0.4.0 runtime remains unchanged.
+
 ## 2026-09-20 UTC — approved diagnosis attempt timed out
 
 The owner explicitly authorized sending the selected private Devin failure log

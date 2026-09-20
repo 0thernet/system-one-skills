@@ -86,9 +86,10 @@ Recent analysis covers [a real failed check](https://github.com/hraness/system-o
 and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).
 The failure summary saved tokens but needed the full log for some details;
 the candidate analysis gives us reasons to keep the install small.
-An [agent diagnosis pilot](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-PILOT.md)
-timed out during startup and yielded no answer or token counts. Failed evaluation
-attempts stay in the evidence record; they do not count as savings.
+A [live Codex diagnosis comparison](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-RESULTS.md)
+produced correct answers in both runs: the skill run used **4% fewer recorded
+tokens but took longer**. This single case does not establish better reliability
+or speed. Failed setup attempts and their costs remain in the evidence record.
 
 <a id="commands"></a>
 
