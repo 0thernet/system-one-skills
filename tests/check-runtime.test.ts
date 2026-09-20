@@ -4,7 +4,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, s
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { captureCommand, CAPTURE_BYTES, MAX_LOG_BYTES } from '../src/process.js';
+import { captureCommand, CAPTURE_BYTES, MAX_LOG_BYTES, createDiagnosticCapture, DIAGNOSTIC_BYTES, DIAGNOSTIC_LINES } from '../src/process.js';
 import { reduceOutput } from '../src/reduce.js';
 import { check } from '../src/check.js';
 
@@ -102,6 +102,98 @@ describe('adaptive reducer', () => {
     const result = reduceOutput({ text, code: 0, logPath: '/private/' + 'l'.repeat(5000) });
     expect(result.compacted).toBe(false);
     expect(result.text).toBe(text);
+  });
+});
+
+describe('bounded streaming diagnostics', () => {
+  test('one-byte chunks preserve colored UTF8 diagnostics and source offsets', () => {
+    const capture = createDiagnosticCapture();
+    const prelude = Buffer.from('ordinary é😀 output\n');
+    const diagnosis = Buffer.from('\x1b[31mFAIL\x1b[0m early é😀 mismatch\nExpected: 17\nReceived: 12\n');
+    const input = Buffer.concat([prelude, diagnosis]);
+    for (const byte of input) capture.push(Buffer.from([byte]));
+    const ranges = capture.finish();
+    expect(Buffer.concat(ranges.map(r => r.bytes))).toEqual(diagnosis);
+    expect(ranges[0]!.start).toBe(prelude.length);
+    for (const range of ranges) expect(input.subarray(range.start, range.start + range.bytes.length).equals(range.bytes)).toBe(true);
+  });
+  test('newline-free noise has bounded memory and cannot hide a later failure', () => {
+    const capture = createDiagnosticCapture();
+    const noise = Buffer.alloc(64 * 1024, 120);
+    for (let i = 0; i < 128; i++) {
+      capture.push(noise);
+      expect(capture.bufferedBytes).toBeLessThanOrEqual(DIAGNOSTIC_BYTES * 2 + 4);
+    }
+    capture.push(Buffer.from('\nFAIL after long line\n'));
+    const ranges = capture.finish();
+    expect(ranges[0]!.start).toBe(128 * noise.length + 1);
+    expect(ranges[0]!.bytes.toString()).toBe('FAIL after long line\n');
+  });
+  test('blank-line fastpath preserves offsets and required following context', () => {
+    const capture = createDiagnosticCapture();
+    const prelude = 'ordinary' + '\n'.repeat(2050);
+    const diagnosis = 'FAIL after blanks\n\n\n';
+    capture.push(Buffer.from('ordinary'));
+    capture.push(Buffer.from('\n'.repeat(2048)));
+    capture.push(Buffer.from('\n\nFAIL after blanks\n\n'));
+    capture.push(Buffer.from('\n' + '\n'.repeat(2048)));
+    const ranges = capture.finish();
+    expect(ranges[0]!.start).toBe(Buffer.byteLength(prelude));
+    expect(Buffer.concat(ranges.map(range => range.bytes)).toString()).toBe(diagnosis);
+    expect(ranges.map(range => range.start)).toEqual([prelude.length, prelude.length + 'FAIL after blanks\n'.length, prelude.length + 'FAIL after blanks\n\n'.length]);
+  });
+  test('diagnostic bytes and lines have independent hard caps', () => {
+    for (const input of ['FAIL é😀'.repeat(10000), 'FAIL x\n'.repeat(10000)]) {
+      const capture = createDiagnosticCapture();
+      capture.push(Buffer.from(input));
+      const ranges = capture.finish();
+      const bytes = Buffer.concat(ranges.map(r => r.bytes));
+      expect(bytes.length).toBeLessThanOrEqual(DIAGNOSTIC_BYTES);
+      expect(ranges.length).toBeLessThanOrEqual(DIAGNOSTIC_LINES);
+      expect(bytes.toString()).not.toContain('\ufffd');
+    }
+  });
+  test('interleaved partial stream lines preserve observed order without inventing a diagnosis', () => {
+    const capture = createDiagnosticCapture();
+    // Mirrors stdout starting a line, then stderr writing a complete failure.
+    // The private combined log records this same order; there is no newline
+    // between streams that would make FAIL a line-leading diagnostic.
+    for (const chunk of ['stdout partial ', 'FAIL stderr mismatch\n', 'stdout remainder\n']) {
+      capture.push(Buffer.from(chunk));
+    }
+    expect(capture.finish()).toEqual([]);
+    // Even UTF8 bytes split around another stream remain original evidence,
+    // rather than being silently reconstructed into a contiguous source line.
+    const split = createDiagnosticCapture();
+    split.push(Buffer.from([0xc3]));
+    split.push(Buffer.from('FAIL stderr mismatch\n'));
+    split.push(Buffer.from([0xa9, 10]));
+    expect(split.finish()).toEqual([]);
+  });
+  test('a diagnostic crossing the suffix boundary is not repeated or lost', () => {
+    const diagnosis = Buffer.from('FAIL boundary é😀 mismatch\n');
+    const noise = 'unrelated check passed\n'.repeat(400);
+    // Exercise every byte cutoff, including a suffix capture beginning inside
+    // a multibyte character (the runtime removes its continuation bytes).
+    for (let cutoff = 1; cutoff < diagnosis.length; cutoff++) {
+      let start = cutoff;
+      while ((diagnosis[start]! & 0xc0) === 0x80) start++;
+      const text = diagnosis.subarray(start).toString('utf8') + noise;
+      const sourceBytes = diagnosis.length + Buffer.byteLength(noise);
+      const result = reduceOutput({ text, code: 7, logPath: '/private/log', outputBytes: sourceBytes, captureTruncated: true, diagnostics: [{ start: 0, bytes: diagnosis }] });
+      expect(result.text).toContain(diagnosis.toString('utf8'));
+      expect(result.text.match(/FAIL boundary/g)?.length).toBe(1);
+      expect(result.text).toContain('[…]');
+      expect(result.text).not.toContain('\ufffd');
+      expect(result.omittedBytes).toBe(sourceBytes - diagnosis.length - Buffer.byteLength('unrelated check passed\n'.repeat(24)));
+    }
+  });
+  test('sampled evidence overlapping both the suffix and its tail is counted once', () => {
+    const diagnosis = Buffer.from('FAIL ' + 'x'.repeat(1990) + '\n');
+    const full = Buffer.concat([diagnosis, Buffer.from('trailing ' + 'y'.repeat(400))]);
+    const result = reduceOutput({ text: full.subarray(7).toString('utf8'), code: 7, logPath: '/private/log', outputBytes: full.length, captureTruncated: true, diagnostics: [{ start: 0, bytes: diagnosis }] });
+    expect(result.omittedBytes).toBe(0);
+    expect(result.text).toBe(`exit=7 bytes=${full.length} omitted=0 capture_truncated=true\n${full.toString('utf8')}\nlog="/private/log"\n`);
   });
 });
 
@@ -272,6 +364,33 @@ describe('one-shot argv execution', () => {
     expect(result.rendered.text).not.toContain('\ufffd');
     expect(readFileSync(result.logPath, 'utf8')).toStartWith('FAIL early evidence\n');
     expect(statSync(result.logPath).size).toBe(result.outputBytes);
+  });
+  test('early failures survive long stdout and stderr with exact omissions', async () => {
+    for (const stream of ['stdout', 'stderr']) {
+      const first = 'FAIL early evidence é😀\nExpected: 17\nReceived: 12\n';
+      const tail = 'passed unrelated check\n'.repeat(18000) + 'final diagnostic\n';
+      const script = `process.${stream}.write(${JSON.stringify(first + tail)});process.exitCode=7`;
+      const result = await check({ argv: [node, '-e', script], logPath: path(`early-${stream}.log`) });
+      expect(result.code).toBe(7);
+      expect(result.rendered.text).toContain(first);
+      expect(result.rendered.text).toContain('\n[…]\n');
+      expect(result.rendered.text).toContain('final diagnostic');
+      expect(result.rendered.text).not.toContain('\ufffd');
+      expect(result.raw.length).toBeLessThanOrEqual(CAPTURE_BYTES);
+      expect(result.diagnostics!.reduce((n, r) => n + r.bytes.length, 0)).toBeLessThanOrEqual(DIAGNOSTIC_BYTES);
+      expect(readFileSync(result.logPath, 'utf8')).toBe(first + tail);
+      // Each diagnostic also retains two following lines; Expected/Received
+      // extend that context to the first two passing lines.
+      const retained = Buffer.byteLength(first + 'passed unrelated check\n'.repeat(2) + 'passed unrelated check\n'.repeat(23) + 'final diagnostic\n');
+      expect(result.rendered.omittedBytes).toBe(Buffer.byteLength(first + tail) - retained);
+    }
+  });
+  test('long successful output does not surface a diagnostic-looking early line', async () => {
+    const script = 'process.stdout.write("FAIL mentioned only as fixture data\\n"+"passed check\\n".repeat(30000)+"all passed\\n")';
+    const result = await check({ argv: [node, '-e', script], logPath: path('success-diagnostics.log') });
+    expect(result.code).toBe(0);
+    expect(result.rendered.text).not.toContain('FAIL mentioned');
+    expect(result.rendered.text).toContain('all passed');
   });
   test('CLI compact stdout equals the pure reducer with no wrapper', () => {
     const text = 'passing checks\n'.repeat(1200);

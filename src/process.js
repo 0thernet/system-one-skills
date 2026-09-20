@@ -2,11 +2,76 @@ import { spawn } from 'node:child_process';
 import { constants as osConstants, tmpdir } from 'node:os';
 import { chmodSync, closeSync, mkdtempSync, openSync, writeSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { StringDecoder } from 'node:string_decoder';
+import { isDiagnosticLine } from './reduce.js';
 
 export const MAX_LOG_BYTES = 64 * 1024 * 1024;
 export const CAPTURE_BYTES = 256 * 1024;
 export const TERMINATION_GRACE_MS = 200;
 export const PIPE_DRAIN_MS = 100;
+
+export const DIAGNOSTIC_BYTES = 2048;
+export const DIAGNOSTIC_LINES = 12;
+
+/**
+ * Keep the first failure lines and two following lines, independently of the
+ * rolling tail. Both the incomplete line and all retained evidence are bounded.
+ * Byte offsets refer to the same observed chunk order as the private full log.
+ */
+export function createDiagnosticCapture() {
+  /** @type {Array<{start:number,bytes:Buffer}>} */
+  const ranges = [];
+  let prefix = Buffer.alloc(0);
+  let lineBytes = 0;
+  let offset = 0;
+  let retained = 0;
+  let lines = 0;
+  let following = 0;
+  const full = () => retained >= DIAGNOSTIC_BYTES || lines >= DIAGNOSTIC_LINES;
+  const finishLine = () => {
+    const decoder = new StringDecoder('utf8');
+    const text = decoder.write(prefix); // A split final character is withheld.
+    if (!full() && (isDiagnosticLine(text) || following > 0)) {
+      following = isDiagnosticLine(text) ? 2 : following - 1;
+      let end = Math.min(prefix.length, DIAGNOSTIC_BYTES - retained);
+      while (end > 0 && end < prefix.length && ((prefix[end] ?? 0) & 0xc0) === 0x80) end--;
+      const decoded = new StringDecoder('utf8').write(prefix.subarray(0, end));
+      end = Math.min(end, Buffer.byteLength(decoded));
+      if (end) { ranges.push({ start: offset, bytes: Buffer.from(prefix.subarray(0, end)) }); retained += end; lines++; }
+    }
+    offset += lineBytes;
+    prefix = Buffer.alloc(0);
+    lineBytes = 0;
+  };
+  return {
+    /** @param {Buffer} chunk */
+    push(chunk) {
+      if (full()) return;
+      let start = 0;
+      while (start < chunk.length && !full()) {
+        // Blank lines cannot begin a diagnosis. Skip a run without allocating
+        // or decoding, unless those bytes are following-context evidence.
+        if (!lineBytes && !following && chunk[start] === 10) {
+          const blankStart = start;
+          do { start++; } while (start < chunk.length && chunk[start] === 10);
+          offset += start - blankStart;
+          continue;
+        }
+        const newline = chunk.indexOf(10, start);
+        const end = newline < 0 ? chunk.length : newline + 1;
+        const keep = chunk.subarray(start, Math.min(end, start + DIAGNOSTIC_BYTES + 4 - prefix.length));
+        if (keep.length) prefix = Buffer.concat([prefix, keep]);
+        lineBytes += end - start;
+        start = end;
+        if (newline >= 0) finishLine();
+      }
+    },
+    finish() { if (lineBytes && !full()) finishLine(); return ranges; },
+    // Expose bounds for adversarial tests without exposing process state.
+    get bufferedBytes() { return prefix.length + retained; },
+  };
+}
+
 
 /**
  * @typedef {{argv:string[],cwd?:string,timeoutMs?:number,logPath?:string,
@@ -37,6 +102,7 @@ export async function captureCommand(options) {
   /** @type {Buffer} */
   let captured = Buffer.alloc(0);
   let outputBytes = 0;
+  const diagnosticCapture = createDiagnosticCapture();
   let loggedBytes = 0;
   /** @type {FailureReason | undefined} */
   let reason;
@@ -120,6 +186,7 @@ export async function captureCommand(options) {
   const consume = (chunk) => {
     if (settled) return;
     outputBytes += chunk.length;
+    diagnosticCapture.push(chunk);
     captured = chunk.length >= CAPTURE_BYTES
       ? Buffer.from(chunk.subarray(chunk.length - CAPTURE_BYTES))
       : Buffer.concat([captured.subarray(Math.max(0, captured.length + chunk.length - CAPTURE_BYTES)), chunk]);
@@ -162,5 +229,5 @@ export async function captureCommand(options) {
   if (captureTruncated) while (start < captured.length && ((captured[start] ?? 0) & 0xc0) === 0x80) start++;
   const text = captured.subarray(start).toString('utf8');
   const code = reason === 'timeout' ? 124 : reason === 'cancelled' ? (signal?.reason === 'SIGTERM' ? 143 : 130) : reason === 'spawn_error' ? 127 : reason ? 125 : exit;
-  return { code, reason, logPath, raw: captured, text, outputBytes, loggedBytes, captureTruncated, logIncomplete, cleanupUncertain };
+  return { code, reason, logPath, raw: captured, text, outputBytes, loggedBytes, captureTruncated, logIncomplete, cleanupUncertain, diagnostics: diagnosticCapture.finish() };
 }

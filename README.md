@@ -111,6 +111,12 @@ to fifteen minutes, and a 64 MiB log limit. Exceeding a limit stops the command
 and reports a failure; incomplete capture is disclosed. Cancellation forwards
 the signal for cleanup, then escalates after a bounded grace period. Undrained
 inherited pipes produce `log_incomplete=true` and `cleanup_uncertain=true`.
+The in-memory suffix is limited to 256 KiB. A separate bounded capture keeps up
+to 2 KiB across 12 early diagnostic/context lines for failed commands, including
+when later output displaces them from the suffix. Gaps remain explicit; excerpts
+do not promise complete diagnostic coverage. The matcher follows the full log’s
+observed stdout/stderr chunk order. Interleaved partial lines or characters can
+hide a diagnostic; it does not reconstruct separate logical streams.
 Default logs use a private temporary directory. They may contain sensitive output;
 delete them when no longer needed.
 
