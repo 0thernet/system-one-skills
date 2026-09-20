@@ -1,0 +1,383 @@
+{
+  "assessment": {
+    "plan": {
+      "provider": "codex",
+      "cli_version": "0.155.0",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "ultra",
+      "case_count": 1,
+      "max_session_launches": 2,
+      "order": [
+        "reduced",
+        "native"
+      ],
+      "counterbalanced": false,
+      "immutable_provider_checkpoint": null,
+      "whole_coding_task": false,
+      "private_payload_execution_authorized": true
+    },
+    "all_attempts_included": true,
+    "launch_inventory_count": 2,
+    "attempts": [
+      {
+        "sequence": 1,
+        "arm": "reduced",
+        "attempt_id_sha256": "a3969be073ecb64a422e9c4267deabcf6db47f5b2b0b05846311ebae3971ad6c",
+        "capture_sha256": "072e6cbe15811f7e29d35fbd87eae6825766c76bb247a72481fc5c7e67a7ab83",
+        "stdout_sha256": "16d61534372c60d60efee087387d7479f5e056b337341d6472f872e6d70cfe43",
+        "stderr_sha256": "588554fdc4636f4b107e7ed6565eaad36a6cae892db199cc12f119167249fb1b",
+        "session_id_sha256": "c47d26b12103eb1bf45b05e8476ed1b7b2cacb9a76e75d786dcc7d87d1260d4f",
+        "started_at_utc": "2026-09-20T15:26:21.574006+00:00",
+        "ended_at_utc": "2026-09-20T15:26:59.511316+00:00",
+        "elapsed_ms": 37974,
+        "exit_code": 0,
+        "status": "completed",
+        "model_request_observed": true,
+        "isolation_attested": false,
+        "capture_complete": true,
+        "usage_coverage": "complete",
+        "usage_semantics": "cumulative-cli-session-total",
+        "usage_snapshots": [
+          {
+            "input_tokens": 47131,
+            "cached_input_tokens": 26752,
+            "output_tokens": 709,
+            "reasoning_output_tokens": 243,
+            "cache_write_input_tokens": 0
+          }
+        ],
+        "answer_sha256": "f00ea93213a4376c6b77cf007666f6b6bf7fd420b6bc16e7bbb5f6ecbaf09458",
+        "rubric": {
+          "failure_status_correct": true,
+          "failed_test_count_correct": true,
+          "observed_error_identified": true,
+          "evidence_quote_and_line_supported": true,
+          "safe_next_investigation": true,
+          "no_unproven_root_cause_claim": true
+        },
+        "rubric_review_sha256": "84e1348be31ea23dd687127996c84fa6c48b8015d4c6779266593c7cf17b3b92"
+      },
+      {
+        "sequence": 2,
+        "arm": "native",
+        "attempt_id_sha256": "778bb643c3bc2839e0d77973ee5af59073495aaf05bb95334508856e31901373",
+        "capture_sha256": "7b4fa4c00ea452067bac4588ff20a8eda542b1d09dbbeb87b9846687358f3a3c",
+        "stdout_sha256": "ff41a58dad6e0d799c0d03916157fbdf0aca6e814c48889cf6417b30db45a6ad",
+        "stderr_sha256": "3831c7442fb5d8bb3d2ae9bbce70f9201b314cf0f5b8e4c59ba2e8fa5f482bee",
+        "session_id_sha256": "79c64603bcf8a87e4a2032407931750de92b7069e19181d175f0a9c4a70ed403",
+        "started_at_utc": "2026-09-20T15:28:06.827977+00:00",
+        "ended_at_utc": "2026-09-20T15:28:35.453353+00:00",
+        "elapsed_ms": 28625,
+        "exit_code": 0,
+        "status": "completed",
+        "model_request_observed": true,
+        "isolation_attested": false,
+        "capture_complete": true,
+        "usage_coverage": "complete",
+        "usage_semantics": "cumulative-cli-session-total",
+        "usage_snapshots": [
+          {
+            "input_tokens": 49270,
+            "cached_input_tokens": 23808,
+            "output_tokens": 533,
+            "reasoning_output_tokens": 197,
+            "cache_write_input_tokens": 0
+          }
+        ],
+        "answer_sha256": "b623a09f417d64f2718a005474edee0d9488cc745a85311599e3707267eca65f",
+        "rubric": {
+          "failure_status_correct": true,
+          "failed_test_count_correct": true,
+          "observed_error_identified": true,
+          "evidence_quote_and_line_supported": true,
+          "safe_next_investigation": true,
+          "no_unproven_root_cause_claim": true
+        },
+        "rubric_review_sha256": "84e1348be31ea23dd687127996c84fa6c48b8015d4c6779266593c7cf17b3b92"
+      }
+    ],
+    "private_provenance": {
+      "original_plan_sha256": "35935f7d0564fa5513db433f0c0b3cfd1d0c4c7a516e1a5eb947fde0d2098163",
+      "execution_plan_sha256": "78ac541a85a57620b66745155ec81ad183ae5790ff7954d295445691d8a41e11",
+      "runner_sha256": "96283cee00abb9938e873f38e86b2a1f336a751293ca5cee09449962532aa2c7",
+      "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+      "source_log_sha256": "325946a2e8f2a3f467fae330ee75f988f19634b30b27b4f09b006632de3a693c",
+      "source_annotation_sha256": "8f50d9c87fd2e22be03fd780ddfa5bcd8ca13b2e27144e81ffe357375a1a1a68",
+      "replay_sha256": "5234862e36d1a5cecd30b1897590812133933aad752388ecfe5c80c0522a8af5",
+      "capture_manifest_sha256": "a9dc1275b33cdabddf6058cbc796f449b3b5eb523c5fb9bc438ca8eab0e67f42",
+      "blind_review_sha256": "84e1348be31ea23dd687127996c84fa6c48b8015d4c6779266593c7cf17b3b92"
+    },
+    "schema_version": 1,
+    "evidence_kind": "observed-exploratory-log-diagnosis-pilot",
+    "source_files_sha256": {
+      "research/assess_diagnosis.py": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+      "research/diagnosis-pilot-report.json": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+      "research/failure-report.json": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+      "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+      "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381"
+    },
+    "accounting": {
+      "kind": "provider-reported-cli-counters",
+      "input_tokens_include_cached_input": true,
+      "output_tokens_include_reasoning_output": true,
+      "total_formula": "input_tokens + output_tokens; cached and reasoning subsets are not added",
+      "multiple_snapshots": "Latest cumulative session snapshot only; repeated cumulative values are not summed.",
+      "missing_counter": null,
+      "estimated_skill_overhead_added": 0,
+      "billing_claim": false,
+      "scope": "Planned scope: explicit skill-body load and log diagnosis. Actual observed interaction and isolation depend on each attempt capture. Natural skill discovery and the original coding task are outside the experiment.",
+      "elapsed_scope": "Launcher wall duration includes startup and shutdown; it is not diagnosis latency unless a complete task interval is separately observed.",
+      "no_event_stream": "No observed model event is not proof of zero upstream requests or cost; request status remains unknown when capture is absent."
+    },
+    "assessed_at_utc": "2026-09-20T15:32:01.313846+00:00",
+    "summary": {
+      "operational_status": "complete-two-arm-observation",
+      "planned_launches": 2,
+      "launched_attempts": 2,
+      "unlaunched_arms": [],
+      "model_requests_observed": 2,
+      "model_request_status_unknown": 0,
+      "completed_cli_answers": 2,
+      "fully_scored_answers": 2,
+      "answers_passing_all_criteria": 2,
+      "complete_usage_attempts": 2,
+      "isolation_attested_attempts": 0,
+      "prepared_cases": 1,
+      "completed_comparison_cases": 1,
+      "complete_usage_and_correct_answer_pair": true,
+      "per_arm": {
+        "reduced": {
+          "sequence": 1,
+          "arm": "reduced",
+          "usage": {
+            "snapshots": 1,
+            "counters_nondecreasing": true,
+            "latest": {
+              "input_tokens": 47131,
+              "cached_input_tokens": 26752,
+              "output_tokens": 709,
+              "reasoning_output_tokens": 243,
+              "cache_write_input_tokens": 0,
+              "non_cached_input_tokens": 20379,
+              "input_plus_output_tokens": 47840
+            }
+          },
+          "rubric": {
+            "scored_criteria": 6,
+            "passed_criteria": 6,
+            "all_criteria_passed": true
+          },
+          "successful_answer": true,
+          "complete_usage": true
+        },
+        "native": {
+          "sequence": 2,
+          "arm": "native",
+          "usage": {
+            "snapshots": 1,
+            "counters_nondecreasing": true,
+            "latest": {
+              "input_tokens": 49270,
+              "cached_input_tokens": 23808,
+              "output_tokens": 533,
+              "reasoning_output_tokens": 197,
+              "cache_write_input_tokens": 0,
+              "non_cached_input_tokens": 25462,
+              "input_plus_output_tokens": 49803
+            }
+          },
+          "rubric": {
+            "scored_criteria": 6,
+            "passed_criteria": 6,
+            "all_criteria_passed": true
+          },
+          "successful_answer": true,
+          "complete_usage": true
+        }
+      },
+      "observed_native_minus_reduced_counters": {
+        "input_tokens": 2139,
+        "cached_input_tokens": -2944,
+        "output_tokens": -176,
+        "reasoning_output_tokens": -46,
+        "cache_write_input_tokens": 0,
+        "non_cached_input_tokens": 5083,
+        "input_plus_output_tokens": 1963
+      },
+      "observed_native_minus_reduced_elapsed_ms": -9349,
+      "counter_delta_is_complete_usage": true,
+      "counter_delta_semantics_known": true,
+      "admission": "not-admitted-single-exploratory-pair",
+      "causal_token_or_latency_improvement_demonstrated": false,
+      "reliability_improvement_demonstrated": false
+    }
+  },
+  "attempt_metadata": [
+    {
+      "sequence": 1,
+      "requested_model": "gpt-6-astra",
+      "requested_effort": "ultra",
+      "observed_model": null,
+      "observed_effort": null,
+      "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+      "config_sha256": "e191cefcbb85fe75d40c6f444554deb0e64956ca225b9137dc00fec55756980c",
+      "input_manifest_sha256": "997897c7287dcc283402d7b40bff59584733c38d4a94a9312e39bf7809e57370",
+      "limits": {
+        "total_wall_seconds": 600,
+        "startup_without_session_or_turn_event_seconds": 60,
+        "combined_stdout_stderr_bytes": 8388608
+      },
+      "first_start_elapsed_ms": 964,
+      "completion_event_count": 1,
+      "tool_access_status": "available"
+    },
+    {
+      "sequence": 2,
+      "requested_model": "gpt-6-astra",
+      "requested_effort": "ultra",
+      "observed_model": null,
+      "observed_effort": null,
+      "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+      "config_sha256": "e191cefcbb85fe75d40c6f444554deb0e64956ca225b9137dc00fec55756980c",
+      "input_manifest_sha256": "b43522cce482d0d4b690217d3bd298965e4404ba40d00402bf7e7c3eda98d363",
+      "limits": {
+        "total_wall_seconds": 600,
+        "startup_without_session_or_turn_event_seconds": 60,
+        "combined_stdout_stderr_bytes": 8388608
+      },
+      "first_start_elapsed_ms": 1016,
+      "completion_event_count": 1,
+      "tool_access_status": "available"
+    }
+  ],
+  "blind_review_projection": {
+    "review_sha256": "84e1348be31ea23dd687127996c84fa6c48b8015d4c6779266593c7cf17b3b92",
+    "scored_before_arm_reveal": true,
+    "answers": [
+      {
+        "answer_sha256": "f00ea93213a4376c6b77cf007666f6b6bf7fd420b6bc16e7bbb5f6ecbaf09458",
+        "rubric": {
+          "failure_status_correct": true,
+          "failed_test_count_correct": true,
+          "observed_error_identified": true,
+          "evidence_quote_and_line_supported": true,
+          "safe_next_investigation": true,
+          "no_unproven_root_cause_claim": true
+        }
+      },
+      {
+        "answer_sha256": "b623a09f417d64f2718a005474edee0d9488cc745a85311599e3707267eca65f",
+        "rubric": {
+          "failure_status_correct": true,
+          "failed_test_count_correct": true,
+          "observed_error_identified": true,
+          "evidence_quote_and_line_supported": true,
+          "safe_next_investigation": true,
+          "no_unproven_root_cause_claim": true
+        }
+      }
+    ]
+  },
+  "schema_version": 1,
+  "evidence_kind": "retry-exploratory-log-diagnosis-pilot",
+  "source_files_sha256": {
+    "research/assess_diagnosis.py": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+    "research/diagnosis-pilot-report.json": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+    "research/failure-report.json": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+    "research/assess_diagnosis_retry.py": "cb6221153a4aef8f02c64d64031237d0f4750e20a4e2fe3c7177ae06065a1a49",
+    "research/diagnosis-observed-report.json": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b",
+    "research/diagnosis-retry-tools-protocol.json": "00aac309357c97fde783274652b2f39c022efceaa4bcef2ffce2238a8712c6ed"
+  },
+  "protocol_sha256": "00aac309357c97fde783274652b2f39c022efceaa4bcef2ffce2238a8712c6ed",
+  "protocol_path": "research/diagnosis-retry-tools-protocol.json",
+  "prior_retry_report": {
+    "path": "research/diagnosis-retry-report.json",
+    "sha256": "9b9532e6712eb2c8e33ec0d5c2e3f68ff06d8055183593ee5187d200309d563e"
+  },
+  "previous_report": {
+    "path": "research/diagnosis-observed-report.json",
+    "sha256": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b"
+  },
+  "derived_metadata": [
+    {
+      "sequence": 1,
+      "arm": "reduced",
+      "observed_configuration": "unverified",
+      "tool_access_status": "available",
+      "first_event_after_launch_ms": 964,
+      "observed_turn_interval_ms": null,
+      "launcher_wall_ms": 37974
+    },
+    {
+      "sequence": 2,
+      "arm": "native",
+      "observed_configuration": "unverified",
+      "tool_access_status": "available",
+      "first_event_after_launch_ms": 1016,
+      "observed_turn_interval_ms": null,
+      "launcher_wall_ms": 28625
+    }
+  ],
+  "interpretation": {
+    "operational_status": "complete-two-arm-observation",
+    "retry_attempts": 2,
+    "historical_timeout_retained_separately": true,
+    "observed_configuration_mismatch": false,
+    "tool_access_unavailable": false,
+    "tool_unavailable_attempts": 0,
+    "both_observed_configurations_confirmed": false,
+    "descriptive_native_minus_reduced_counters": {
+      "input_tokens": 2139,
+      "cached_input_tokens": -2944,
+      "output_tokens": -176,
+      "reasoning_output_tokens": -46,
+      "cache_write_input_tokens": 0,
+      "non_cached_input_tokens": 5083,
+      "input_plus_output_tokens": 1963
+    },
+    "descriptive_native_minus_reduced_turn_interval_ms": null,
+    "complete_usage_and_correct_answer_pair": true,
+    "admission": "not-admitted-single-exploratory-retry-pair",
+    "causal_token_or_latency_improvement_demonstrated": false,
+    "reliability_improvement_demonstrated": false,
+    "limits": [
+      "one archived task",
+      "fixed arm order",
+      "cache effects not controlled",
+      "no immutable provider checkpoint",
+      "natural skill discovery not measured",
+      "prior request transmission unknown",
+      "no whole coding task comparison"
+    ]
+  },
+  "assessed_at_utc": "2026-09-20T15:32:01.313846+00:00",
+  "retry_cost_accounting": {
+    "recorded_retry_launches": 3,
+    "launches_with_known_counter_semantics": 3,
+    "known_counter_totals": {
+      "input_tokens": 120050,
+      "cached_input_tokens": 62208,
+      "output_tokens": 1886,
+      "reasoning_output_tokens": 841,
+      "cache_write_input_tokens": 0,
+      "non_cached_input_tokens": 57842,
+      "input_plus_output_tokens": 121936
+    },
+    "known_counter_observation_counts": {
+      "input_tokens": 3,
+      "cached_input_tokens": 3,
+      "output_tokens": 3,
+      "reasoning_output_tokens": 3,
+      "cache_write_input_tokens": 3,
+      "non_cached_input_tokens": 3,
+      "input_plus_output_tokens": 3
+    },
+    "counter_totals_scope": "Each total sums only observed values; its observation count must be compared with recorded_retry_launches. Missing values are not zero.",
+    "all_retry_usage_complete": true,
+    "includes_tool_unavailable_retry": true,
+    "original_120_second_timeout_usage": null,
+    "complete_cost_including_original_timeout_known": false
+  }
+}

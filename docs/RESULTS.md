@@ -61,12 +61,14 @@ terminal colors before replay still gave a 58% reduction in this one case, so
 color codes explain part of the raw-log benefit. The [failure audit](FAILURE-EVIDENCE.md)
 publishes the selection, independently reviewed labels, and exact counts.
 
-**The live follow-up comparison is still incomplete.** After explicit approval,
-the first Codex launch hit its 120-second limit without an answer or token
-counters. Startup history import was still running; the native comparison arm
-was not launched. This provides no measurement of diagnosis quality, agent token
-savings, or task speed. The [pilot record](DIAGNOSIS-PILOT.md) preserves the failed
-attempt and unknown upstream usage rather than treating it as zero cost.
+**A live follow-up found a much smaller difference.** In one completed Codex
+comparison, both answers passed all six diagnosis criteria. The skill run used
+**47,840 recorded tokens versus 49,803 with focused native reads: 3.9% fewer**,
+including follow-up reads. It also took 38.0 seconds versus 28.6 seconds by the
+launcher clock. This is no evidence of better reliability or speed, and one
+case with uncontrolled cache effects cannot establish general token savings.
+The [diagnosis results](DIAGNOSIS-RESULTS.md) include failed setup attempts,
+provider counters, timing limits, and the blind review method.
 
 ## Why the package stays small
 

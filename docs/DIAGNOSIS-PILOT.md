@@ -1,5 +1,10 @@
 # Agent diagnosis pilot: startup timeout, no comparison result
 
+**Historical attempt.** A later authorized retry completed both diagnosis runs:
+both answers were correct, with 3.9% fewer recorded tokens and a longer run for
+the skill arm. Read the [completed comparison and all retry costs](DIAGNOSIS-RESULTS.md).
+The record below preserves the earlier startup timeout unchanged in its scope.
+
 **The first approved launch timed out without an answer or token counts.**
 The native comparison arm was not launched. We cannot yet say whether the
 compact result helped the agent diagnose the failure or saved tokens overall.
@@ -100,7 +105,7 @@ inclusive totals; repeated cumulative snapshots are not summed. A scored answer
 needs the six declared criteria and a bound review artifact. Synthetic tests
 exercise these rules and are not observations of agent performance.
 
-## What would make a continuation useful
+## Requirements recorded before the continuation
 
 First establish a usable startup environment without a diagnosis request, then
 record any changed setup and a fresh launch budget before collecting outcomes.
@@ -113,3 +118,7 @@ Even a completed pair would be exploratory: one case, one order, no exposed
 immutable model checkpoint, and a log already used in retrospective research.
 It cannot demonstrate general savings, better reliability, or faster tasks.
 The stronger [whole-task protocol](../bench/TRIALS.md) remains a separate gate.
+
+The continuation met the startup, two-answer, and blind-review requirements
+after correcting the evaluation's tool-host settings. Its observations and
+remaining limitations are in [the completed results](DIAGNOSIS-RESULTS.md).
