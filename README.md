@@ -77,25 +77,34 @@ in the [results notes](https://github.com/hraness/system-one-skills/blob/main/do
 installed. The others have **No numeric result** and need an executable adapter
 and evidence of a benefit over native tools before they join the package.
 
-| Skill | Verified reduction | What to use today |
+| Skill | Verified reduction | Discovery signal | What to use today |
 | --- | --- | --- |
-| `system-one-verify` | **35.20% less validation text** across 563 real outputs; 100% preservation checks | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
-| `system-one-explore` | **No result** | Focused native search; research must prove it preserves required locations |
-| `system-one-ci` | **No result** | Native run watching; our pilot established no avoidable polling |
-| `system-one-diff` | **No result** | Scoped native diffs; research must measure missed findings |
-| `system-one-digest` | **No result** | Native Git status; most observed outputs were already too small to justify another layer |
-| `system-one-fetch` | **No result** | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
-| `system-one-research` | **No result** | Native search and targeted reads; no separate benefit demonstrated |
-| `system-one-triage` | **No result** | Deterministic rules or the primary agent; no evaluated decision family yet |
-| `system-one-writing` | **No result** | Existing linters; inactive until there is relevant task evidence |
-| `system-one-evolve` | **No result** | A fixed reviewed policy; inactive until optimization can repay its cost |
-| `system-one` | **No result** | Direct selection; an extra router is unjustified for one available skill |
+| `system-one-verify` | **35.20% less validation text** across 563 real outputs; 100% preservation checks | 563 replay outputs; 35.20% is text-boundary evidence only | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
+| `system-one-explore` | **No result** | 213/573 calls cross an illustrative 256-token headroom screen (37.17%); not savings | Focused native search; research must prove it preserves required locations |
+| `system-one-ci` | **No result** | Native run watching; pilot established no avoidable polling | Native run watching; our pilot established no avoidable polling |
+| `system-one-diff` | **No result** | 31/68 calls cross the same headroom screen (45.59%); not savings | Scoped native diffs; research must measure missed findings |
+| `system-one-digest` | **No result** | 28/224 calls cross it (12.50%); not savings | Native Git status; most observed outputs were already too small to justify another layer |
+| `system-one-fetch` | **No result** | 54/95 shared web calls cross it (56.84%); not an independent cohort | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
+| `system-one-research` | **No result** | Same 54/95 shared web calls as fetch; do not add the totals | Native search and targeted reads; no separate benefit demonstrated |
+| `system-one-triage` | **No result** | No dedicated labeled cohort | Deterministic rules or the primary agent; no evaluated decision family yet |
+| `system-one-writing` | **No result** | No dedicated labeled cohort | Existing linters; inactive until there is relevant task evidence |
+| `system-one-evolve` | **No result** | No dedicated labeled cohort | A fixed reviewed policy; inactive until optimization can repay its cost |
+| `system-one` | **No result** | No dedicated labeled cohort | Direct selection; an extra router is unjustified for one available skill |
 
 The [full catalog](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
 explains the proposed benefit, native alternative, and evidence needed for each.
 The [research log](https://github.com/hraness/system-one-skills/blob/main/docs/RESEARCH-LOG.md)
 publishes positive and negative findings. New skills must save tokens on complete
 tasks while meeting correctness and latency requirements.
+
+The discovery percentages in the table are **not reductions**. They answer one
+narrow question: how many observed outputs were at least 256 `o200k_base` text
+tokens, leaving a hypothetical 128-token skill overhead and 128-token margin.
+They assume perfect deletion, so they cannot justify installing a candidate or
+be compared with the 35.20% validation-text result. Fetch and research share
+one 95-call web proxy and must not be added together. The [catalog scorecard](docs/SCORECARD.md)
+publishes the denominators, provider split, and current decision for every
+entry.
 
 Recent analysis covers [a real failed check](https://github.com/hraness/system-one-skills/blob/main/docs/FAILURE-EVIDENCE.md)
 and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).

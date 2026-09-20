@@ -1,0 +1,446 @@
+{
+  "schema_version": 1,
+  "measurement": "The verify percentage is a text-boundary replay result. All other percentages are omitted: their candidate screens report real workflow volume and an optimistic output-token headroom ceiling only. Whole-task token reductions require paired native-versus-skill task results.",
+  "token_screen": {
+    "per_use_overhead_tokens": 128,
+    "required_margin_tokens": 128,
+    "threshold_tokens": 256
+  },
+  "skills": {
+    "system-one-verify": {
+      "reduction_pct": 35.2,
+      "metric_kind": "verified_text_boundary_only",
+      "status": "verified_text_boundary_only",
+      "reduction_scope": "UTF-8 text at the tool-result boundary across 563 replayed validation outputs",
+      "whole_task_provider_token_result": "not_established",
+      "preservation_failures": 0,
+      "whole_task_provider_tokens": null
+    },
+    "system-one-explore": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 573,
+      "calls_with_observed_output": 573,
+      "calls_without_observed_output": 0,
+      "output_fragments": 574,
+      "multiple_fragment_calls": 1,
+      "observed_output_tokens": 316753,
+      "output_token_quantiles_by_provider": {
+        "codex": {
+          "p25": 63,
+          "p50": 125,
+          "p75": 190,
+          "p90": 1379,
+          "p95": 1684,
+          "max": 1684
+        },
+        "claude": {
+          "p25": 32,
+          "p50": 32,
+          "p75": 50,
+          "p90": 50,
+          "p95": 50,
+          "max": 50
+        },
+        "devin": {
+          "p25": 36,
+          "p50": 155,
+          "p75": 554,
+          "p90": 2159,
+          "p95": 2819,
+          "max": 9832
+        }
+      },
+      "native_controls": {
+        "file_inventory": 3,
+        "literal_git_without_recognized_control": 2,
+        "literal_search_without_recognized_control": 29,
+        "match_counts": 6,
+        "matching_file_names": 8,
+        "structured_search_without_recognized_control": 287,
+        "unresolved_command": 238
+      },
+      "headroom_screen": {
+        "per_use_overhead_tokens": 128,
+        "required_margin_tokens": 128,
+        "threshold_tokens": 256,
+        "calls_reaching_threshold": 213,
+        "calls_reaching_threshold_pct": 37.17,
+        "interpretation": "Optimistic deletion ceiling only; it assumes the candidate could remove every output token and proves neither a replacement, correctness, nor a saving."
+      },
+      "by_provider": {
+        "codex": {
+          "calls": 18,
+          "calls_with_observed_output": 18,
+          "output_tokens": 5245,
+          "calls_reaching_threshold": 3
+        },
+        "claude": {
+          "calls": 3,
+          "calls_with_observed_output": 3,
+          "output_tokens": 114,
+          "calls_reaching_threshold": 0
+        },
+        "devin": {
+          "calls": 552,
+          "calls_with_observed_output": 552,
+          "output_tokens": 311394,
+          "calls_reaching_threshold": 210
+        }
+      },
+      "status": "retrospective_headroom_only"
+    },
+    "system-one-digest": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 224,
+      "calls_with_observed_output": 224,
+      "calls_without_observed_output": 0,
+      "output_fragments": 224,
+      "multiple_fragment_calls": 0,
+      "observed_output_tokens": 38017,
+      "output_token_quantiles_by_provider": {
+        "codex": {
+          "p25": 110,
+          "p50": 153,
+          "p75": 213,
+          "p90": 3541,
+          "p95": 3541,
+          "max": 3541
+        },
+        "claude": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "devin": {
+          "p25": 48,
+          "p50": 96,
+          "p75": 147,
+          "p90": 284,
+          "p95": 486,
+          "max": 1871
+        }
+      },
+      "native_controls": {
+        "git_formatted_log": 33,
+        "git_short_status": 42,
+        "git_targeted_query": 3,
+        "literal_git_without_recognized_control": 5,
+        "unresolved_command": 141
+      },
+      "headroom_screen": {
+        "per_use_overhead_tokens": 128,
+        "required_margin_tokens": 128,
+        "threshold_tokens": 256,
+        "calls_reaching_threshold": 28,
+        "calls_reaching_threshold_pct": 12.5,
+        "interpretation": "Optimistic deletion ceiling only; it assumes the candidate could remove every output token and proves neither a replacement, correctness, nor a saving."
+      },
+      "by_provider": {
+        "codex": {
+          "calls": 7,
+          "calls_with_observed_output": 7,
+          "output_tokens": 4417,
+          "calls_reaching_threshold": 1
+        },
+        "claude": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "devin": {
+          "calls": 217,
+          "calls_with_observed_output": 217,
+          "output_tokens": 33600,
+          "calls_reaching_threshold": 27
+        }
+      },
+      "status": "retrospective_headroom_only"
+    },
+    "system-one-diff": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 68,
+      "calls_with_observed_output": 68,
+      "calls_without_observed_output": 0,
+      "output_fragments": 68,
+      "multiple_fragment_calls": 0,
+      "observed_output_tokens": 93485,
+      "output_token_quantiles_by_provider": {
+        "codex": {
+          "p25": 3611,
+          "p50": 3611,
+          "p75": 3611,
+          "p90": 3611,
+          "p95": 3611,
+          "max": 3611
+        },
+        "claude": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "devin": {
+          "p25": 17,
+          "p50": 187,
+          "p75": 1730,
+          "p90": 4336,
+          "p95": 5924,
+          "max": 13419
+        }
+      },
+      "native_controls": {
+        "git_diff_stat": 3,
+        "git_file_names": 2,
+        "git_name_status": 2,
+        "literal_git_without_recognized_control": 37,
+        "unresolved_command": 24
+      },
+      "headroom_screen": {
+        "per_use_overhead_tokens": 128,
+        "required_margin_tokens": 128,
+        "threshold_tokens": 256,
+        "calls_reaching_threshold": 31,
+        "calls_reaching_threshold_pct": 45.59,
+        "interpretation": "Optimistic deletion ceiling only; it assumes the candidate could remove every output token and proves neither a replacement, correctness, nor a saving."
+      },
+      "by_provider": {
+        "codex": {
+          "calls": 1,
+          "calls_with_observed_output": 1,
+          "output_tokens": 3611,
+          "calls_reaching_threshold": 1
+        },
+        "claude": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "devin": {
+          "calls": 67,
+          "calls_with_observed_output": 67,
+          "output_tokens": 89874,
+          "calls_reaching_threshold": 30
+        }
+      },
+      "status": "retrospective_headroom_only"
+    },
+    "system-one-fetch": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 95,
+      "calls_with_observed_output": 95,
+      "calls_without_observed_output": 0,
+      "output_fragments": 95,
+      "multiple_fragment_calls": 0,
+      "observed_output_tokens": 101121,
+      "output_token_quantiles_by_provider": {
+        "codex": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "claude": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "devin": {
+          "p25": 77,
+          "p50": 487,
+          "p75": 1998,
+          "p90": 2475,
+          "p95": 2897,
+          "max": 6011
+        }
+      },
+      "native_controls": {
+        "unresolved_command": 95
+      },
+      "headroom_screen": {
+        "per_use_overhead_tokens": 128,
+        "required_margin_tokens": 128,
+        "threshold_tokens": 256,
+        "calls_reaching_threshold": 54,
+        "calls_reaching_threshold_pct": 56.84,
+        "interpretation": "Optimistic deletion ceiling only; it assumes the candidate could remove every output token and proves neither a replacement, correctness, nor a saving."
+      },
+      "by_provider": {
+        "codex": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "claude": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "devin": {
+          "calls": 95,
+          "calls_with_observed_output": 95,
+          "output_tokens": 101121,
+          "calls_reaching_threshold": 54
+        }
+      },
+      "status": "shared_proxy_retrospective_only",
+      "shared_proxy_with": "system-one-research",
+      "shared_cohort_id": "web_research_v1",
+      "counted_once_as": "web_research"
+    },
+    "system-one-research": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 95,
+      "calls_with_observed_output": 95,
+      "calls_without_observed_output": 0,
+      "output_fragments": 95,
+      "multiple_fragment_calls": 0,
+      "observed_output_tokens": 101121,
+      "output_token_quantiles_by_provider": {
+        "codex": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "claude": {
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "max": null
+        },
+        "devin": {
+          "p25": 77,
+          "p50": 487,
+          "p75": 1998,
+          "p90": 2475,
+          "p95": 2897,
+          "max": 6011
+        }
+      },
+      "native_controls": {
+        "unresolved_command": 95
+      },
+      "headroom_screen": {
+        "per_use_overhead_tokens": 128,
+        "required_margin_tokens": 128,
+        "threshold_tokens": 256,
+        "calls_reaching_threshold": 54,
+        "calls_reaching_threshold_pct": 56.84,
+        "interpretation": "Optimistic deletion ceiling only; it assumes the candidate could remove every output token and proves neither a replacement, correctness, nor a saving."
+      },
+      "by_provider": {
+        "codex": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "claude": {
+          "calls": 0,
+          "calls_with_observed_output": 0,
+          "output_tokens": 0,
+          "calls_reaching_threshold": 0
+        },
+        "devin": {
+          "calls": 95,
+          "calls_with_observed_output": 95,
+          "output_tokens": 101121,
+          "calls_reaching_threshold": 54
+        }
+      },
+      "shared_proxy_with": "system-one-fetch",
+      "shared_cohort_id": "web_research_v1",
+      "counted_once_as": "web_research",
+      "status": "shared_proxy_retrospective_only"
+    },
+    "system-one-ci": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 128,
+      "identity_resolved_calls": 32,
+      "identity_resolved_groups": 30,
+      "repeated_identity_groups": 2,
+      "avoidable_model_turns_established": false,
+      "selected_sequence_count": 2,
+      "measured_token_savings": null,
+      "status": "native_baseline_preferred",
+      "interpretation": "Native run watching is the baseline. The pilot did not establish an avoidable model turn, so it does not produce a reduction percentage."
+    },
+    "system-one-triage": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 0,
+      "status": "no_dedicated_cohort",
+      "interpretation": "No dedicated, labeled episodes were observed; zero is a coverage count, not a measured saving."
+    },
+    "system-one-writing": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 0,
+      "status": "no_dedicated_cohort",
+      "interpretation": "No dedicated, labeled episodes were observed; zero is a coverage count, not a measured saving."
+    },
+    "system-one-evolve": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 0,
+      "status": "no_dedicated_cohort",
+      "interpretation": "No dedicated, labeled episodes were observed; zero is a coverage count, not a measured saving."
+    },
+    "system-one": {
+      "reduction_pct": null,
+      "metric_kind": "no_paired_result",
+      "whole_task_provider_token_result": "not_established",
+      "observed_calls": 0,
+      "status": "no_dedicated_cohort",
+      "interpretation": "No dedicated, labeled episodes were observed; zero is a coverage count, not a measured saving."
+    }
+  },
+  "sources": {
+    "research/catalog_scorecard.py": "8c4c03eab70eb03314bed58a4f26bfb4d98b131b37f0206e20bea537c7f819fc",
+    "research/candidate-report.json": "ad8cd073ccf49499292ff87f9c43fa2cf4631693a6988ca0a2649958c32759ec",
+    "research/analyze_sessions.py": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+    "research/candidate_screen.py": "87602480388f13ad4ff41d205e68f544439446ae18bce30ac65d7a7941b45249",
+    "research/candidate-protocol.json": "086c54374e42573997b0305a16f8f526cb4532958fd3fa3b1220181e96baaa52",
+    "research/ci-pilot-report.json": "cecf0c3cc68731a7ff71620f7489989a6393d9289483803c247eb87de5da2e4e",
+    "research/verify-current-report.json": "b585f6d0e32ec5bf5aff96eba413edd96a017971dc4020b4903fe19c4b7ed49c"
+  },
+  "limitations": [
+    "Candidate workflow labels are discovery evidence, not task boundaries.",
+    "Headroom percentages assume total deletion of a tool result and do not measure any implementation.",
+    "Fetch and research deliberately share one web-research proxy and must not be added together.",
+    "No unimplemented candidate receives a reduction percentage."
+  ]
+}

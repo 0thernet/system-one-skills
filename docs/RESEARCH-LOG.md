@@ -5,6 +5,25 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-20 UTC — catalog scorecard now separates results from demand screens
+
+The public catalog now gives every entry a machine-readable decision and keeps
+the metrics on separate axes. `system-one-verify` remains the only shipped
+skill with a measured result: **35.20% less presented validation text** across
+563 replayed outputs, with zero preservation failures. It is a text-boundary
+replay, not provider billing or complete-task savings.
+
+The other workflow numbers are explicitly **headroom screens**, not reductions:
+213/573 repository-search calls (37.17%), 31/68 diff-review calls (45.59%),
+28/224 Git-state calls (12.50%), and 54/95 shared web-research calls (56.84%)
+were at least 256 `o200k_base` output tokens. That threshold assumes a
+hypothetical 128-token skill cost and 128-token margin, then imagines perfect
+deletion. It does not establish that an adapter exists, preserves the answer,
+or beats the native tool. Fetch and research share the web denominator and are
+not two results. The CI pilot remains native-baseline preferred; triage,
+writing, evolve, and the umbrella router have no dedicated labeled cohort.
+[Scorecard and derivation](SCORECARD.md).
+
 ## 2026-09-20 UTC — exact read reuse did not justify another skill
 
 A new local screen covered all **1,200 file reads** in the fixed discovery window:
