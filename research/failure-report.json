@@ -1,0 +1,352 @@
+{
+  "schema_version": 2,
+  "portfolio": [
+    "system-one-verify"
+  ],
+  "evaluation_set_role": "Retrospective diagnostic stress audit of the frozen v0.4.0 reducer; overlaps previously examined historical periods. Not a held-out task experiment or independent public preregistration.",
+  "tokenizer": {
+    "library": "tiktoken",
+    "version": "0.12.0",
+    "encoding": "o200k_base",
+    "scope": "Exact counts for this named public text encoding, computed locally. These are not measured Devin/Claude tokenization, provider billed tokens, or complete task usage.",
+    "reference": "https://github.com/openai/tiktoken"
+  },
+  "routing": {
+    "minimum_expected_output_bytes": 8192,
+    "minimum_net_token_margin": 128,
+    "rule": "Invoke only when prior runs already establish at least 8KiB of ordinary validation output and the task needs exit status. Replay simulates this selection by treating the archived output size as an available prior observation; it does not establish what the historical agent knew or that the next run has the same size. Never run a command solely to discover its output size. Selection is independent of measured token savings; every selected case must pass the net margin."
+  },
+  "overhead": {
+    "shared_baseline_instruction_estimate": "Run the project tests and report the exit status and actionable failures.",
+    "shared_baseline_instruction_estimate_tokens": 13,
+    "original_recorded_user_and_system_prompt_tokens": null,
+    "original_prompt_coverage": "Original complete user/system prompts were not retained in the private replay sample. The shared instruction above is a constructed accounting estimate, not a transcript quotation; it is charged equally to both arms and cancels in their difference.",
+    "baseline_invocation": "{\"cmd\":\"bun test\"}",
+    "baseline_invocation_tokens": 6,
+    "skill_invocation": "{\"cmd\":\"system-one-skills check --timeout-ms 900000 -- bun test\"}",
+    "skill_invocation_tokens": 18,
+    "incremental_invocation_tokens": 12,
+    "full_skill_file_tokens": 204,
+    "catalog_name_description_tokens": 42,
+    "first_use_incremental_tokens": 258,
+    "policy": "Charge full skill instructions and the catalog name/description on every case, plus representative incremental invocation tokens. This conservatively avoids amortizing setup across repeated calls. Shared baseline context is estimated and cancels; provider chat framing, cache treatment, reasoning, retries and later log retrieval are unmeasured."
+  },
+  "corpora": [
+    {
+      "path": "research/failure-corpus-report.json",
+      "file_sha256": "9a947065d9bd417099f717db43a37d3b4c18806d64664b03007a619fbd91db4c",
+      "corpus_evidence_sha256": "5f5a68c21957bcd245031493b24ad735ea4aaf5f4c78f0e58c0f5e7ab7c0ad31",
+      "window": {
+        "since_inclusive_utc": "2026-08-01T00:00:00Z",
+        "until_exclusive_utc": "2026-09-19T00:00:00Z"
+      },
+      "providers": {
+        "codex": {
+          "contributing_session_groups": 88,
+          "unique_tool_calls": 356,
+          "eligible_replay_outputs": 0
+        },
+        "claude": {
+          "contributing_session_groups": 39,
+          "unique_tool_calls": 33740,
+          "eligible_replay_outputs": 2
+        },
+        "devin": {
+          "contributing_session_groups": 41,
+          "unique_tool_calls": 4503,
+          "eligible_replay_outputs": 53
+        }
+      }
+    }
+  ],
+  "private_replay_digest": "3309c098aeb98128477d6121145a772fdc30ab9175947aa68ec394295eae9f1c",
+  "summary": {
+    "selected_cases": 1,
+    "source_truncation_marked_cases": 0,
+    "compacted_cases": 1,
+    "archived_output_tokens": 6449,
+    "presented_output_tokens": 1938,
+    "first_use_incremental_tokens": 258,
+    "net_tokens_saved": 4253,
+    "net_reduction_percent": 65.94820902465499,
+    "cases_with_positive_net_savings": 1,
+    "cases_below_128_token_margin": 0,
+    "narrow_invariant_failures": 0,
+    "assessable_first_failure_cases": 1,
+    "first_failure_identity_and_message_retained_cases": 1,
+    "annotated_detail_units": 15,
+    "retained_detail_units": 9,
+    "cases_requiring_log_for_any_annotated_detail": 1,
+    "full_archived_log_retrieval_tokens_sensitivity": 6449,
+    "net_tokens_saved_after_one_full_retrieval_when_detail_missing": -2196
+  },
+  "providers": {
+    "codex": {
+      "selected_cases": 0,
+      "source_truncation_marked_cases": 0,
+      "compacted_cases": 0,
+      "archived_output_tokens": 0,
+      "presented_output_tokens": 0,
+      "first_use_incremental_tokens": 0,
+      "net_tokens_saved": 0,
+      "net_reduction_percent": null,
+      "cases_with_positive_net_savings": 0,
+      "cases_below_128_token_margin": 0,
+      "narrow_invariant_failures": 0,
+      "assessable_first_failure_cases": 0,
+      "first_failure_identity_and_message_retained_cases": 0,
+      "annotated_detail_units": 0,
+      "retained_detail_units": 0,
+      "cases_requiring_log_for_any_annotated_detail": 0,
+      "full_archived_log_retrieval_tokens_sensitivity": 0,
+      "net_tokens_saved_after_one_full_retrieval_when_detail_missing": 0
+    },
+    "claude": {
+      "selected_cases": 0,
+      "source_truncation_marked_cases": 0,
+      "compacted_cases": 0,
+      "archived_output_tokens": 0,
+      "presented_output_tokens": 0,
+      "first_use_incremental_tokens": 0,
+      "net_tokens_saved": 0,
+      "net_reduction_percent": null,
+      "cases_with_positive_net_savings": 0,
+      "cases_below_128_token_margin": 0,
+      "narrow_invariant_failures": 0,
+      "assessable_first_failure_cases": 0,
+      "first_failure_identity_and_message_retained_cases": 0,
+      "annotated_detail_units": 0,
+      "retained_detail_units": 0,
+      "cases_requiring_log_for_any_annotated_detail": 0,
+      "full_archived_log_retrieval_tokens_sensitivity": 0,
+      "net_tokens_saved_after_one_full_retrieval_when_detail_missing": 0
+    },
+    "devin": {
+      "selected_cases": 1,
+      "source_truncation_marked_cases": 0,
+      "compacted_cases": 1,
+      "archived_output_tokens": 6449,
+      "presented_output_tokens": 1938,
+      "first_use_incremental_tokens": 258,
+      "net_tokens_saved": 4253,
+      "net_reduction_percent": 65.94820902465499,
+      "cases_with_positive_net_savings": 1,
+      "cases_below_128_token_margin": 0,
+      "narrow_invariant_failures": 0,
+      "assessable_first_failure_cases": 1,
+      "first_failure_identity_and_message_retained_cases": 1,
+      "annotated_detail_units": 15,
+      "retained_detail_units": 9,
+      "cases_requiring_log_for_any_annotated_detail": 1,
+      "full_archived_log_retrieval_tokens_sensitivity": 6449,
+      "net_tokens_saved_after_one_full_retrieval_when_detail_missing": -2196
+    }
+  },
+  "limitations": [
+    "Retrospective selection overlaps prior analysis periods and is not an independent whole-task or provider-billing experiment.",
+    "Selection targets archived noisy failures, not a representative task sample; related sessions and repeated failures can remain correlated after exact text deduplication.",
+    "Explicit exit status establishes completed observation, not completeness of the archived text. Source truncation and runtime capture truncation are different.",
+    "Manual annotations are descriptive evidence spans, not a blinded diagnosis or repair-success score. More than one plausible diagnostic message may exist.",
+    "The full-log sensitivity charges one complete archived excerpt when any annotated detail is omitted. Actual bounded lookup, repeated retrieval, invocation and reasoning costs are unmeasured.",
+    "Text replay models prior-size routing by observed archived size; it does not prove the historical agent knew the next run would be noisy.",
+    "Native quiet modes and task-specific bounded diagnostics are not reconstructed; their savings can be better than this raw-output baseline."
+  ],
+  "evaluated_source_sha256": {
+    "research/assess_admission.py": "73adc87df2ebfbfc7bd4ad463b9e8bbe9cdfc95feb0d19d31c0b004e81604734",
+    "research/replay_validation.mjs": "0bb4926807590bb040e7d902e39259a6d8ba6d7ad64ff6c5e45cd1f3776d6efa",
+    "research/requirements.txt": "ac785205f5d97970c4a7f8aef135c62cfda01985ba2000973008c823ccc01d2f",
+    "research/analyze_sessions.py": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+    "src/process.js": "5ae33286cad9830fef6aa42a471b2620c5c5c50cb7571d288a027645fa6b1845",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+    "bin/system-one-skills.js": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+    "research/assess_holdout.py": "6eca69a26e13676cc05de384250933e3c093471970e6d82054a2a01d2103e0ec"
+  },
+  "samples": [
+    {
+      "provider": "devin",
+      "cohort": "failure",
+      "sample_id": "a3a1b1519154b6763166b193966bdba01ce687c89aeb936f9ec2e3a4a2b0c08d",
+      "source_view": "tool_result",
+      "archived_output_bytes": 13722,
+      "presented_output_bytes": 4034,
+      "archived_output_tokens": 6449,
+      "presented_output_tokens": 1938,
+      "output_tokens_saved": 4511,
+      "first_use_incremental_tokens": 258,
+      "net_tokens_saved_after_first_use": 4253,
+      "net_tokens_saved_after_invocation_only": 4499,
+      "routed_by_prior_output_size": true,
+      "runtime_compacted": true,
+      "capture_truncated": false,
+      "recorded_exit_zero": false,
+      "meets_net_margin": true,
+      "invariants": {
+        "source_byte_count_correct": true,
+        "presented_byte_count_correct": true,
+        "exact_passthrough_or_marked_compaction": true,
+        "compacted_exit_status_disclosed": true,
+        "compacted_omission_disclosed": true,
+        "compacted_artifact_path_disclosed": true,
+        "capture_bound_disclosed": true,
+        "compaction_meets_byte_guard": true,
+        "complete_archived_excerpt_saved": true,
+        "artifact_permissions_private": true
+      },
+      "presented_text_sha256": "22671c2825d3f8b5ab168fa63beb61cd030a8a3e539fa0b071f27714b94b52eb",
+      "color_free_sensitivity": {
+        "archived_output_bytes": 10600,
+        "archived_output_tokens": 3655,
+        "presented_output_tokens": 1279,
+        "runtime_compacted": true,
+        "would_route_by_normalized_prior_bytes": true,
+        "net_tokens_saved_if_wrapped": 2118
+      },
+      "source_truncation_marker_present": false,
+      "annotation": {
+        "coverage": "all-distinct-observed",
+        "first_failure_assessable": true,
+        "first_failure_identity_and_message_retained": true,
+        "detail_units": 15,
+        "retained_detail_units": 9,
+        "requires_log_for_any_annotated_detail": true,
+        "units": [
+          {
+            "role": "first_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "2d5929f84af24cdcfa8a6624085930f15f19d0cbd7e27a2b2d8f8f2d34722484"
+            ],
+            "retained": true
+          },
+          {
+            "role": "first_message",
+            "source_span_sha256": [
+              "962e35db7054f6a4b2866fa16d3be0f16ac9dff779afd5ed1a3e0aa16b871450"
+            ],
+            "retained": true
+          },
+          {
+            "role": "first_location",
+            "source_span_sha256": [
+              "c890e4247320854cc1d25fc11f430d2f75f97d14082b687f61d1216006dd3b96"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "b64693e515d7c52a91082b6f5de18da077ce50001749045e9c641c1e10eba028"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "afb1bcf850557730feab48734b12cfe4607013d66e99eea34ad0461ee28ebefb"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "879222ead3a272bc3601f02b1c563c3a9fbbbc5db3e35ac9749a215c4b2e5e22"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "8c185e797f255ac9c05fc4f6467ad7b64d9e61ea28f30f4961a3cf93a970546b"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "541829c8de12c4251701f763b02ff9db501079d0614379a78b6d423b15f77003"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "8c841b691d270e2fed4c530959e2bf62e96b559191bbf93b3663f32a81f2d916"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "882edd4ee67d54611356b0d507d516fd0e0ddd229cc0e5e869b3580d52b187ec"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "983df07d4fb3f05865fb7327c78a652ba6f9d52b8e6d5a7b7b48ac693f809ff3"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "154428f71e080f120edd12dda3564274803303849db61156597fa409dc024358"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "931a09912850d176ba796503d18723ec4a667200d65ccb5f3e66f258553a143d"
+            ],
+            "retained": false
+          },
+          {
+            "role": "additional_identity",
+            "source_span_sha256": [
+              "12646b19ae1d96d2bf3227c39979b142d732e428d74a1c9a05af4b7c89491986",
+              "ee8504d30690a2fd2cddca257914812b26a197e15d6dab6a8db961aff75b4f3d"
+            ],
+            "retained": true
+          },
+          {
+            "role": "additional_location",
+            "source_span_sha256": [
+              "b67b7803123b50457515713a64f50fe1fbbc0c8b936b89593295038c22366a50"
+            ],
+            "retained": true
+          }
+        ]
+      }
+    }
+  ],
+  "protocol_sha256": "373b65a42c116ed3f94fecbe70dff590d3022d85f1abdd6affc3a3d1ccfdfbc0",
+  "corpus_file_sha256": "9a947065d9bd417099f717db43a37d3b4c18806d64664b03007a619fbd91db4c",
+  "report_generator_sha256": "6799014782ed4cd036c7dbb84cfeae01732701811d215add3f4163cfadfcaa7f",
+  "private_source_samples_sha256": "4d8a3eabd2909f3ed237b970b1256d070e4364adb8dbe65160aa7bc63ef684eb",
+  "private_replay_file_sha256": "5234862e36d1a5cecd30b1897590812133933aad752388ecfe5c80c0522a8af5",
+  "private_annotations_sha256": "8f50d9c87fd2e22be03fd780ddfa5bcd8ca13b2e27144e81ffe357375a1a1a68",
+  "private_normalized_replay_file_sha256": "6f94bdc33be66dd9ed81b05ac05aed307a2eddfe1307616c966ccf14a1a51545",
+  "annotation_lock_sha256": "ebec79d97088bc419bc83b73efd8e80c6b718b7a60631227d951b00d02de43fd",
+  "annotation_method": {
+    "recorded_before_replay_at_utc": "2026-09-20T02:32:12.508505+00:00",
+    "review": "Manual full-excerpt inspection before reducer replay; root independently reviewed the raw excerpt and confirmed seven distinct failed tests sharing one displayed missing-module error. Annotations separate test identity, shared diagnostic message and each distinct test callsite. The message supports a displayed module resolution failure, not an inferred root cause or completed diagnosis.",
+    "meaning": "Exact spans manually chosen from archived text before seeing reducer output. Retention does not establish diagnosis or repair correctness. An absent truncation marker does not prove original stdout completeness."
+  },
+  "color_free_sensitivity_summary": {
+    "meaning": "Constructed SGR-stripped source and another frozen reducer text replay, not an observed native reporter run.",
+    "cases": 1,
+    "routed_cases": 1,
+    "archived_output_tokens": 3655,
+    "presented_output_tokens_if_wrapped": 1279,
+    "net_tokens_saved_if_all_wrapped": 2118
+  }
+}

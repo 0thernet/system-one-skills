@@ -28,6 +28,14 @@ and [per-case measurements](METRICS.md). The output contains 90% fewer tokens
 before overhead, but that larger percentage omits part of the cost and is not
 our headline.
 
+**The comparison is with the archived output, not the best quiet reporter.**
+All three favorable excerpts contain Bun test output; one also contains preceding
+checks and another contains a structured runner envelope. Bun 1.3.14's installed
+help provides `--dots` and `--only-failures`. Those modes were not measured on the
+original repository snapshots. The replay therefore does not establish that
+this wrapper beats Bun's native reporting. Use an adequate native quiet reporter
+first; preserving any other required output still matters.
+
 ## What stays the same
 
 The runtime executes the command once, returns its exit status, and keeps the
@@ -38,6 +46,42 @@ The [runtime evidence](RUNTIME-EVIDENCE.md) includes 25 tests of these contracts
 This supports the documented behavior; it does not establish better agent task
 success or fewer diagnostic mistakes. A later full-log read can reduce or erase
 the initial token benefit.
+
+## What happened on a failed check
+
+A separate retrospective audit found **one qualifying noisy failure** in the
+retained transcripts. Its compact result used **66% fewer text tokens**, including
+the same counted first-use overhead. It preserved the seven failed test identities
+and their shared error message, but omitted six of their seven source locations.
+That supports a quick failure summary, not complete diagnosis.
+
+Reading the entire original log afterward would erase the saving. A targeted
+lookup may cost less; actual agent follow-up usage was not measured. Removing
+terminal colors before replay still gave a 58% reduction in this one case, so
+color codes explain part of the raw-log benefit. The [failure audit](FAILURE-EVIDENCE.md)
+publishes the selection, independently reviewed labels, and exact counts.
+
+## Why the package stays small
+
+New analysis screened **outputs from 960 calls** in real Codex, Claude Code, and
+Devin transcripts. Many search and repository-state results were already small.
+The screen calculates whether a proposed output reducer could meet a savings
+target even if it removed the entire output. Passing that optimistic screen
+does not establish a useful or correct skill; failing it rules out that particular
+cost-and-margin scenario.
+
+We also ran one existing repository test file with Bun's normal and quiet
+reporters. Native `--dots` reduced output-plus-command text from **466 to 55 tokens**,
+with the same observed 21 passing tests, zero failures, and 106 assertions. This
+was a short successful check, precisely where the wrapper should not be used.
+The test file exercises synthetic inputs; the reporter measurement is a real
+command run, not a transcript replay or a task-success experiment. No equivalent
+claim is made about warnings, failing tests, or the older project snapshots.
+
+The [candidate analysis](CANDIDATE-EVIDENCE.md) gives each measured workflow's
+cost limits and native alternatives. All ten unqualified candidates remain
+outside the install. Better numbers must come from useful behavior, not from
+comparing against needlessly verbose commands.
 
 ## When the benefit disappears
 
@@ -72,7 +116,7 @@ the installation. A common workflow alone does not justify another skill.
 5. **Evidence owner.** These are agent-authored analyses of one consenting
    developer’s private transcripts. Public reports contain aggregates and opaque
    hashes; raw transcript text remains private. Findings were checked on
-   September 19, 2026 against the unchanged v0.4.0 runtime.
+   September 20, 2026 UTC against the unchanged v0.4.0 runtime.
 
 ## What would justify a stronger claim
 

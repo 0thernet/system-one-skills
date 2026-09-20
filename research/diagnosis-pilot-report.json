@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-20T02:35:04.001557+00:00",
+  "status": "blocked-before-model-execution",
+  "evidence_kind": "evaluation-readiness-record",
+  "planned_provider": "codex",
+  "planned_cli_version": "0.155.0",
+  "planned_model": "gpt-6-astra",
+  "planned_reasoning_effort": "ultra",
+  "immutable_provider_checkpoint": null,
+  "prepared_cases": 1,
+  "planned_model_sessions": 2,
+  "model_sessions_started": 0,
+  "completed_pairs": 0,
+  "observed_token_usage": null,
+  "observed_diagnosis_scores": null,
+  "observed_task_latency_ms": null,
+  "private_plan_sha256": "35935f7d0564fa5513db433f0c0b3cfd1d0c4c7a516e1a5eb947fde0d2098163",
+  "private_plan_frozen_at": "2026-09-20T02:33:21.590891+00:00",
+  "source_log_sha256": "325946a2e8f2a3f467fae330ee75f988f19634b30b27b4f09b006632de3a693c",
+  "source_annotation_sha256": "8f50d9c87fd2e22be03fd780ddfa5bcd8ca13b2e27144e81ffe357375a1a1a68",
+  "skill_sha256": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+  "planned_order": [
+    "reduced",
+    "native"
+  ],
+  "counterbalanced": false,
+  "scope": "One archived-log diagnosis challenge, separate from command execution, skill selection, and whole coding tasks.",
+  "native_baseline": "completed exit status + full local log with focused native searches/line reads",
+  "reduced_arm": "frozen v0.4.0 compact result, exact skill body loaded in prompt, same full local log access",
+  "planned_rubric": [
+    "passed=false",
+    "failed_tests=7",
+    "exact observed missing-module failure identified",
+    "evidence quote and full-log line support diagnosis",
+    "safe next investigation rather than unproven fix",
+    "explicitly no claim that displayed symptom proves deeper cause"
+  ],
+  "planned_limits": {
+    "wall_seconds_per_launch": 120,
+    "combined_stdout_stderr_bytes_per_launch": 8388608,
+    "model_output_token_cap": null
+  },
+  "accounting": {
+    "source": "Planned provider completion counters; no counters were collected.",
+    "estimated_258_token_overhead_added": false,
+    "billing_claim": false
+  },
+  "preflight": {
+    "codex_saved_login_available": true,
+    "claude_available_auth_reported": false,
+    "devin_auth_status": "unknown; local log creation denied by sandbox",
+    "effective_config_and_skill_isolation": "unverified; separate no-model app-server startup stopped at a pre-existing state-database backfill timeout",
+    "credentials_or_saved_config_changed": false
+  },
+  "execution_block": {
+    "type": "automatic-approval-review-rejection",
+    "action": "Start a fresh Codex model session with one private archived failure log and associated context.",
+    "reason": "The user authorized transcript-based analysis but had not specifically authorized transmitting this sensitive payload to that external model service.",
+    "payload_transmitted": false,
+    "retry_or_workaround_attempted": false
+  },
+  "interpretation": "No observed agent comparison exists. This record is neither a zero-token result nor a task-success measurement. Local transcript replay results remain separate.",
+  "next_step": "Obtain explicit authorization for the private payload and destination, or design and separately approve an experiment using public task data; freeze a new plan before execution."
+}
