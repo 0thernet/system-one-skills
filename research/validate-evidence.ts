@@ -155,4 +155,19 @@ for (const provider of providers) {
 assert.deepEqual(holdout.threshold_sensitivity, [4096,8192,16384,32768].map(threshold => ({minimum_output_bytes:threshold,...summarize(holdout.samples, threshold)})));
 const expectedOutcome = holdout.summary.invariant_failures ? "preservation-failure" : holdout.summary.routed_cases_below_margin ? "routed-token-margin-failure" : !holdout.summary.routed_cases ? "no-eligible-routed-cases" : "selected-replays-clear-token-margin";
 assert.equal(holdout.outcome, expectedOutcome);
+// A prepared, blocked experiment is not a zero-cost successful observation.
+const diagnosis = read("research/diagnosis-pilot-report.json");
+assert.equal(diagnosis.evidence_kind, "evaluation-readiness-record");
+assert.equal(diagnosis.status, "blocked-before-model-execution");
+assert.equal(diagnosis.prepared_cases, 1);
+assert.equal(diagnosis.planned_model_sessions, 2);
+assert.equal(diagnosis.model_sessions_started, 0);
+assert.equal(diagnosis.completed_pairs, 0);
+for (const field of ["observed_token_usage", "observed_diagnosis_scores", "observed_task_latency_ms"]) assert.equal(diagnosis[field], null);
+for (const field of ["private_plan_sha256", "source_log_sha256", "source_annotation_sha256"]) assert.match(diagnosis[field], /^[a-f0-9]{64}$/);
+assert.equal(diagnosis.skill_sha256, sha("skills/system-one-verify/SKILL.md"));
+assert.equal(diagnosis.execution_block.type, "automatic-approval-review-rejection");
+assert.equal(diagnosis.execution_block.payload_transmitted, false);
+assert.equal(diagnosis.execution_block.retry_or_workaround_attempted, false);
+assert.equal(diagnosis.accounting.estimated_258_token_overhead_added, false);
 console.log(`Evidence integrity: ${inventory.length} skills catalogued; unused replay cohort outcome=${holdout.outcome}. Negative results are publishable.`);

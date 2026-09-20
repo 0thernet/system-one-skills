@@ -5,6 +5,48 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-20 UTC — failure evidence and native alternatives
+
+**One real noisy failure:** a preselected retrospective failure scan found one
+qualifying Devin excerpt and none for Codex or Claude. The frozen reducer saved
+4,253 text tokens (66%) after counted first-use overhead. It retained all seven
+failed-test identities and their shared error message, but omitted six of seven
+distinct test callsites. The labels were independently checked against the raw
+excerpt before replay. One complete later log read would erase the saving; that
+is a cost sensitivity, not an observed agent action. A separate color-stripped
+text replay saved 2,118 tokens (58%). No diagnostic-success or speed claim follows.
+[Failure audit](FAILURE-EVIDENCE.md).
+
+**Four candidate workflows:** exact text counts for 960 retained call outputs
+from Codex, Claude, and Devin show that many results are already small. Even
+deleting all output cannot meet a hypothetical 64-token cost plus 128-token
+savings target for 57% of search calls, 81% of Git-state calls, 51% of diff calls,
+and 41% of web calls. These are optimistic output-only ceilings, not measured
+candidate savings, and reuse the discovery period rather than a fresh holdout.
+They do not evaluate fewer reasoning turns or future calls.
+[Candidate screen](CANDIDATE-EVIDENCE.md).
+
+**An actual native alternative:** this repository's existing 21-test assessment
+file returned the same passing counts with normal, dots, and failures-only Bun
+reporters. Output plus invocation text fell from 466 tokens to 55 or 59 without
+a skill. The short passing check uses synthetic test inputs and supplies no
+historical-project, warning-preservation, diagnosis, or latency result. The three
+older favorable calibration logs contain Bun test output; native quiet reporters
+were not compared on their original snapshots. That limitation is now explicit
+beside the headline's calculation.
+
+**Observed agent usage remains a gap:** a one-case paired Codex diagnosis pilot
+was prepared, but no model session started. Runtime approval review rejected
+transmission of the private excerpt; no payload was sent and no alternate route
+was attempted. The [pilot status](DIAGNOSIS-PILOT.md) records zero completed pairs
+and null observed metrics. Local text analysis cannot substitute for that trial.
+
+**Distribution unchanged:** one shipped skill and ten uninstalled candidates.
+The catalog now leads with the decision for each skill rather than repeated
+empty metric columns. The v0.4.0 runtime and installed instructions are unchanged;
+public evidence checks cover the new source hashes, selection counts, arithmetic,
+and unfavorable outcomes.
+
 ## 2026-09-19 — clearer impact summary
 
 The README and [plain-language results](RESULTS.md) now lead with **82% fewer

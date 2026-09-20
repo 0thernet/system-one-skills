@@ -4,23 +4,34 @@
 
 “Provably good” needs a bounded claim: a defined task, the best practical native baseline, a frozen implementation, an independent correctness check, and measured total cost. A small output or valid JSON schema alone proves neither better reliability nor faster completion. No skill currently has a demonstrated end-to-end improvement across all three dimensions.
 
-## Evidence scorecard
+## What earns a place in your agent
 
-| Skill | Available now? | Token evidence | Reliability evidence | Performance evidence |
-| --- | --- | --- | --- | --- |
-| `system-one-verify` | Yes | 8,026 net text tokens saved on 3 selected calibration logs, after counted instruction/invocation overhead | Scoped preservation checks and CLI regressions; no comparative task-success result | Local CLI overhead: +41.82 ms median, +48.37 ms p95 on 140 synthetic pairs; whole-task latency unmeasured |
-| `system-one-explore` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-ci` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-digest` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-diff` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-fetch` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-research` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-triage` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-writing` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one-evolve` | Research only | Unmeasured | Unmeasured | Unmeasured |
-| `system-one` | Research only | Unmeasured | Unmeasured | Unmeasured |
+The shipped skill has one measured benefit: **smaller noisy check results**.
+Running the command once and retaining its exit status and private log are
+tested behaviors. Faster tasks and better diagnoses require separate evidence.
+Research candidates do not add instructions to your agent until they justify
+their cost.
 
-The validation result uses `o200k_base`, not provider billing. All three selected logs are successful Devin checks; 21 short examples would cost more if the skill were invoked. There are no qualifying Codex or Claude replay samples in the current windows. Read the [per-case results and limitations](METRICS.md) before applying the result to another task.
+| Skill | Intended benefit | Evidence and current decision |
+| --- | --- | --- |
+| `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 82% fewer text tokens across three successful Devin development replays. A separate failed-check audit kept the failure identities but omitted some source locations. [Results and limits](RESULTS.md). |
+| `system-one-explore` | Find the right repository locations with fewer reads | **Research only.** Many existing search results are small; must beat a focused native search while preserving required locations. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-ci` | Avoid unnecessary model turns while CI runs | **Use native watching.** The identity pilot established no avoidable polling or token benefit. [Pilot](CI-PILOT.md). |
+| `system-one-digest` | Inspect repository state in one concise result | **Research only.** Small native Git outputs leave little room for another layer to help. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-diff` | Review relevant changes without losing coverage | **Research only.** Some outputs have room for reduction; retained review coverage is untested. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-fetch` | Read the relevant parts of a web page | **Research only.** Output size varies; must beat the existing readable-page tool and preserve needed evidence. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-research` | Assemble source evidence with fewer repeated reads | **Research only.** No measured advantage on complete, independently checked research tasks. |
+| `system-one-triage` | Resolve bounded decisions without unnecessary reasoning | **Research only.** Needs a specific labeled decision family and comparison with deterministic rules. |
+| `system-one-writing` | Catch mechanical draft issues before semantic review | **Deferred.** No suitable writing-task evaluation cohort; existing linters are the baseline. |
+| `system-one-evolve` | Improve a recurring routing policy over time | **Deferred.** First needs a useful fixed policy; optimization must repay its own evaluation cost. |
+| `system-one` | Select the smallest useful skill | **Deferred.** One shipped skill does not justify an extra routing layer. |
+
+Each contract below specifies what correctness means and what tokens and time
+must be measured. A missing measurement is an evidence gap, not zero cost or an
+implied benefit. No research candidate currently has demonstrated task-level
+token, reliability, or speed improvements.
+
+The three-log development result uses `o200k_base`, not provider billing. Those three logs are successful Devin checks; 21 short examples would cost more if the skill were invoked. The newer [failure audit](FAILURE-EVIDENCE.md) adds one separate Devin example. There are no qualifying noisy Codex or Claude replay samples in the current windows. Read the [per-case results and limitations](METRICS.md) before applying the result to another task.
 
 The separate [runtime measurement](RUNTIME-EVIDENCE.md) used seven synthetic fixtures shaped by public transcript sizes, not the historical project commands: **140 measured pairs and 14 excluded warmup pairs** on macOS arm64 with Node 24.20.0. Median wrapper overhead was **41.82 ms**, with **48.37 ms p95**. Every measured/warmup pair preserved exit, full log and single execution; the runtime suite passed 25 tests and 125 assertions. These checks establish their specific contracts, not better agent reliability. The added local cost is not a measured task speedup, and the shared-host timing is not a performance guarantee.
 

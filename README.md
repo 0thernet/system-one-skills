@@ -82,6 +82,11 @@ The [research log](https://github.com/hraness/system-one-skills/blob/main/docs/R
 publishes positive and negative findings. New skills must save tokens on complete
 tasks while meeting correctness and latency requirements.
 
+Recent analysis covers [a real failed check](https://github.com/hraness/system-one-skills/blob/main/docs/FAILURE-EVIDENCE.md)
+and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).
+The failure summary saved tokens but needed the full log for some details;
+the candidate analysis gives us reasons to keep the install small.
+
 <a id="commands"></a>
 
 <details>
@@ -124,7 +129,8 @@ not configure the other. [SYS1 source](https://github.com/hraness/sys1).
     became 931 output tokens plus 774 counted skill, discovery, and invocation
     tokens. `(9,731 − 1,705) / 9,731 = 82.48%`, rounded to 82%. Counts use
     `o200k_base`; retries, later log reads, and complete agent usage were not
-    measured. These examples helped tune the implementation.
+    measured. These examples helped tune the implementation. Native quiet
+    reporters were not compared on those historical tasks.
     [Calculation and limits](https://github.com/hraness/system-one-skills/blob/main/docs/RESULTS.md).
 
 [^2]: **Short checks can cost more.** The 21 short development replays and 14
