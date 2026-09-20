@@ -155,7 +155,8 @@ for (const provider of providers) {
 assert.deepEqual(holdout.threshold_sensitivity, [4096,8192,16384,32768].map(threshold => ({minimum_output_bytes:threshold,...summarize(holdout.samples, threshold)})));
 const expectedOutcome = holdout.summary.invariant_failures ? "preservation-failure" : holdout.summary.routed_cases_below_margin ? "routed-token-margin-failure" : !holdout.summary.routed_cases ? "no-eligible-routed-cases" : "selected-replays-clear-token-margin";
 assert.equal(holdout.outcome, expectedOutcome);
-// A prepared, blocked experiment is not a zero-cost successful observation.
+// Preserve the historical pre-approval readiness record. Later authorized
+// observations have their own report; a blocked attempt is not a free success.
 const diagnosis = read("research/diagnosis-pilot-report.json");
 assert.equal(diagnosis.evidence_kind, "evaluation-readiness-record");
 assert.equal(diagnosis.status, "blocked-before-model-execution");

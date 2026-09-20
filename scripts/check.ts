@@ -49,6 +49,7 @@ gate("ci-pilot-integrity",()=>run("python3",["research/ci_pilot.py","--check"]))
 gate("candidate-screen-integrity",()=>run("python3",["research/candidate_screen.py","--check"]));
 gate("native-reporter-integrity",()=>run("python3",["research/candidate_native.py","--check"]));
 gate("failure-replay-integrity",()=>run("python3",["research/failure_assess.py","--check"]));
+gate("diagnosis-attempt-integrity",()=>run("python3",["research/assess_diagnosis.py","--check"]));
 gate("privacy-scan",()=>{
   const walk=(d:string):string[]=>readdirSync(d,{withFileTypes:true}).filter(e=>e.name!=="__pycache__" && !e.name.endsWith(".pyc")).flatMap(e=>e.isDirectory()?walk(join(d,e.name)):[join(d,e.name)]);
   const patterns=[/\/Users\/bg\//,/\/Users\/[a-z]+\/\.codex\/sessions/,/sk-[a-zA-Z0-9]{20,}/,/ghp_[a-zA-Z0-9]{20,}/,/npm_[a-zA-Z0-9]{20,}/];

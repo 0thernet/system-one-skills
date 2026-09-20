@@ -5,6 +5,29 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-20 UTC — approved diagnosis attempt timed out
+
+The owner explicitly authorized sending the selected private Devin failure log
+to Codex for the two-session diagnosis comparison. The first launch, in the
+frozen reduced-then-native order, timed out after 120 seconds with no output,
+answer, or usage counters. Read-only inspection found startup history import
+still running and no existing managed daemon for the supported proxy route.
+The experiment stopped before the native arm under its startup stop rule.
+
+The [observed-attempt report](../research/diagnosis-observed-report.json) preserves
+one launch, zero completed answers, unknown upstream request status, and missing
+token measurements. Launcher duration is not diagnosis latency. The original
+[pre-approval readiness record](../research/diagnosis-pilot-report.json) remains
+unchanged; it describes the earlier rejected attempt only. See the
+[pilot chronology and next requirements](DIAGNOSIS-PILOT.md).
+
+A new deterministic assessor checks launch order and inventory, source hashes,
+token counter accounting, and correctness-review provenance. Its synthetic tests
+verify the assessment logic; they supply no new skill-efficacy observations.
+No savings, reliability, or speed claim changes, and the v0.4.0 runtime remains
+unchanged. A usable startup environment and a separately recorded continuation
+plan are needed before another paired experiment can produce evidence.
+
 ## 2026-09-20 UTC — failure evidence and native alternatives
 
 **One real noisy failure:** a preselected retrospective failure scan found one
@@ -35,11 +58,12 @@ older favorable calibration logs contain Bun test output; native quiet reporters
 were not compared on their original snapshots. That limitation is now explicit
 beside the headline's calculation.
 
-**Observed agent usage remains a gap:** a one-case paired Codex diagnosis pilot
-was prepared, but no model session started. Runtime approval review rejected
+**Earlier pre-approval attempt:** a one-case paired Codex diagnosis pilot
+was prepared, but no model session started in that attempt. Runtime approval review rejected
 transmission of the private excerpt; no payload was sent and no alternate route
 was attempted. The [pilot status](DIAGNOSIS-PILOT.md) records zero completed pairs
-and null observed metrics. Local text analysis cannot substitute for that trial.
+and null observed metrics. The later authorized attempt is recorded above.
+Local text analysis cannot substitute for that trial.
 
 **Distribution unchanged:** one shipped skill and ten uninstalled candidates.
 The catalog now leads with the decision for each skill rather than repeated
