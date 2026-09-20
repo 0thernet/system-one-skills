@@ -7,6 +7,12 @@
 ## What earns a place in your agent
 
 The shipped skill has one measured benefit: **smaller noisy check results**.
+Across 563 real validation outputs, it presented **35.20% less UTF-8 text**
+(32.65% Codex, 38.90% Devin; Claude had no qualifying outputs) with zero
+replay-preservation failures. The 28 outputs that crossed the compaction guard
+were 90.61% smaller. These are text-size results, not provider-native token
+or complete-task savings. The full denominator and the explicit “no numeric
+result” status for every other name are in the [numeric scorecard](SCORECARD.md).
 Running the command once and retaining its exit status and private log are
 tested behaviors. Faster tasks and better diagnoses require separate evidence.
 Research candidates do not add instructions to your agent until they justify
@@ -14,7 +20,7 @@ their cost.
 
 | Skill | Intended benefit | Evidence and current decision |
 | --- | --- | --- |
-| `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 82% smaller initial results in three successful Devin replays. One completed diagnosis used 3.9% fewer recorded tokens but took 9.3 seconds longer; both answers scored 6/6. These are different measurements. [Diagnosis](DIAGNOSIS-RESULTS.md) · [Replay](RESULTS.md). |
+| `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 35.20% less presented text across 563 real outputs, with 0 preservation failures; 90.61% on the 28 outputs compacted. No whole-task provider-token percentage is established. [Scorecard](SCORECARD.md) · [Replay](RESULTS.md). |
 | `system-one-explore` | Find matching code and relevant source lines in one result | **Research only.** Many existing search results are small; must beat focused native search plus context lines while preserving required locations. [Cost screen](CANDIDATE-EVIDENCE.md). |
 | `system-one-ci` | Avoid unnecessary model turns while CI runs | **Use native watching.** The identity pilot established no avoidable polling or token benefit. [Pilot](CI-PILOT.md). |
 | `system-one-digest` | Inspect repository state in one concise result | **Deferred; use native Git.** Small native outputs leave little room for another layer to help. [Cost screen](CANDIDATE-EVIDENCE.md). |

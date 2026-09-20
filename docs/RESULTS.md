@@ -1,7 +1,14 @@
 # Results in plain language
 
-**82% fewer tokens for noisy check results**, in an initial replay of three
-successful Devin logs, including counted skill overhead.
+The current [numeric scorecard](SCORECARD.md) is the clearest headline: across
+563 real validation outputs, `system-one-verify` presented **35.20% less UTF-8
+text** (32.65% Codex, 38.90% Devin) with zero preservation failures. Among the
+28 outputs that crossed the compaction guard, the reduction was 90.61%. This is
+text-size evidence at the tool-result boundary, not provider-token or
+whole-task savings.
+
+The earlier development replay measured **82% fewer text tokens for noisy check
+results**, in three successful Devin logs, including counted skill overhead.
 
 The practical benefit is a smaller result for the agent to read while the check
 still runs and its full log stays available. Use the skill for known noisy

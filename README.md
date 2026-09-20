@@ -25,18 +25,23 @@ retrievable log. Better task success and faster completion have not been shown.
 system-one-skills check --timeout-ms 900000 -- bun test
 ```
 
-## What the numbers mean
+## The current number
 
-| Result | What was compared | What it establishes |
-| --- | --- | --- |
-| **82% smaller initial results** | Three successful historical Devin logs with v0.4: 9,731 text tokens → 1,705 including counted skill overhead | Less log text in these development replays; native quiet reporters were not tested on the original tasks.[^1] |
-| **3.9% fewer recorded tokens; 9.3 seconds longer** | One completed Codex diagnosis: 49,803 → 47,840 input + output tokens; both answers scored 6/6 | Fewer recorded tokens in the skill arm, with a longer run; no general reliability or speed advantage.[^3] |
-| **88% less text using Bun's own quiet reporter** | One current 21-test fixture: 466 → 55 output + invocation tokens with `--dots` | A native alternative worth trying first. No skill was involved; this is a synthetic fixture, not the historical logs or a complete agent task.[^4] |
+The only shipped skill, `system-one-verify`, presented **35.20% less validation
+text** across **563 real outputs** from the local Codex and Devin transcript
+corpus: 32.65% for Codex (356 outputs) and 38.90% for Devin (207 outputs).
+Claude Code had no qualifying validation outputs in this window, so it is shown
+as **No result**. The 28 outputs that actually crossed the compaction guard were
+90.61% smaller, while 535 short outputs passed through unchanged. Every replay
+preservation check passed.
 
-These percentages measure different things and must not be combined. The 82%
-figure measures an initial result; the 3.9% figure includes the completed
-diagnosis and its follow-up reads. The comparison that ultimately matters is a
-correct completed task against the best practical native workflow.
+That is a text-size result, not a provider-token or complete-task result. The
+repo has no verified whole-task provider-native token-reduction percentage yet.
+The [numeric scorecard](docs/SCORECARD.md) gives the denominator, provider
+breakdown, preservation checks, and the reason every other candidate remains
+unmeasured. Earlier exploratory 82% and 3.9% figures stay in the [results
+notes](docs/RESULTS.md), where their narrower scopes are explicit.[^1][^3]
+
 
 ## Install
 
@@ -69,22 +74,22 @@ in the [results notes](https://github.com/hraness/system-one-skills/blob/main/do
 ## All skills
 
 **One shipped skill. Ten research candidates.** Only `system-one-verify` is
-installed. The others need evidence of a benefit over native tools before they
-join the package.
+installed. The others have **No numeric result** and need an executable adapter
+and evidence of a benefit over native tools before they join the package.
 
-| Skill | Potential benefit | What to use today |
+| Skill | Verified reduction | What to use today |
 | --- | --- | --- |
-| `system-one-verify` | Read less repetitive check output while retaining the exit status and full log | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
-| `system-one-explore` | Find matching code and relevant lines in fewer reads | Focused native search; research must prove it preserves required locations |
-| `system-one-ci` | Avoid repeated model check-ins while CI runs | Native run watching; our pilot established no avoidable polling |
-| `system-one-diff` | Read large changes with explicit review coverage | Scoped native diffs; research must measure missed findings |
-| `system-one-digest` | Collect the repository facts a task needs together | Native Git status; most observed outputs were already too small to justify another layer |
-| `system-one-fetch` | Extract the source passage needed for an answer | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
-| `system-one-research` | Keep source evidence together and avoid duplicate reads | Native search and targeted reads; no separate benefit demonstrated |
-| `system-one-triage` | Handle a recurring decision with a cheaper, accurate process | Deterministic rules or the primary agent; no evaluated decision family yet |
-| `system-one-writing` | Find mechanical draft issues cheaply | Existing linters; inactive until there is relevant task evidence |
-| `system-one-evolve` | Improve a useful routing policy over repeated use | A fixed reviewed policy; inactive until optimization can repay its cost |
-| `system-one` | Choose the smallest useful skill | Direct selection; an extra router is unjustified for one available skill |
+| `system-one-verify` | **35.20% less validation text** across 563 real outputs; 100% preservation checks | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
+| `system-one-explore` | **No result** | Focused native search; research must prove it preserves required locations |
+| `system-one-ci` | **No result** | Native run watching; our pilot established no avoidable polling |
+| `system-one-diff` | **No result** | Scoped native diffs; research must measure missed findings |
+| `system-one-digest` | **No result** | Native Git status; most observed outputs were already too small to justify another layer |
+| `system-one-fetch` | **No result** | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
+| `system-one-research` | **No result** | Native search and targeted reads; no separate benefit demonstrated |
+| `system-one-triage` | **No result** | Deterministic rules or the primary agent; no evaluated decision family yet |
+| `system-one-writing` | **No result** | Existing linters; inactive until there is relevant task evidence |
+| `system-one-evolve` | **No result** | A fixed reviewed policy; inactive until optimization can repay its cost |
+| `system-one` | **No result** | Direct selection; an extra router is unjustified for one available skill |
 
 The [full catalog](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
 explains the proposed benefit, native alternative, and evidence needed for each.
