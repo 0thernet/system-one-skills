@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "recorded_before_new_outcomes_utc": "2026-09-20T21:08:51.617885+00:00",
+  "status": "Local retrospective plan, recorded before this new collection; not a held-out corpus or independent preregistration. Previous portfolio counts informed the file-read focus.",
+  "window": {
+    "since_inclusive_utc": "2026-09-12T00:00:00Z",
+    "until_exclusive_utc": "2026-09-19T14:00:00Z"
+  },
+  "providers": [
+    "codex",
+    "claude",
+    "devin"
+  ],
+  "workflow": "file_read",
+  "tokenizer": {
+    "package": "tiktoken",
+    "version": "0.12.0",
+    "encoding": "o200k_base"
+  },
+  "selection": "All unique file-read classified model-visible calls in the fixed window using frozen provider parsers. Include missing and multi-fragment output denominators. Exclude overlapping nested command telemetry. Recollect retained current ancestry; earlier report counts may differ after compaction or head movement.",
+  "repeat_key": "Same provider, session and source transcript file (Devin database session), exact canonical tool name plus arguments, and SHA-256 of the exact rendered single observed output fragment. Do not strip envelopes, whitespace, ANSI or timing. Do not pool cross-thread Codex session groups across files. Raw output equality is an observation, not proof the read was complete or safely reusable.",
+  "chronology": "Sort eligible calls by timestamp, stable call ID only breaks ties. Compare each duplicate to latest earlier exact-key observation. Strict subset requires previous call time <= previous output time < next call time. Adjacent subset additionally has no other observed tool calls between or tied with endpoints. Neither subset proves absence of unrecorded writes, external changes, compaction, lost context, session resumes or parallel operations. No claim of avoidability.",
+  "bounded_reads": "Recognize structured Read positive integer limit/max_lines, literal head/tail, or literal sed -n numeric-line-range p. One leading absolute cd allowed. Dynamic or compound commands unresolved. Native selection may still produce large output, and absence of a recognized limit is not waste.",
+  "projection": "Count only complete JSON object/array output fragments with at least two top-level fields/elements. No field is deemed unnecessary; no schema, key or value is published. This is a format feasibility count, not evidence for a projection skill.",
+  "measurement": "Tokenize each observed output fragment with pinned o200k_base; these are text tokens, not provider usage or billed cost. Repeated-output token mass is an optimistic deletion ceiling before instructions, freshness validation, cache lookup, context availability and repair costs. No provider/model invocation or archived command execution.",
+  "bounds": "One local collection; 300-second process alarm and existing 120-second indexed Devin SQL progress deadline. Fail closed on timeout, no partial success report.",
+  "claims": "No candidate admitted, no measured savings, correctness improvement, latency or best-native-baseline superiority. Zero findings retained.",
+  "privacy": "Publish only opaque per-call hashes, counts, token/byte quantities and relative intervals. Keep raw tool names, arguments, outputs, file paths, provider/session IDs private. Private hash measurements are outside the repository."
+}

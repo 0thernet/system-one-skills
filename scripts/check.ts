@@ -47,6 +47,7 @@ gate("synthetic-contract-report",()=>{
 gate("historical-v0.4-integrity",()=>run("node",["research/validate-history.mjs"]));
 gate("current-paired-replay",()=>run("node",["research/early-diagnostics-replay.mjs","--check"]));
 gate("current-runtime-qualification",()=>run("node",["bench/measure-early-diagnostics.mjs","--check"]));
+gate("read-opportunity-integrity",()=>run("python3",["research/candidate_opportunities.py","--check"]));
 gate("privacy-scan",()=>{
   const walk=(d:string):string[]=>readdirSync(d,{withFileTypes:true}).filter(e=>e.name!=="__pycache__" && !e.name.endsWith(".pyc")).flatMap(e=>e.isDirectory()?walk(join(d,e.name)):[join(d,e.name)]);
   const patterns=[/\/Users\/bg\//,/\/Users\/[a-z]+\/\.codex\/sessions/,/sk-[a-zA-Z0-9]{20,}/,/ghp_[a-zA-Z0-9]{20,}/,/npm_[a-zA-Z0-9]{20,}/];

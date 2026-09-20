@@ -14,17 +14,17 @@ their cost.
 
 | Skill | Intended benefit | Evidence and current decision |
 | --- | --- | --- |
-| `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 82% fewer text tokens across three successful Devin development replays. A separate failed-check audit kept the failure identities but omitted some source locations. [Results and limits](RESULTS.md). |
-| `system-one-explore` | Find the right repository locations with fewer reads | **Research only.** Many existing search results are small; must beat a focused native search while preserving required locations. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 82% smaller initial results in three successful Devin replays. One completed diagnosis used 3.9% fewer recorded tokens but took 9.3 seconds longer; both answers scored 6/6. These are different measurements. [Diagnosis](DIAGNOSIS-RESULTS.md) · [Replay](RESULTS.md). |
+| `system-one-explore` | Find matching code and relevant source lines in one result | **Research only.** Many existing search results are small; must beat focused native search plus context lines while preserving required locations. [Cost screen](CANDIDATE-EVIDENCE.md). |
 | `system-one-ci` | Avoid unnecessary model turns while CI runs | **Use native watching.** The identity pilot established no avoidable polling or token benefit. [Pilot](CI-PILOT.md). |
-| `system-one-digest` | Inspect repository state in one concise result | **Research only.** Small native Git outputs leave little room for another layer to help. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-digest` | Inspect repository state in one concise result | **Deferred; use native Git.** Small native outputs leave little room for another layer to help. [Cost screen](CANDIDATE-EVIDENCE.md). |
 | `system-one-diff` | Review relevant changes without losing coverage | **Research only.** Some outputs have room for reduction; retained review coverage is untested. [Cost screen](CANDIDATE-EVIDENCE.md). |
-| `system-one-fetch` | Read the relevant parts of a web page | **Research only.** Output size varies; must beat the existing readable-page tool and preserve needed evidence. [Cost screen](CANDIDATE-EVIDENCE.md). |
-| `system-one-research` | Assemble source evidence with fewer repeated reads | **Research only.** No measured advantage on complete, independently checked research tasks. |
-| `system-one-triage` | Resolve bounded decisions without unnecessary reasoning | **Research only.** Needs a specific labeled decision family and comparison with deterministic rules. |
-| `system-one-writing` | Catch mechanical draft issues before semantic review | **Deferred.** No suitable writing-task evaluation cohort; existing linters are the baseline. |
-| `system-one-evolve` | Improve a recurring routing policy over time | **Deferred.** First needs a useful fixed policy; optimization must repay its own evaluation cost. |
-| `system-one` | Select the smallest useful skill | **Deferred.** One shipped skill does not justify an extra routing layer. |
+| `system-one-fetch` | Read the relevant parts of a web page | **Deferred; use the existing reader.** Must preserve needed evidence and beat targeted source reading. [Cost screen](CANDIDATE-EVIDENCE.md). |
+| `system-one-research` | Assemble source evidence with fewer repeated reads | **Deferred.** No independently demonstrated benefit distinct from source extraction and retrieval. |
+| `system-one-triage` | Resolve bounded decisions without unnecessary reasoning | **Deferred.** Needs a specific labeled decision family and comparison with deterministic rules. |
+| `system-one-writing` | Catch mechanical draft issues before semantic review | **Inactive.** No suitable writing-task evaluation cohort; use existing linters. |
+| `system-one-evolve` | Improve a recurring routing policy over time | **Internal research only.** First needs a useful fixed policy; optimization must repay its own evaluation cost. |
+| `system-one` | Select the smallest useful skill | **Inactive.** One shipped skill does not justify an extra routing layer. |
 
 Each contract below specifies what correctness means and what tokens and time
 must be measured. A missing measurement is an evidence gap, not zero cost or an
@@ -57,8 +57,26 @@ The machine-readable [portfolio report](../research/portfolio-report.json) inclu
 
 ## Next experiments
 
-1. **Bounded repository search (`system-one-explore`).** 573 searches appear across all three providers. This supports testing an exact-location task with correctness labels. The benchmark must beat a focused native search after loading, pagination and follow-up reads; the aggregate size is not evidence that it will.
-2. **CI monitoring (`system-one-ci`).** 128 status calls appear, all from Devin. The [completed identity pilot](CI-PILOT.md) resolved 32 calls into 30 run/context groups and found only two repeated groups; neither established avoidable model polling. Its [negative/inconclusive result](../research/ci-pilot-report.json) keeps the skill research-only. Native run watching remains the baseline to beat.
+1. **Make failure results more useful (`system-one-verify`).** The [failed-check replay](FAILURE-EVIDENCE.md) retained seven failure identities and their common error but omitted six of seven distinct call sites. The [one live diagnosis pair](DIAGNOSIS-RESULTS.md) needed four reads with the summary versus three with native targeted reads; it does not establish that any particular omission caused the extra read. Test an exact failure manifest with grouped errors, every reported source location and a full-log line index. Unsupported formats must fall back visibly. Compare against native failure reporters and targeted log reads; shorter output alone cannot qualify it.
+2. **Native quiet output before another wrapper.** Current Bun `--dots` removed 88% of output plus invocation text in one passing fixture without skill overhead. This [native control](CANDIDATE-EVIDENCE.md) is a practical starting point, not an additional skill or proof about historical projects. A future integration must preserve the requested test selection, failure evidence and required warnings for the specific runner/version. Do not silently add reporter flags to a user's command.
+3. **Search with the needed source lines (`system-one-explore`).** 573 searches appear across all three providers. Test a focused query and relevant excerpts together against native search with context, path/glob limits and targeted reads. Freeze the required answer locations and account for all pagination and follow-up reads; most current outputs have too little text to justify a generic compression layer. Preserve total-match and coverage information instead of silently clipping.
+
+Large-diff coverage remains a secondary research direction. Native run watching
+is the current answer for CI: the [completed identity pilot](CI-PILOT.md) resolved
+32 of 128 calls into 30 run/context groups and established no avoidable polling.
+Generic Git summaries, source bundling and typed routing need a demonstrated
+task before implementation. Writing, policy evolution and umbrella routing stay
+outside the active product roadmap.
+
+**New class screened: unchanged-read reuse.** A separate local analysis of the
+1,200 file reads found 74 exact same-session/query/output repeats, representing
+only 1.09% of read-output tokens before any reuse cost. The sole repeat with no
+intervening observed call contained two tokens. These observations cannot
+establish freshness or whether prior evidence remained in context. They do not
+justify an installed caching skill or elevating it above the priorities above.
+The same bounded screen found no complete JSON container eligible for its
+field-projection format check; that says nothing about formats it did not parse.
+[Method, provider counts and negative findings](CANDIDATE-OPPORTUNITIES.md).
 
 These are research priorities, not additions to the installed package. Validation also needs new held-out tasks, especially long failures and Codex/Claude coverage. No broader rollout should follow from these aggregate counts alone. The bounded experiments below are **discovery pilots**, not qualification cohorts: proposed 10-, 12-, or 20-task samples do not satisfy the [whole-task assessment](../bench/TRIALS.md), which requires at least 30 independently audited task/session clusters within each declared provider/model scope, plus its other correctness and accounting gates.
 
@@ -74,7 +92,9 @@ These are research priorities, not additions to the installed package. Validatio
 
 **Correctness contract:** Execute the authorized command only once. Preserve the child exit status and distinguish wrapper timeouts, cancellation, spawn errors and logging limits. Pass short output through exactly; disclose omitted bytes and incomplete capture. Keep the complete local log unless a disclosed resource failure prevents it; never treat an excerpt as diagnostic completeness.
 
-**Still to measure:** Tokens — Held-out complete agent tasks, native quiet-reporter baseline, provider-native usage, skill discovery/loading interactions, cache effects and every follow-up read or repair. Reliability — Independent task success and failure diagnosis on new long failing logs; selection accuracy and next-run verbosity stability across all three agents. Performance — Paired whole-agent task duration, tool/model-call count and time to a correct diagnosis, including follow-up reads. Local synthetic CLI overhead is measured separately; no end-to-end speedup is demonstrated.
+**Completed diagnosis evidence:** In one fixed-order live Codex pair on a historical Devin failure, observed input + output usage fell from 49,803 to 47,840 (3.9%), both answers scored 6/6 on a blinded rubric, and launcher duration rose from 28.625 to 37.974 seconds. Four reads versus three and uncontrolled cache effects limit the inference. This is a single exploratory case, not a held-out qualification or a reliability improvement. Failed setup costs remain recorded in [the complete results](DIAGNOSIS-RESULTS.md).
+
+**Still to measure:** Tokens — Held-out complete agent tasks, native quiet-reporter baseline, skill discovery/loading interactions, controlled cache effects and every follow-up read or repair. Reliability — Independent task success and failure diagnosis on new long failing logs; selection accuracy and next-run verbosity stability across all three agents. Performance — Repeated paired whole-agent task duration, tool/model-call count and time to a correct diagnosis, including follow-up reads. Local synthetic CLI overhead is measured separately; no end-to-end speedup is demonstrated.
 
 **Next experiment:** Freeze the current implementation and a prior-observation routing rule; pre-register 12 new paired noisy-check tasks, balanced successful and failing outcomes when authorized data permits. Compare native best-practice and skill arms on identical repository states; blind-score exit interpretation and diagnosis; count all text, retrievals, repairs and elapsed time. Report missing provider strata without substitutions.
 
