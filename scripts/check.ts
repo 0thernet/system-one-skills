@@ -23,7 +23,10 @@ function run(cmd:string,args:string[]) {
 }
 gate("typecheck",()=>run("bunx",["tsc","--noEmit"]));
 gate("tests",()=>run("bun",["test","tests/"]));
+gate("benchmark-harness-tests",()=>run("bun",["test","bench/benchmark-harness.test.ts"]));
 gate("transcript-parser-tests",()=>run("python3",["-m","unittest","discover","-s","tests","-p","transcript*_test.py"]));
+gate("benchmark-manifest-tests",()=>run("python3",["-m","unittest","discover","-s","tests","-p","benchmark_manifest_test.py"]));
+gate("benchmark-protocol-integrity",()=>run("python3",["research/benchmark_manifest.py","--check"]));
 gate("skill-definition",()=>{
   const folders=readdirSync(join(PKG,"skills"),{withFileTypes:true}).filter(e=>e.isDirectory());
   if(folders.length!==1 || folders[0]?.name!=="system-one-verify")throw new Error("Only the admitted validation skill belongs in the default package");
