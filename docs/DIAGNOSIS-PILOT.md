@@ -1,10 +1,10 @@
-# Agent diagnosis pilot: prepared, not run
+# Agent diagnosis pilot: startup timeout, no comparison result
 
-**There is no observed agent result from this pilot.** We prepared one paired
-comparison, but automatic approval review stopped execution before the private
-log was sent to a model. Tokens, diagnosis accuracy, and completion time are
-therefore **unmeasured**, not zero. The
-[readiness record](../research/diagnosis-pilot-report.json) preserves the outcome.
+**The first approved launch timed out without an answer or token counts.**
+The native comparison arm was not launched. We cannot yet say whether the
+compact result helped the agent diagnose the failure or saved tokens overall.
+The [attempt report](../research/diagnosis-observed-report.json) records the
+unsuccessful launch; missing usage is **unknown, not zero**.
 
 ## The question
 
@@ -48,20 +48,68 @@ input, output, and reasoning. Cached and reasoning subsets would not be added
 to inclusive totals. These are token observations, not billing measurements.
 [Codex documents its structured event output](https://learn.chatgpt.com/docs/non-interactive-mode).
 
-## Why there are no results
+## What happened
 
 The separate no-model settings preflight could not attest skill isolation:
 startup timed out waiting for an existing Codex state-database backfill.
 Credentials and saved configuration were not changed.
 
-A subsequent bounded ephemeral launch was rejected **before execution** by
+An initial bounded ephemeral launch was rejected **before execution** by
 automatic approval review. Its stated reason was that permission to analyze
 transcripts did not specifically authorize transmitting this private archived
 log and associated context to the external model service. No model session
-started, no private payload was sent, and no workaround was attempted.
+started in that rejected attempt, no private payload was sent, and no workaround
+was attempted. The original
+[readiness record](../research/diagnosis-pilot-report.json) preserves that earlier
+outcome unchanged.
 
-Continuing this exact experiment needs explicit authorization for that payload
-and destination. A public-data experiment is another possible design, with its
-own frozen plan. Neither preparation nor permission establishes an outcome;
-publish actual successful and unsuccessful attempts once a run is authorized.
+The owner then explicitly approved the payload and destination. The approved
+launch began on September 20, 2026 at 04:54:37 UTC in the frozen **reduced** arm.
+It reached the 120-second wall limit and was terminated, with a recorded launcher
+duration of 120,191 ms. Both captured streams were empty: no session events,
+answer, or provider token counters were observed. That does **not** establish
+that no upstream request or cost occurred. The request status remains unknown.
+
+Read-only inspection found the private startup database's history import still
+running during the attempt. No existing managed daemon was available for the
+CLI's supported proxy route. This supports a startup problem, but absent session
+telemetry does not prove a complete causal account. No owned evaluation process
+remained after termination; credentials and global database state were not
+manually changed to force startup.
+
+The frozen plan required stopping on a startup block and reviewing the first
+attempt before a second launch. With startup unresolved, the native arm remains
+**unlaunched**, not failed. There are **zero completed pairs**, no scored answers,
+and no observed token difference. The launch duration is not a measurement of
+diagnosis speed. Skill isolation also remains unattested.
+
+## How the record is checked
+
+The public report contains only aggregate observations and opaque hashes. It
+binds the frozen plan, skill, reducer, source log, labels, executable, launcher,
+and private capture. It includes every launched attempt. Raw logs, prompts, and
+session data remain outside the repository.
+
+```sh
+python3 research/assess_diagnosis.py --check
+```
+
+The assessor checks the launch inventory, order, provenance, and derived totals.
+Missing counters stay null. Cached input and reasoning output are subsets of
+inclusive totals; repeated cumulative snapshots are not summed. A scored answer
+needs the six declared criteria and a bound review artifact. Synthetic tests
+exercise these rules and are not observations of agent performance.
+
+## What would make a continuation useful
+
+First establish a usable startup environment without a diagnosis request, then
+record any changed setup and a fresh launch budget before collecting outcomes.
+Preserve this timeout alongside future attempts. Obtain both answers, score them
+without treatment labels or token counts, and count every follow-up read using
+provider telemetry. Approval for the private payload and destination is already
+recorded; it is not the present blocker.
+
+Even a completed pair would be exploratory: one case, one order, no exposed
+immutable model checkpoint, and a log already used in retrospective research.
+It cannot demonstrate general savings, better reliability, or faster tasks.
 The stronger [whole-task protocol](../bench/TRIALS.md) remains a separate gate.

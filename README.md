@@ -86,6 +86,9 @@ Recent analysis covers [a real failed check](https://github.com/hraness/system-o
 and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).
 The failure summary saved tokens but needed the full log for some details;
 the candidate analysis gives us reasons to keep the install small.
+An [agent diagnosis pilot](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-PILOT.md)
+timed out during startup and yielded no answer or token counts. Failed evaluation
+attempts stay in the evidence record; they do not count as savings.
 
 <a id="commands"></a>
 

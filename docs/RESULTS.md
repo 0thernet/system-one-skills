@@ -61,6 +61,13 @@ terminal colors before replay still gave a 58% reduction in this one case, so
 color codes explain part of the raw-log benefit. The [failure audit](FAILURE-EVIDENCE.md)
 publishes the selection, independently reviewed labels, and exact counts.
 
+**The live follow-up comparison is still incomplete.** After explicit approval,
+the first Codex launch hit its 120-second limit without an answer or token
+counters. Startup history import was still running; the native comparison arm
+was not launched. This provides no measurement of diagnosis quality, agent token
+savings, or task speed. The [pilot record](DIAGNOSIS-PILOT.md) preserves the failed
+attempt and unknown upstream usage rather than treating it as zero cost.
+
 ## Why the package stays small
 
 New analysis screened **outputs from 960 calls** in real Codex, Claude Code, and
