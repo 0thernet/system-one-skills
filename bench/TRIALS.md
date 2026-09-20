@@ -6,6 +6,14 @@ correctness, tokens, and elapsed time. It does not launch agents or turn replay
 measurements into observations. There are currently no admitted whole-task
 observations in this repository.
 
+The provider-adapter and episode-selection layer is documented in
+[BENCHMARK-HARNESS.md](../docs/BENCHMARK-HARNESS.md). Use
+`benchmark_manifest.py` to select relevant task episodes before outcomes are
+examined, then `benchmark-harness.ts` to validate the extra task/snapshot/
+selection fields before this assessor runs. The harness keeps Codex, Claude
+Code, and Devin groups separate; workflow counts alone never create a task
+episode or a cross-provider savings claim.
+
 ```sh
 bun bench/assess-trials.ts private-observed-trials.json
 ```

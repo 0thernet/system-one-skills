@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "status": "design-only-no-confirmatory-observations",
+  "purpose": "Pre-register selection and paired whole-task measurement for System One skills before any new provider evaluation.",
+  "population": "Authorized local Devin, Claude Code, and Codex task episodes plus newly authorized matched runs; the retained transcript corpus is a convenience source for candidate discovery, not a representative holdout.",
+  "providers": ["codex", "claude", "devin"],
+  "provider_comparison": "Keep provider/model/cache groups separate. Similarity across providers is a task-family and snapshot match; token percentages are within-provider only. Never pool provider token counters into one savings percentage.",
+  "staging": {
+    "stage_a_discovery": "Up to 12 independently audited clusters per represented provider/model/family to test whether relevant tasks exist and the native baseline leaves room. Preserve every negative and make no adoption claim.",
+    "stage_b_confirmation": "At least 30 independently audited clusters per surviving provider/model/family/cache/baseline scope, with the existing correctness, token, latency, holdout, order, and sign-test gates.",
+    "promotion": "A candidate can remain research-only when Stage A finds no relevant demand, the native baseline dominates, or the skill lacks a complete adapter. Stage-A findings never qualify another provider or family."
+  },
+  "selection": {
+    "selector_version": "episode-index-v1",
+    "episode_boundary": "One user-intent episode with a bounded task start/end, provider session identity, and no unrecorded compaction or branch switch. Contiguous relevant calls may be grouped only when the boundary audit supports it.",
+    "development_data": "Any transcript used to tune a selector, threshold, wording, native baseline, or rubric is development data and cannot be held out.",
+    "sampling": "Freeze eligibility before seeing paired-arm outcome metrics. Historical source labels may be used only as predeclared development/coverage strata; confirmatory runs use fixture labels or random assignment fixed before either arm. Stratify by provider, model, task family, output-size band, and native-control presence; sample with opaque random IDs. Preserve eligible, sampled, completed, excluded, and analyzed denominators plus reasons.",
+    "outcome_blind": true,
+    "matching": "Match paired arms on immutable task snapshot, task-family rubric, provider/model/settings, environment, cache condition, and declared difficulty covariates. A provider with no eligible stratum remains missing; another provider is never substituted.",
+    "minimum": "At least 30 independently audited task/session clusters for every declared provider/model/skill/task-family group before a scoped adoption claim. Smaller pilots remain exploratory.",
+    "privacy": "Raw prompts, commands, paths, outputs, provider/session IDs, credentials, and private evaluator notes stay outside the repository. Public reports contain opaque case hashes and aggregates only."
+  },
+  "arms": {
+    "native": "Best available provider-native workflow selected before outcomes, including quiet reporters, bounded search/read flags, native CI watch, and existing readable-page tools where they preserve the task contract.",
+    "skill": "The frozen skill revision loaded through its normal discovery path, including its instruction and loading cost. A research candidate must have an executable adapter before it can enter a paired run.",
+    "order": "Randomized and counterbalanced baseline-first and skill-first across independent fresh sessions. Never reuse one arm's conversation for the other.",
+    "execution": "Run each arm once for the declared task unless the task protocol itself requires a bounded retry. Preserve timeouts, tool failures, retries, repairs, subagents, and incomplete attempts. Do not rerun solely to improve a number."
+  },
+  "measurement": {
+    "tokens": "Reconcile complete provider-native usage into disjoint uncached-input, cached-input, cache-write-input, and output buckets. Count catalog discovery, skill loading, tool output, follow-up reads, retries, repairs, and subagents through the same task boundary. Report provider-native counters separately from o200k_base text-token diagnostics.",
+    "correctness": "Use a frozen skill-specific rubric scored blind to arm. Record required answer fields, preservation invariants, omissions, false positives, abstentions, task pass/fail, critical errors, and quality score. A shorter answer is not a correct answer by itself.",
+    "performance": "Measure elapsed time to a correct outcome, model turns, tool calls, follow-up reads, retries, repairs, and relevant resource use separately for baseline and skill arms. A compact intermediate result does not establish faster task completion.",
+    "reporting": "Report paired deltas and medians by provider/model/task-family. Include eligible-to-analyzed denominators, missing strata, all unfavorable outcomes, and uncertainty. Apply the existing 5% material-latency guard and exact sign-test screen only within a declared group; use a predeclared multiple-comparison correction for a portfolio claim."
+  },
+  "task_families": {
+    "system-one-verify": {
+      "selector": "Explicit validation/build/check command with recoverable exit status and an agent-visible result; balance passing and failing cases and retain short-output negatives.",
+      "native_baseline": "Runner-supported quiet or summary reporter when it preserves required evidence, otherwise one native execution with a private log and targeted reads.",
+      "rubric": "Exit status, failure identities, required warnings/coverage, requested diagnosis fields, omission disclosure, and complete private artifact availability."
+    },
+    "system-one-explore": {
+      "selector": "Location-finding intent with search output followed by a relevant read, edit, or review; freeze expected matching paths/lines before arms run.",
+      "native_baseline": "Focused native search with explicit path/glob/context options plus targeted reads.",
+      "rubric": "Required locations, line provenance, match counts, ignored/truncated coverage, empty/invalid-query behavior, and follow-up reads."
+    },
+    "system-one-ci": {
+      "selector": "Explicit CI run identity and expected commit with at least two status observations and a terminal or bounded-timeout outcome.",
+      "native_baseline": "Provider-native run watch for the exact run and commit.",
+      "rubric": "Run/commit identity, terminal conclusion, timeout/error distinction, rerun handling, required-check completeness, and no silent run substitution."
+    },
+    "system-one-diff": {
+      "selector": "Fixed base/head diff followed by a review or edit with independently labeled changed-file/hunk coverage.",
+      "native_baseline": "Native diff stat/name listing followed by full relevant hunks and the existing reviewer.",
+      "rubric": "Changed-file and hunk coverage, finding precision/recall, cross-file context, staged/base identity, and explicit unreviewed scope."
+    },
+    "system-one-digest": {
+      "selector": "Episode requires at least two declared Git-state fields across more than one native query on a frozen repository state.",
+      "native_baseline": "Minimal machine-readable Git status plus only the required focused query.",
+      "rubric": "Branch/commit, staged/unstaged/untracked/conflict state, upstream/ahead-behind semantics, and snapshot consistency."
+    },
+    "system-one-fetch": {
+      "selector": "Source-reading intent with a URL/page response followed by a claim, citation, or source-specific action; freeze source and required facts.",
+      "native_baseline": "Existing readable-page extraction with targeted find/open operations.",
+      "rubric": "Source identity, status/content type, requested facts, tables/code/links, truncation disclosure, citation support, and dynamic-page failures."
+    },
+    "system-one-research": {
+      "selector": "At least two distinct source IDs used for one answer with a labeled support/contradiction requirement.",
+      "native_baseline": "Native search and targeted source reads with an explicit evidence table.",
+      "rubric": "Claim support, source identity, contradiction retention, coverage, citation accuracy, and per-source failure handling."
+    },
+    "system-one-triage": {
+      "selector": "Explicit bounded decision family with an independently adjudicated label and abstention-eligible evidence.",
+      "native_baseline": "Deterministic rule or primary-agent decision using the same evidence.",
+      "rubric": "Accuracy, false-negative cost, calibration/abstention, evidence preservation, and escalation correctness."
+    },
+    "system-one-writing": {
+      "selector": "Explicit draft-audit request with pre-labeled mechanical issue types and intentional exceptions.",
+      "native_baseline": "Existing linter or focused native search/read.",
+      "rubric": "Issue precision/recall, offsets, intentional repetition retention, and useful downstream edits."
+    },
+    "system-one-evolve": {
+      "selector": "No selection until a fixed routing policy, labeled workload, untouched holdout, and explicit usage horizon exist.",
+      "native_baseline": "Fixed reviewed policy.",
+      "rubric": "Held-out generalization, leakage, stability, total search-plus-use cost, and rollback safety."
+    },
+    "system-one": {
+      "selector": "No selection until at least two independently admitted skills exist and a useful-skill/native-only label set is frozen.",
+      "native_baseline": "Direct skill description or native tool choice.",
+      "rubric": "Correct no-skill decisions, false activation, missed activation, routing cost, and task outcome."
+    }
+  }
+}
