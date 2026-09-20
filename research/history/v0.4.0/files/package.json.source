@@ -1,0 +1,61 @@
+{
+  "name": "system-one-skills",
+  "version": "0.4.0",
+  "description": "Keep noisy test and build logs out of your agent context. One focused System One skill, deterministic output reduction, zero model calls.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hraness/system-one-skills.git"
+  },
+  "homepage": "https://github.com/hraness/system-one-skills#readme",
+  "bugs": {
+    "url": "https://github.com/hraness/system-one-skills/issues"
+  },
+  "type": "module",
+  "bin": {
+    "system-one-skills": "bin/system-one-skills.js"
+  },
+  "exports": {
+    "./reduce": "./src/reduce.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "check": "bun scripts/check.ts",
+    "bench": "bun bench/run-bench.ts",
+    "prepublishOnly": "bun scripts/check.ts",
+    "assess": "bun bench/assess-trials.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "system-one",
+    "system-one-skills",
+    "agent-skills",
+    "token-savings",
+    "test-logs",
+    "build-logs",
+    "codex",
+    "claude-code",
+    "devin"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ]
+}

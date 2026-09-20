@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { reduceOutput } from '../src/reduce.js';
-import { CAPTURE_BYTES, MAX_LOG_BYTES } from '../src/process.js';
+import { CAPTURE_BYTES, MAX_LOG_BYTES, createDiagnosticCapture } from '../src/process.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -48,10 +48,13 @@ export async function replay(cohorts, outputFile) {
       const bytes = Buffer.byteLength(row.log);
       if (bytes > MAX_LOG_BYTES) throw new Error('Archived sample exceeds the runtime full-log limit; explicit exceptional replay required');
       const captureTruncated = bytes > CAPTURE_BYTES;
-      const captured = Buffer.from(row.log).subarray(Math.max(0, bytes - CAPTURE_BYTES));
+      const source = Buffer.from(row.log);
+      const captured = source.subarray(Math.max(0, bytes - CAPTURE_BYTES));
       let start = 0;
       if (captureTruncated) while (start < captured.length && (captured[start] & 0xc0) === 0x80) start++;
-      const reduced = reduceOutput({ text: captured.subarray(start).toString('utf8'), code: row.exit_code, logPath, outputBytes: bytes, captureTruncated });
+      const diagnosticCapture = createDiagnosticCapture();
+      diagnosticCapture.push(source);
+      const reduced = reduceOutput({ raw: captured, diagnostics: diagnosticCapture.finish(), text: captured.subarray(start).toString('utf8'), code: row.exit_code, logPath, outputBytes: bytes, captureTruncated });
       const headline = `exit=${row.exit_code} bytes=${bytes} omitted=`;
       const invariants = {
         source_byte_count_correct: reduced.sourceBytes === bytes,

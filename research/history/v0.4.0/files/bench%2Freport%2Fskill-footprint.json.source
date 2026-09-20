@@ -1,0 +1,12 @@
+{
+  "method": "UTF-8 bytes of name plus newline plus description, and full SKILL.md files. Static discovery/loading footprint only; actual harness wrappers, tokenizer, caching and whether a skill is loaded vary. Full files are normally loaded selectively, not all at once.",
+  "skills": [
+    {
+      "skill": "system-one-verify",
+      "file_sha256": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+      "name_description_bytes": 188,
+      "full_skill_file_bytes": 995
+    }
+  ],
+  "total_name_description_bytes": 188
+}

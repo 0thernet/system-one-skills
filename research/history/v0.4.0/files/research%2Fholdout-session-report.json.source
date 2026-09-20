@@ -1,0 +1,331 @@
+{
+  "schema_version": 2,
+  "window": {
+    "since_inclusive_utc": "2026-09-01T00:00:00Z",
+    "until_exclusive_utc": "2026-09-12T00:00:00Z"
+  },
+  "population": "One consenting developer's local CLI transcripts; convenience sample, not representative of all agents or tasks.",
+  "measurement": "UTF-8 bytes of tool inputs and textual output payloads after provider/call deduplication; transcript JSON envelopes excluded. Bytes are not measured tokens or billed cost.",
+  "usage_semantics": {
+    "codex": "Sum per-response token_usage_record.usage, deduplicated by response_id. input_tokens includes cached_input_tokens; cached and reasoning fields are subsets, not additive. Cumulative token_count snapshots are not summed. Responses without individual usage records are absent from usage totals.",
+    "devin": "Active DB ancestry only; assistant metadata.metrics deduplicated by message_id. input_tokens, cache_read_tokens and cache_creation_tokens are reported separately as recorded. Cache inclusion depends on the selected model/backend; no additive cross-model input total is inferred. Export final_metrics and inactive forest copies are excluded. Compacted-away history is unavailable on this chain.",
+    "claude": "Selected latest parentUuid ancestry per JSONL file. Assistant message.usage deduplicated globally by message.id; max per field across blocks of one message. input_tokens, cache_read_input_tokens and cache_creation_input_tokens are distinct buckets; context-input proxy is their sum. This is a best-observable branch selection, not an authoritative exported active-head pointer."
+  },
+  "providers": {
+    "codex": {
+      "sessions_with_selected_evidence": 43,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "recorded_usage_thread_count": 2077,
+      "unique_tool_calls": 86,
+      "unique_output_fragments": 86,
+      "unique_usage_responses": 15347,
+      "recorded_usage_fields": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 1141561600,
+        "input_tokens": 1401980566,
+        "output_tokens": 1775257,
+        "reasoning_output_tokens": 776834
+      },
+      "workflow_counts": {
+        "repository_search": {
+          "tool_calls": 8,
+          "tool_input_bytes": 2722,
+          "output_fragments": 8,
+          "tool_output_bytes": 9985
+        },
+        "file_read": {
+          "tool_calls": 46,
+          "tool_input_bytes": 10203,
+          "output_fragments": 46,
+          "tool_output_bytes": 337096
+        },
+        "git_state": {
+          "tool_calls": 7,
+          "tool_input_bytes": 2063,
+          "output_fragments": 7,
+          "tool_output_bytes": 3942
+        },
+        "mixed_shell": {
+          "tool_calls": 17,
+          "tool_input_bytes": 5904,
+          "output_fragments": 17,
+          "tool_output_bytes": 81931
+        },
+        "shell_other": {
+          "tool_calls": 8,
+          "tool_input_bytes": 2467,
+          "output_fragments": 8,
+          "tool_output_bytes": 16670
+        }
+      },
+      "supplemental_completed_commands": {
+        "unique_events": 0,
+        "measurement": "Nested Codex shell telemetry; overlaps response-item tool outputs and MUST NOT be summed with model-visible tool-call counts or bytes.",
+        "workflow_counts": {}
+      },
+      "selection_and_exclusions": {
+        "cumulative_token_count_events_not_summed": 34677,
+        "discovered_transcript_files": 8205,
+        "files_with_mtime_before_window_excluded": 2624,
+        "transcript_files_scanned": 5581
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-01": 18,
+        "2026-09-02": 14,
+        "2026-09-03": 2,
+        "2026-09-05": 22,
+        "2026-09-06": 4488,
+        "2026-09-07": 2197,
+        "2026-09-08": 1358,
+        "2026-09-09": 3116,
+        "2026-09-10": 1561,
+        "2026-09-11": 2743
+      },
+      "selected_evidence_sha256": "beade81ba64fdaea71faed1cff3b07d6c93d9eb0d6c0c086f0366317c6d1f3db"
+    },
+    "claude": {
+      "sessions_with_selected_evidence": 20,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "unique_tool_calls": 33710,
+      "unique_output_fragments": 31131,
+      "unique_usage_responses": 21250,
+      "recorded_usage_fields": {
+        "cache_creation_input_tokens": 201187590,
+        "cache_read_input_tokens": 4677306861,
+        "input_tokens": 1660076,
+        "output_tokens": 12550547
+      },
+      "workflow_counts": {
+        "validation": {
+          "tool_calls": 133,
+          "tool_input_bytes": 162410,
+          "output_fragments": 111,
+          "tool_output_bytes": 35561
+        },
+        "repository_search": {
+          "tool_calls": 1197,
+          "tool_input_bytes": 1513623,
+          "output_fragments": 1147,
+          "tool_output_bytes": 1993535
+        },
+        "file_read": {
+          "tool_calls": 9796,
+          "tool_input_bytes": 4417936,
+          "output_fragments": 9309,
+          "tool_output_bytes": 80099832
+        },
+        "git_state": {
+          "tool_calls": 278,
+          "tool_input_bytes": 263369,
+          "output_fragments": 266,
+          "tool_output_bytes": 144790
+        },
+        "diff_review": {
+          "tool_calls": 225,
+          "tool_input_bytes": 104129,
+          "output_fragments": 202,
+          "tool_output_bytes": 2020090
+        },
+        "ci_status": {
+          "tool_calls": 103,
+          "tool_input_bytes": 40451,
+          "output_fragments": 99,
+          "tool_output_bytes": 89356
+        },
+        "web_research": {
+          "tool_calls": 1298,
+          "tool_input_bytes": 333755,
+          "output_fragments": 672,
+          "tool_output_bytes": 1412683
+        },
+        "dependency_build": {
+          "tool_calls": 27,
+          "tool_input_bytes": 47527,
+          "output_fragments": 25,
+          "tool_output_bytes": 6875
+        },
+        "edits": {
+          "tool_calls": 3801,
+          "tool_input_bytes": 18383118,
+          "output_fragments": 3795,
+          "tool_output_bytes": 771341
+        },
+        "coordination": {
+          "tool_calls": 180,
+          "tool_input_bytes": 761902,
+          "output_fragments": 187,
+          "tool_output_bytes": 184725
+        },
+        "process_wait": {
+          "tool_calls": 55,
+          "tool_input_bytes": 42237,
+          "output_fragments": 46,
+          "tool_output_bytes": 12515
+        },
+        "mixed_shell": {
+          "tool_calls": 14564,
+          "tool_input_bytes": 12779570,
+          "output_fragments": 13361,
+          "tool_output_bytes": 40189526
+        },
+        "shell_other": {
+          "tool_calls": 1500,
+          "tool_input_bytes": 2160688,
+          "output_fragments": 1374,
+          "tool_output_bytes": 2091179
+        },
+        "other": {
+          "tool_calls": 553,
+          "tool_input_bytes": 2570919,
+          "output_fragments": 536,
+          "tool_output_bytes": 111201
+        },
+        "unmatched_output": {
+          "tool_calls": 0,
+          "tool_input_bytes": 0,
+          "output_fragments": 1,
+          "tool_output_bytes": 657
+        }
+      },
+      "supplemental_completed_commands": null,
+      "selection_and_exclusions": {
+        "branch_nodes_outside_selected_ancestry": 62202,
+        "collector_adapter_non_object_metadata_normalized": 1235,
+        "discovered_transcript_files": 681,
+        "duplicate_calls_excluded": 861,
+        "duplicate_output_fragments_excluded": 591,
+        "duplicate_usage_records_excluded": 34309,
+        "missing_ancestry_parents": 2,
+        "replay_eligible_completed_validation_outputs": 2,
+        "replay_validation_outputs_without_explicit_exit_excluded": 109,
+        "transcript_files_scanned": 681,
+        "transcript_files_with_selected_ancestry": 660
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-02": 11388,
+        "2026-09-03": 12688,
+        "2026-09-04": 20848,
+        "2026-09-05": 16091,
+        "2026-09-06": 538,
+        "2026-09-10": 24538
+      },
+      "selected_evidence_sha256": "fc8947d69e44ed36b78667d68ccd3a4df4d68618851e474f984f13f5d9f84746"
+    },
+    "devin": {
+      "sessions_with_selected_evidence": 3,
+      "session_count_semantics": "Contributing execution/session groups after deduplication, not a user-task count. Codex session_meta.session_id groups multiple agent threads; Claude sessionId can include sidechains; Devin uses DB session identity.",
+      "unique_tool_calls": 1511,
+      "unique_output_fragments": 1511,
+      "unique_usage_responses": 1034,
+      "recorded_usage_fields": {
+        "cache_creation_tokens": 8084362,
+        "cache_read_tokens": 479092785,
+        "input_tokens": 3099,
+        "output_tokens": 1026748
+      },
+      "workflow_counts": {
+        "validation": {
+          "tool_calls": 43,
+          "tool_input_bytes": 23243,
+          "output_fragments": 43,
+          "tool_output_bytes": 91485
+        },
+        "repository_search": {
+          "tool_calls": 120,
+          "tool_input_bytes": 22039,
+          "output_fragments": 120,
+          "tool_output_bytes": 315317
+        },
+        "file_read": {
+          "tool_calls": 239,
+          "tool_input_bytes": 29297,
+          "output_fragments": 239,
+          "tool_output_bytes": 1339833
+        },
+        "git_state": {
+          "tool_calls": 60,
+          "tool_input_bytes": 9367,
+          "output_fragments": 60,
+          "tool_output_bytes": 25499
+        },
+        "diff_review": {
+          "tool_calls": 46,
+          "tool_input_bytes": 16380,
+          "output_fragments": 46,
+          "tool_output_bytes": 173282
+        },
+        "ci_status": {
+          "tool_calls": 5,
+          "tool_input_bytes": 1171,
+          "output_fragments": 5,
+          "tool_output_bytes": 6344
+        },
+        "web_research": {
+          "tool_calls": 49,
+          "tool_input_bytes": 4792,
+          "output_fragments": 49,
+          "tool_output_bytes": 317938
+        },
+        "edits": {
+          "tool_calls": 585,
+          "tool_input_bytes": 737239,
+          "output_fragments": 585,
+          "tool_output_bytes": 709774
+        },
+        "coordination": {
+          "tool_calls": 74,
+          "tool_input_bytes": 107521,
+          "output_fragments": 74,
+          "tool_output_bytes": 68964
+        },
+        "process_wait": {
+          "tool_calls": 104,
+          "tool_input_bytes": 4116,
+          "output_fragments": 104,
+          "tool_output_bytes": 238370
+        },
+        "mixed_shell": {
+          "tool_calls": 53,
+          "tool_input_bytes": 18887,
+          "output_fragments": 53,
+          "tool_output_bytes": 99961
+        },
+        "shell_other": {
+          "tool_calls": 103,
+          "tool_input_bytes": 44557,
+          "output_fragments": 103,
+          "tool_output_bytes": 139852
+        },
+        "other": {
+          "tool_calls": 30,
+          "tool_input_bytes": 6631,
+          "output_fragments": 30,
+          "tool_output_bytes": 79387
+        }
+      },
+      "supplemental_completed_commands": null,
+      "selection_and_exclusions": {
+        "active_nodes_inserted_before_window_excluded": 0,
+        "database_sessions_considered": 54,
+        "forest_nodes_outside_active_ancestry": 566526,
+        "replay_eligible_completed_validation_outputs": 28,
+        "replay_validation_outputs_without_explicit_exit_excluded": 15
+      },
+      "selected_records_by_utc_day": {
+        "2026-09-05": 1790,
+        "2026-09-06": 2266
+      },
+      "selected_evidence_sha256": "f8e6cf354530f151aac8c44b561ef6bb26dd68fd55b5121a7aed61a7923eadd6"
+    }
+  },
+  "analyzer_sha256": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+  "corpus_evidence_sha256": "7b2150d2844d59588316826fecfba3b459d1514a6f1741b12e82ba1f97f5d21c",
+  "collector_adapter_sha256": "0c424045e3db71bfda2b7f4a416ae8373b7d670fb8df514b818839154f48a85e",
+  "collector_adapter": {
+    "name": "normalize-non-object-output-metadata",
+    "scope": "New holdout collection only; this is an amended parser boundary, not an unchanged calibration collector.",
+    "behavior": "Non-null, non-dict metadata becomes {}; textual content and explicit exit parsing are unchanged. No exit code is inferred.",
+    "counter": "collector_adapter_non_object_metadata_normalized",
+    "counter_semantics": "Selected-window output calls normalized before the base output-fragment deduplication; absent/null metadata needs no normalization."
+  }
+}

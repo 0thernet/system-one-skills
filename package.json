@@ -1,6 +1,6 @@
 {
   "name": "system-one-skills",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Keep noisy test and build logs out of your agent context. One focused System One skill, deterministic output reduction, zero model calls.",
   "license": "MIT",
   "repository": {

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from historical_evidence_fixture import historical_sources
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'research'))
 import assess_diagnosis_retry as retry
@@ -46,6 +47,15 @@ def fixture():
 
 
 class RetryAssessmentTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        context = historical_sources(retry, retry.core)
+        context.__enter__()
+        cls.addClassCleanup(context.__exit__, None, None, None)
+
+    def setUp(self):
+        retry.check(fixture())
+
     def test_unknown_configuration_does_not_invent_isolation_or_causal_success(self):
         report = fixture()
         retry.check(report)

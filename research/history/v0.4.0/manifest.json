@@ -1,0 +1,409 @@
+{
+  "schema_version": 1,
+  "evidence_role": "immutable-historical-v0.4-evidence",
+  "source_commit": "49c9ba49212f465c6a7d6054208bed7f39e9b813",
+  "source_tree": "0504556186a5d784f532ac37bd4728a0fde9ed16",
+  "files": [
+    {
+      "path": "bench/TRIALS.md",
+      "file": "bench%2FTRIALS.md.source",
+      "sha256": "3afc75d1a4154184a57bad8e6b09ff6721188f3d4ae373be0040821cc064f6f2",
+      "bytes": 11845,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/assess-trials.ts",
+      "file": "bench%2Fassess-trials.ts.source",
+      "sha256": "93c865f8735ffa5d2d6168dcf18fec92e41ccb22b7121f25bae46b1213107e18",
+      "bytes": 12865,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/measure-runtime.mjs",
+      "file": "bench%2Fmeasure-runtime.mjs.source",
+      "sha256": "f2fe67b9efe08d12be837c76f84b6de4640199c97c5f861ff2bf487c24cc026d",
+      "bytes": 16347,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/report/bench-report.json",
+      "file": "bench%2Freport%2Fbench-report.json.source",
+      "sha256": "17c8d3f52f026f9c5057d7e4a1c290f6512fa0a01a7760d320a3ae0320987394",
+      "bytes": 874,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/report/runtime-report.json",
+      "file": "bench%2Freport%2Fruntime-report.json.source",
+      "sha256": "3675275759cd55bffda87172453dbd8beb64e116315fca23bf394e3bbd105676",
+      "bytes": 39040,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/report/skill-footprint.json",
+      "file": "bench%2Freport%2Fskill-footprint.json.source",
+      "sha256": "23b2ad11997206915f75135d9a6d319fc4eb8704b3c9a57770f16c582f5c6b2c",
+      "bytes": 543,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/run-bench.ts",
+      "file": "bench%2Frun-bench.ts.source",
+      "sha256": "386330229de340b80a6fea35c7fbaec4ea874ae4bedeeea9508225669df6b408",
+      "bytes": 1888,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/skill-footprint.ts",
+      "file": "bench%2Fskill-footprint.ts.source",
+      "sha256": "c47bcd197242ad61133e8c5691fc31ea1527a01f40b65daa400eef6db198b63a",
+      "bytes": 1551,
+      "mode": "100644"
+    },
+    {
+      "path": "bench/source-fingerprint.ts",
+      "file": "bench%2Fsource-fingerprint.ts.source",
+      "sha256": "fa42e1bb10b984066df2108e5149e070ed41ebd01c08198bfcd49ffbd52162c2",
+      "bytes": 918,
+      "mode": "100644"
+    },
+    {
+      "path": "bin/system-one-skills.js",
+      "file": "bin%2Fsystem-one-skills.js.source",
+      "sha256": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+      "bytes": 4495,
+      "mode": "100644"
+    },
+    {
+      "path": "bun.lock",
+      "file": "bun.lock.source",
+      "sha256": "b090e990babbef4a0d68a84d3c97b1a9a9292867018a35337c8286ba86460fec",
+      "bytes": 1174,
+      "mode": "100644"
+    },
+    {
+      "path": "package.json",
+      "file": "package.json.source",
+      "sha256": "eefc2242ece8d7449fdaf67a2214794e354754627578affe4e36ef746c4f710d",
+      "bytes": 1358,
+      "mode": "100644"
+    },
+    {
+      "path": "research/METHODOLOGY.md",
+      "file": "research%2FMETHODOLOGY.md.source",
+      "sha256": "c0768f6e26efd80b782394a008e9b7be14ab11f916a6cfd068a7907d779360cd",
+      "bytes": 9024,
+      "mode": "100644"
+    },
+    {
+      "path": "research/admission-report.json",
+      "file": "research%2Fadmission-report.json.source",
+      "sha256": "e070421f35cbbb554c899e078d013f325e340f323bb7cf4912bc2b1614753ddb",
+      "bytes": 42314,
+      "mode": "100644"
+    },
+    {
+      "path": "research/analyze_sessions.py",
+      "file": "research%2Fanalyze_sessions.py.source",
+      "sha256": "e1038a9cf034106066de612839068fea86c3c48cfb87ed8379e5ac02c69cdcf7",
+      "bytes": 26750,
+      "mode": "100644"
+    },
+    {
+      "path": "research/assess_admission.py",
+      "file": "research%2Fassess_admission.py.source",
+      "sha256": "73adc87df2ebfbfc7bd4ad463b9e8bbe9cdfc95feb0d19d31c0b004e81604734",
+      "bytes": 12073,
+      "mode": "100644"
+    },
+    {
+      "path": "research/assess_diagnosis.py",
+      "file": "research%2Fassess_diagnosis.py.source",
+      "sha256": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+      "bytes": 18669,
+      "mode": "100644"
+    },
+    {
+      "path": "research/assess_diagnosis_retry.py",
+      "file": "research%2Fassess_diagnosis_retry.py.source",
+      "sha256": "cb6221153a4aef8f02c64d64031237d0f4750e20a4e2fe3c7177ae06065a1a49",
+      "bytes": 16149,
+      "mode": "100644"
+    },
+    {
+      "path": "research/assess_holdout.py",
+      "file": "research%2Fassess_holdout.py.source",
+      "sha256": "6eca69a26e13676cc05de384250933e3c093471970e6d82054a2a01d2103e0ec",
+      "bytes": 5650,
+      "mode": "100644"
+    },
+    {
+      "path": "research/candidate-native-report.json",
+      "file": "research%2Fcandidate-native-report.json.source",
+      "sha256": "0125c5b5ad9c6799abeddb47eea47a139dbfeb3c90a605faf248f64015e762aa",
+      "bytes": 4461,
+      "mode": "100644"
+    },
+    {
+      "path": "research/candidate-protocol.json",
+      "file": "research%2Fcandidate-protocol.json.source",
+      "sha256": "086c54374e42573997b0305a16f8f526cb4532958fd3fa3b1220181e96baaa52",
+      "bytes": 2885,
+      "mode": "100644"
+    },
+    {
+      "path": "research/candidate-report.json",
+      "file": "research%2Fcandidate-report.json.source",
+      "sha256": "ad8cd073ccf49499292ff87f9c43fa2cf4631693a6988ca0a2649958c32759ec",
+      "bytes": 288118,
+      "mode": "100644"
+    },
+    {
+      "path": "research/candidate_native.py",
+      "file": "research%2Fcandidate_native.py.source",
+      "sha256": "6587727c35bbab5b7e1518d1fa4237084a1362a51fcbe81f8c3b51d638fcde93",
+      "bytes": 7778,
+      "mode": "100644"
+    },
+    {
+      "path": "research/candidate_screen.py",
+      "file": "research%2Fcandidate_screen.py.source",
+      "sha256": "87602480388f13ad4ff41d205e68f544439446ae18bce30ac65d7a7941b45249",
+      "bytes": 18553,
+      "mode": "100644"
+    },
+    {
+      "path": "research/ci-pilot-report.json",
+      "file": "research%2Fci-pilot-report.json.source",
+      "sha256": "cecf0c3cc68731a7ff71620f7489989a6393d9289483803c247eb87de5da2e4e",
+      "bytes": 5075,
+      "mode": "100644"
+    },
+    {
+      "path": "research/ci_pilot.py",
+      "file": "research%2Fci_pilot.py.source",
+      "sha256": "865cb344852f0af728d2780c1424b37c445c511ef5e00142b5800828d7d5067a",
+      "bytes": 19774,
+      "mode": "100644"
+    },
+    {
+      "path": "research/collect_holdout.py",
+      "file": "research%2Fcollect_holdout.py.source",
+      "sha256": "0c424045e3db71bfda2b7f4a416ae8373b7d670fb8df514b818839154f48a85e",
+      "bytes": 3508,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-observed-report.json",
+      "file": "research%2Fdiagnosis-observed-report.json.source",
+      "sha256": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b",
+      "bytes": 5559,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-pilot-report.json",
+      "file": "research%2Fdiagnosis-pilot-report.json.source",
+      "sha256": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+      "bytes": 3270,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-retry-protocol.json",
+      "file": "research%2Fdiagnosis-retry-protocol.json.source",
+      "sha256": "85198bd8052130eabceba7eee5d12ea9d7fad31edd7075ba2b93874b790a7db2",
+      "bytes": 4457,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-retry-report.json",
+      "file": "research%2Fdiagnosis-retry-report.json.source",
+      "sha256": "9b9532e6712eb2c8e33ec0d5c2e3f68ff06d8055183593ee5187d200309d563e",
+      "bytes": 10985,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-retry-tools-protocol.json",
+      "file": "research%2Fdiagnosis-retry-tools-protocol.json.source",
+      "sha256": "00aac309357c97fde783274652b2f39c022efceaa4bcef2ffce2238a8712c6ed",
+      "bytes": 4811,
+      "mode": "100644"
+    },
+    {
+      "path": "research/diagnosis-retry-tools-report.json",
+      "file": "research%2Fdiagnosis-retry-tools-report.json.source",
+      "sha256": "fe3c88a4bc17333f22736d52ce249b5f2beb1589523395ad71ee406c062308a0",
+      "bytes": 16181,
+      "mode": "100644"
+    },
+    {
+      "path": "research/failure-corpus-report.json",
+      "file": "research%2Ffailure-corpus-report.json.source",
+      "sha256": "9a947065d9bd417099f717db43a37d3b4c18806d64664b03007a619fbd91db4c",
+      "bytes": 13876,
+      "mode": "100644"
+    },
+    {
+      "path": "research/failure-protocol.json",
+      "file": "research%2Ffailure-protocol.json.source",
+      "sha256": "373b65a42c116ed3f94fecbe70dff590d3022d85f1abdd6affc3a3d1ccfdfbc0",
+      "bytes": 5010,
+      "mode": "100644"
+    },
+    {
+      "path": "research/failure-report.json",
+      "file": "research%2Ffailure-report.json.source",
+      "sha256": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+      "bytes": 16703,
+      "mode": "100644"
+    },
+    {
+      "path": "research/failure_assess.py",
+      "file": "research%2Ffailure_assess.py.source",
+      "sha256": "6799014782ed4cd036c7dbb84cfeae01732701811d215add3f4163cfadfcaa7f",
+      "bytes": 17177,
+      "mode": "100644"
+    },
+    {
+      "path": "research/failure_collect.py",
+      "file": "research%2Ffailure_collect.py.source",
+      "sha256": "422574023fbc6134c84396bfd664c49f897233f38b3506cba51fc5fb92f41cd2",
+      "bytes": 4336,
+      "mode": "100644"
+    },
+    {
+      "path": "research/holdout-protocol.json",
+      "file": "research%2Fholdout-protocol.json.source",
+      "sha256": "a1cf5aaa2f6b80e44d9d7d47d4cf7f6a95ead511f224c3d1ed66dd31b8ca3257",
+      "bytes": 3076,
+      "mode": "100644"
+    },
+    {
+      "path": "research/holdout-report.json",
+      "file": "research%2Fholdout-report.json.source",
+      "sha256": "20025beef047e845bd79b0c3ea3efea72da73455a6d55cf02281252db5d1d5cd",
+      "bytes": 29292,
+      "mode": "100644"
+    },
+    {
+      "path": "research/holdout-session-report.json",
+      "file": "research%2Fholdout-session-report.json.source",
+      "sha256": "2a7cbd091eabde67336c4a27a755a154a86e6bbe638adb8f1431194ef5515d7c",
+      "bytes": 12795,
+      "mode": "100644"
+    },
+    {
+      "path": "research/portfolio-report.json",
+      "file": "research%2Fportfolio-report.json.source",
+      "sha256": "c31e35a523cc7bd08d36f5db6005247637f7523921f206d8e44819282d565a61",
+      "bytes": 51663,
+      "mode": "100644"
+    },
+    {
+      "path": "research/replay_validation.mjs",
+      "file": "research%2Freplay_validation.mjs.source",
+      "sha256": "0bb4926807590bb040e7d902e39259a6d8ba6d7ad64ff6c5e45cd1f3776d6efa",
+      "bytes": 6036,
+      "mode": "100644"
+    },
+    {
+      "path": "research/requirements.txt",
+      "file": "research%2Frequirements.txt.source",
+      "sha256": "ac785205f5d97970c4a7f8aef135c62cfda01985ba2000973008c823ccc01d2f",
+      "bytes": 17,
+      "mode": "100644"
+    },
+    {
+      "path": "research/session-report.json",
+      "file": "research%2Fsession-report.json.source",
+      "sha256": "c7f7f31da730024ec1ec88035352205a024b45416a6df90d22362dc569c6a611",
+      "bytes": 11874,
+      "mode": "100644"
+    },
+    {
+      "path": "research/supplemental-session-report.json",
+      "file": "research%2Fsupplemental-session-report.json.source",
+      "sha256": "2f00ec42a91c1efa4b05b88683eb3b5a477d2776162fbe4abcc54d8603684600",
+      "bytes": 7970,
+      "mode": "100644"
+    },
+    {
+      "path": "research/validate-admission.ts",
+      "file": "research%2Fvalidate-admission.ts.source",
+      "sha256": "51ce9ad72a70cf634b9e3b738a85b1f442d5a62315b70da7df7864e5898fa22e",
+      "bytes": 5471,
+      "mode": "100644"
+    },
+    {
+      "path": "research/validate-evidence.ts",
+      "file": "research%2Fvalidate-evidence.ts.source",
+      "sha256": "a3c034deff1dfd3d4070f9ae67ee26201af61d2e732823d7da8c13353697eaba",
+      "bytes": 13232,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/system-one-verify/SKILL.md",
+      "file": "skills%2Fsystem-one-verify%2FSKILL.md.source",
+      "sha256": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+      "bytes": 995,
+      "mode": "100644"
+    },
+    {
+      "path": "src/check.js",
+      "file": "src%2Fcheck.js.source",
+      "sha256": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+      "bytes": 396,
+      "mode": "100644"
+    },
+    {
+      "path": "src/process.js",
+      "file": "src%2Fprocess.js.source",
+      "sha256": "5ae33286cad9830fef6aa42a471b2620c5c5c50cb7571d288a027645fa6b1845",
+      "bytes": 7549,
+      "mode": "100644"
+    },
+    {
+      "path": "src/reduce.js",
+      "file": "src%2Freduce.js.source",
+      "sha256": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+      "bytes": 4283,
+      "mode": "100644"
+    },
+    {
+      "path": "tests/check-runtime.test.ts",
+      "file": "tests%2Fcheck-runtime.test.ts.source",
+      "sha256": "ab5684b0e7ed9a3cbeb1b9c73fe6b8124f27dacf53b7a33f76371564d373b84d",
+      "bytes": 18441,
+      "mode": "100644"
+    },
+    {
+      "path": "tests/trial-assessment.test.ts",
+      "file": "tests%2Ftrial-assessment.test.ts.source",
+      "sha256": "cde0249c5dd79642de6908d4634b15301ea825ea44bb55e2968a27a80c067981",
+      "bytes": 11675,
+      "mode": "100644"
+    }
+  ],
+  "retained_artifacts": [
+    "bench/report/runtime-report.json",
+    "research/admission-report.json",
+    "research/candidate-native-report.json",
+    "research/candidate-protocol.json",
+    "research/candidate-report.json",
+    "research/ci-pilot-report.json",
+    "research/diagnosis-observed-report.json",
+    "research/diagnosis-pilot-report.json",
+    "research/diagnosis-retry-protocol.json",
+    "research/diagnosis-retry-report.json",
+    "research/diagnosis-retry-tools-protocol.json",
+    "research/diagnosis-retry-tools-report.json",
+    "research/failure-corpus-report.json",
+    "research/failure-protocol.json",
+    "research/failure-report.json",
+    "research/holdout-protocol.json",
+    "research/holdout-report.json",
+    "research/holdout-session-report.json",
+    "research/portfolio-report.json",
+    "research/session-report.json",
+    "research/supplemental-session-report.json"
+  ]
+}

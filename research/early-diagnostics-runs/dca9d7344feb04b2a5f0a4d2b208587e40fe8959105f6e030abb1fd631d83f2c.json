@@ -1,0 +1,702 @@
+{
+  "schema_version": 1,
+  "experiment": "early-diagnostics-task-log-replay-v1",
+  "recorded_at_utc": "2026-09-20T22:09:41.713Z",
+  "evidence_role": "development paired byte replay; not held-out or whole-task evidence",
+  "protocol_sha256": "98b52ec92512a6d6250f6fdc1f48bf4eb4bba1416fb9330a3891600360a43a56",
+  "private_manifest_sha256": "566b160c8ae523a2327444b669578a55941fccfe079ffe8efe4545bf3807a323",
+  "private_replay_sha256": "f7ca084521332e2348ee69b87e79bad373ecbef7cb74f1598e1e145d17da3c17",
+  "source_sha256": {
+    "bin/system-one-skills.js": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+    "bun.lock": "b090e990babbef4a0d68a84d3c97b1a9a9292867018a35337c8286ba86460fec",
+    "package.json": "34d5321db5c608519fece5f5f8011ecfe209a9553ec401175c6333c178627e7d",
+    "research/early-diagnostics-replay.mjs": "176e378816a9bb4e46b4b948b710b1d92d4568bda18edd0a64410924b19b8651",
+    "research/history/v0.4.0/manifest.json": "251645655ecf1e88bcf4204974d3af8877b816054db95fb5ce67e044944065d4",
+    "research/replay_validation.mjs": "1c38f8bfdef97e6af999e412427cb4ffe53b27ea61ecf169d30ff0f887474d22",
+    "research/validate-history.mjs": "1f0f5aaa05e68b910bdd4f3173f8efd2f4f2fa0edbaecdc30a0fc90cec22905c",
+    "scripts/check.ts": "1ae3d825d4d07a9303754c224c934d38ed8ae5003dfb417041d6ae87c50921ae",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+    "src/process.js": "1b67ce099d657f6ef8317390fffbc1999bfcd80fae4e7964ff9b57d6156f2464",
+    "src/reduce.js": "3d9ea55e03fe01f85229f50a0312f37984778b59d071b78783da578b28faa382",
+    "tests/early-diagnostics-replay.test.mjs": "054bad68fae8a81754acba218bbd340048ad8ceb00201fcb001898391b4bf752"
+  },
+  "tokenizer": {
+    "library": "tiktoken",
+    "version": "0.12.0",
+    "encoding": "o200k_base"
+  },
+  "overhead": {
+    "full_skill_tokens": 204,
+    "catalog_tokens": 42,
+    "baseline_invocation_tokens": 6,
+    "skill_invocation_tokens": 18,
+    "first_use_incremental_tokens": 258
+  },
+  "cases": [
+    {
+      "sample_id": "0dee36ab1adcfba4c9a4e13175e022e796d02710fe870b320b69bedc17e90357",
+      "source_sha256": "1a101dd744aca55e6b0f241248f18c8b11a8380667e228907d3e3350052f784c",
+      "source_bytes": 26510,
+      "source_tokens": 5032,
+      "exit_code": 1,
+      "routed": true,
+      "capture_truncated": false,
+      "marker_count": 2,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "42fa000e3adbcde02a1c9a26833c033d61146c7cfada67ec969d7226773d8782",
+        "presented_bytes": 2434,
+        "presented_tokens": 557,
+        "net_tokens": 4217,
+        "meets_margin": true,
+        "retained_markers": 2,
+        "first_marker_retained": true,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4217,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "42fa000e3adbcde02a1c9a26833c033d61146c7cfada67ec969d7226773d8782",
+        "presented_bytes": 2434,
+        "presented_tokens": 557,
+        "net_tokens": 4217,
+        "meets_margin": true,
+        "retained_markers": 2,
+        "first_marker_retained": true,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4217,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "24ea098b953ebc98b5e958ab2e6d63e75e1fe6646a4f371d7ec58f2edeead726",
+      "source_sha256": "b1a79d1f541515279dc08051f14b4279caca5941ec9bfe5905d5a3a0fe00bc37",
+      "source_bytes": 645250,
+      "source_tokens": 140548,
+      "exit_code": 1,
+      "routed": true,
+      "capture_truncated": true,
+      "marker_count": 69,
+      "marker_gains": 2,
+      "marker_losses": 0,
+      "presented_equal": false,
+      "baseline": {
+        "presented_sha256": "e6d6ea43f93f1b8aa45506b295bc61f7b9a0338ffc82317643bbb2359b906571",
+        "presented_bytes": 4386,
+        "presented_tokens": 1266,
+        "net_tokens": 139024,
+        "meets_margin": true,
+        "retained_markers": 49,
+        "first_marker_retained": false,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -1524,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "e72cda2b02544c0a0003a6a740c9d7698bbd2b839f266329b18c1a0d37aff151",
+        "presented_bytes": 4868,
+        "presented_tokens": 1406,
+        "net_tokens": 138884,
+        "meets_margin": true,
+        "retained_markers": 51,
+        "first_marker_retained": true,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -1664,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "4ff00c9147138bfa8dac91b9fb1a609197748251afd3034c7e5f33655333058f",
+      "source_sha256": "835095e2d9f9fa3708108e5699ae8c2f82ee613f799aec1b8865bf7619ebde6e",
+      "source_bytes": 26274,
+      "source_tokens": 4975,
+      "exit_code": 0,
+      "routed": true,
+      "capture_truncated": false,
+      "marker_count": 0,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "428f09b6563ae6bf9557d30196ff05f8ee4caa07e460900d73c94da0505558b2",
+        "presented_bytes": 1192,
+        "presented_tokens": 298,
+        "net_tokens": 4419,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4419,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "428f09b6563ae6bf9557d30196ff05f8ee4caa07e460900d73c94da0505558b2",
+        "presented_bytes": 1192,
+        "presented_tokens": 298,
+        "net_tokens": 4419,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4419,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "60c844f7f776e6b815ef934a3b2857aefe89863053dfd38e7af1fd19a5e7ddb7",
+      "source_sha256": "6e526e911040f913873478ac2038696fde6db0dc8267c892e7a156293dbc2d96",
+      "source_bytes": 620414,
+      "source_tokens": 132930,
+      "exit_code": 0,
+      "routed": true,
+      "capture_truncated": true,
+      "marker_count": 2,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "c0fa7f53997faba888ed9b82960c8712ed1e2adb34bb3f50ef1f9e2b4fbd4f55",
+        "presented_bytes": 1172,
+        "presented_tokens": 344,
+        "net_tokens": 132328,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": false,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -602,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "c0fa7f53997faba888ed9b82960c8712ed1e2adb34bb3f50ef1f9e2b4fbd4f55",
+        "presented_bytes": 1172,
+        "presented_tokens": 344,
+        "net_tokens": 132328,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": false,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -602,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "8b5855cdd258b6de0e8479ead12a3e6f14f256129f4e2655e80e4b34f58624cf",
+      "source_sha256": "234e454a16a4234c844f3f8eb96a08e8302c5d403255c95287a48713509f965f",
+      "source_bytes": 605652,
+      "source_tokens": 128631,
+      "exit_code": 1,
+      "routed": true,
+      "capture_truncated": true,
+      "marker_count": 6,
+      "marker_gains": 2,
+      "marker_losses": 0,
+      "presented_equal": false,
+      "baseline": {
+        "presented_sha256": "32056e7be9e8392e4c720492c7237ad18b5e84e9cf9686112b87b640f311284c",
+        "presented_bytes": 1703,
+        "presented_tokens": 475,
+        "net_tokens": 127898,
+        "meets_margin": true,
+        "retained_markers": 4,
+        "first_marker_retained": false,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -733,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "61fd8663c14550180b7a3c12aa231ab43c3005fc67ce12b9571b644981794435",
+        "presented_bytes": 2185,
+        "presented_tokens": 615,
+        "net_tokens": 127758,
+        "meets_margin": true,
+        "retained_markers": 6,
+        "first_marker_retained": true,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 127758,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "bd0c7785b7170e4c8b26f0c67c7ddcbc540b281ae9c32972aadbdfc6874f5842",
+      "source_sha256": "d368d53bedea8ac042dc1b6c89da8a14495231f3c5f96185421667c617fa9630",
+      "source_bytes": 605914,
+      "source_tokens": 128681,
+      "exit_code": 1,
+      "routed": true,
+      "capture_truncated": true,
+      "marker_count": 8,
+      "marker_gains": 2,
+      "marker_losses": 0,
+      "presented_equal": false,
+      "baseline": {
+        "presented_sha256": "3f62fa5160bf3bd6c0369351342c49ba925950fd757c92e4402e9a52ac7b5081",
+        "presented_bytes": 1660,
+        "presented_tokens": 467,
+        "net_tokens": 127956,
+        "meets_margin": true,
+        "retained_markers": 6,
+        "first_marker_retained": false,
+        "requires_full_read_for_any_marker": true,
+        "net_tokens_after_full_read_sensitivity": -725,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "496640dcc564c12bfde112f4233d9c9079bdb55424cdac118d8403425224e298",
+        "presented_bytes": 2142,
+        "presented_tokens": 607,
+        "net_tokens": 127816,
+        "meets_margin": true,
+        "retained_markers": 8,
+        "first_marker_retained": true,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 127816,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "d290125629219027584313a8e40a8b6b85927c5aa5d712a618affd5e7f34a8af",
+      "source_sha256": "ac9b156759036d89fdaf3347f334e67327d58853f8311e656e8af79f0a0a5a34",
+      "source_bytes": 23969,
+      "source_tokens": 6384,
+      "exit_code": 0,
+      "routed": true,
+      "capture_truncated": false,
+      "marker_count": 0,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "367ca59bb819bd9a4cc9182c410b0c75dd795229aa2c96325b33b7ca599a5904",
+        "presented_bytes": 993,
+        "presented_tokens": 256,
+        "net_tokens": 5870,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 5870,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "367ca59bb819bd9a4cc9182c410b0c75dd795229aa2c96325b33b7ca599a5904",
+        "presented_bytes": 993,
+        "presented_tokens": 256,
+        "net_tokens": 5870,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 5870,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "ede0bc852626c40f447071e7bc073f582a6eee3ea67de97a544262f6b8405dd2",
+      "source_sha256": "20db172fba7327c5c5d2548393edc224931834bb3dcf168e4801dfef6de67dbe",
+      "source_bytes": 26255,
+      "source_tokens": 4975,
+      "exit_code": 0,
+      "routed": true,
+      "capture_truncated": false,
+      "marker_count": 0,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "d42b2a4323ea5705f234c03f66325c6d0723f89d48776d48939af4a49e4c7f7f",
+        "presented_bytes": 1192,
+        "presented_tokens": 298,
+        "net_tokens": 4419,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4419,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "d42b2a4323ea5705f234c03f66325c6d0723f89d48776d48939af4a49e4c7f7f",
+        "presented_bytes": 1192,
+        "presented_tokens": 298,
+        "net_tokens": 4419,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 4419,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    },
+    {
+      "sample_id": "ef9b81f68708369e85031b3a6e354f684894823955cfa2bede3f0cab467daf3e",
+      "source_sha256": "9850e27af5f4ece4b134774f931715352351267a15d6bed3fc771aee7dfede23",
+      "source_bytes": 79076,
+      "source_tokens": 18021,
+      "exit_code": 0,
+      "routed": true,
+      "capture_truncated": false,
+      "marker_count": 0,
+      "marker_gains": 0,
+      "marker_losses": 0,
+      "presented_equal": true,
+      "baseline": {
+        "presented_sha256": "48a92327603caa6bdc02509d4a5a5784fcb03e3e6f5c086eba4a5af1ac61a541",
+        "presented_bytes": 1188,
+        "presented_tokens": 299,
+        "net_tokens": 17464,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 17464,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      },
+      "candidate": {
+        "presented_sha256": "48a92327603caa6bdc02509d4a5a5784fcb03e3e6f5c086eba4a5af1ac61a541",
+        "presented_bytes": 1188,
+        "presented_tokens": 299,
+        "net_tokens": 17464,
+        "meets_margin": true,
+        "retained_markers": 0,
+        "first_marker_retained": null,
+        "requires_full_read_for_any_marker": false,
+        "net_tokens_after_full_read_sensitivity": 17464,
+        "invariants": {
+          "source_byte_count_correct": true,
+          "presented_byte_count_correct": true,
+          "exact_valid_short_passthrough": true,
+          "compacted_status_disclosed": true,
+          "compacted_omission_disclosed": true,
+          "compacted_log_path_disclosed": true,
+          "capture_bound_disclosed": true,
+          "compaction_byte_guard": true
+        }
+      }
+    }
+  ],
+  "synthetic": [
+    {
+      "id": "short-failure",
+      "source_sha256": "07f9f408dac6c365565925a543d86f6e8d04402682bd188d21af0d545f9151a8",
+      "source_bytes": 31,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "threshold-success",
+      "source_sha256": "113dfde0a878cfe7c02c3f03bdcad1e9fef4007ef1329bcc0d3cd0921e3381f4",
+      "source_bytes": 8192,
+      "exit_code": 0,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "full-capture-failure",
+      "source_sha256": "db1987ea8baa62e2b6050b15301e31ae968edf44b997ed35017c926b10bfe7ed",
+      "source_bytes": 22040,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "early-failure",
+      "source_sha256": "bfef0cdb5fc15e3a2a8df457fcc6cdfd328f775f15d65237ca05f438dca29210",
+      "source_bytes": 400000,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "early-utf8",
+      "source_sha256": "a27fb7bd1d5ab158b377e261bfaa21d61096aa3669bd51a1fdb7a48a4947eb6a",
+      "source_bytes": 400000,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "diagnostic-budget",
+      "source_sha256": "c7516f969c25017f55be896acbc2e29971a6d3ba16bcdc0bb2dcdceba1169ca9",
+      "source_bytes": 400000,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "giant-error-line",
+      "source_sha256": "e59e17635524b1f95c9cff2506e45d9252dd1a49716260d38704f9044f0a057d",
+      "source_bytes": 400050,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "cutoff-overlap",
+      "source_sha256": "3e1a6ae2c3096e86cb829fd240200663fc0cf270d1f2c23170c8c8b9ae84d963",
+      "source_bytes": 262152,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "success-with-error-text",
+      "source_sha256": "bfef0cdb5fc15e3a2a8df457fcc6cdfd328f775f15d65237ca05f438dca29210",
+      "source_bytes": 400000,
+      "exit_code": 0,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    },
+    {
+      "id": "invalid-utf8-tail",
+      "source_sha256": "354b36e38185831aed440e7f3ea052f9e3b7c49d3e2e49390cd534775e7fee0d",
+      "source_bytes": 300084,
+      "exit_code": 7,
+      "checks": {
+        "candidate_invariants": true,
+        "declared_unchanged_output": true,
+        "declared_early_evidence_retained": true,
+        "final_tail_retained": true,
+        "diagnostic_chunk_invariance": true,
+        "lossy_text_disclosed": true
+      }
+    }
+  ],
+  "summary": {
+    "cases": 9,
+    "routed_cases": 9,
+    "capture_truncated_cases": 4,
+    "recorded_nonzero_exits": 4,
+    "marker_gains": 6,
+    "marker_losses": 0,
+    "baseline": {
+      "presented_tokens": 4260,
+      "routed_net_tokens": 563595,
+      "routed_below_margin": 0,
+      "retained_markers": 61,
+      "cases_requiring_full_read_for_any_marker": 4,
+      "net_tokens_after_full_read_sensitivity": 32805,
+      "invariant_failures": 0
+    },
+    "candidate": {
+      "presented_tokens": 4680,
+      "routed_net_tokens": 563175,
+      "routed_below_margin": 0,
+      "retained_markers": 67,
+      "cases_requiring_full_read_for_any_marker": 2,
+      "net_tokens_after_full_read_sensitivity": 289697,
+      "invariant_failures": 0
+    }
+  },
+  "verdict": "contract-pass-scoped-text-margin-pass"
+}

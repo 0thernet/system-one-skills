@@ -4,6 +4,7 @@ import copy
 import json
 from pathlib import Path
 import unittest
+from historical_evidence_fixture import historical_sources
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'research'))
 import assess_diagnosis as assessment
@@ -55,6 +56,15 @@ def fixture_report():
 
 
 class DiagnosisAccountingTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        context = historical_sources(assessment)
+        context.__enter__()
+        cls.addClassCleanup(context.__exit__, None, None, None)
+
+    def setUp(self):
+        assessment.check_report(fixture_report())
+
     def test_cached_and_reasoning_are_not_added_to_total(self):
         result = assessment.normalize_usage(usage())
         self.assertEqual(result['input_plus_output_tokens'], 120)

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "recorded_before_token_outcomes_utc": "2026-09-20T02:23:53Z",
+  "status": "Locally recorded retrospective analysis plan; not independently timestamped preregistration or a new holdout.",
+  "window": {
+    "since_inclusive_utc": "2026-09-12T00:00:00Z",
+    "until_exclusive_utc": "2026-09-19T14:00:00Z"
+  },
+  "providers": ["codex", "claude", "devin"],
+  "workflows": ["repository_search", "git_state", "diff_review", "web_research"],
+  "selection": "All matched model-visible output fragments for every call in the fixed window and workflow set, using the frozen analyzer's call/output deduplication and provider ancestry. No sample chosen by output size or token outcome. Nested completed-command telemetry is excluded because it overlaps model-visible records.",
+  "tokenizer": {"package": "tiktoken", "version": "0.12.0", "encoding": "o200k_base"},
+  "unit": "One unique call with at least one observed output fragment. Sum separately tokenized fragments for that call; charge the hypothetical overhead once. Calls with no observed output remain missing, not zero-token cases.",
+  "hypothetical_per_use_overhead_tokens": [64, 128, 256, 512],
+  "required_net_margin_tokens": 128,
+  "screen": "Observed output tokens minus overhead is an optimistic output-only ceiling obtained by deleting every output token. If this is below the required margin, output reduction alone cannot pay that assumed overhead on the retained observation. Equality passes only the mathematical ceiling screen, never admission. Complete deletion is not proposed as a correct implementation; the overhead budgets are hypothetical, not measured skill costs.",
+  "native_controls": "Parse one literal command only, allowing one leading absolute cd followed by &&. Reject dynamic syntax, compound/filter commands and ambiguous invocation. Count only explicit recognized native compact-output controls, never infer absence means waste. Also recognize structured Grep output_mode=count/files_with_matches and Glob tools. Preserve an unresolved category.",
+  "statistics": "Publish counts, total observed output tokens, nearest-rank p25/p50/p75/p90/p95/max, ceiling failures for every budget and provider/workflow, native-control counts, multiple-fragment calls and missing-output calls. Never pool different provider usage counters or sum overlapping candidate scopes.",
+  "claims": "Retrospective opportunity screen only. No replaced command, observed saving, task correctness, best-native-baseline superiority, billing or latency measurement. No candidate may be admitted by this result.",
+  "privacy": "No raw prompts, commands, outputs, paths, provider call IDs or session IDs in public artifacts. Public opaque per-call token/count rows permit aggregate arithmetic checks; private text hashes bind those measurements to retained evidence. Historical commands are never executed."
+}

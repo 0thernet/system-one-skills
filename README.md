@@ -29,7 +29,7 @@ system-one-skills check --timeout-ms 900000 -- bun test
 
 | Result | What was compared | What it establishes |
 | --- | --- | --- |
-| **82% smaller initial results** | Three successful historical Devin logs: 9,731 text tokens → 1,705 including counted skill overhead | Less log text in these development replays; native quiet reporters were not tested on the original tasks.[^1] |
+| **82% smaller initial results** | Three successful historical Devin logs with v0.4: 9,731 text tokens → 1,705 including counted skill overhead | Less log text in these development replays; native quiet reporters were not tested on the original tasks.[^1] |
 | **3.9% fewer recorded tokens; 9.3 seconds longer** | One completed Codex diagnosis: 49,803 → 47,840 input + output tokens; both answers scored 6/6 | Fewer recorded tokens in the skill arm, with a longer run; no general reliability or speed advantage.[^3] |
 | **88% less text using Bun's own quiet reporter** | One current 21-test fixture: 466 → 55 output + invocation tokens with `--dots` | A native alternative worth trying first. No skill was involved; this is a synthetic fixture, not the historical logs or a complete agent task.[^4] |
 
@@ -43,11 +43,11 @@ correct completed task against the best practical native workflow.
 Requires **Node.js 20+ on macOS or Linux**.
 
 ```sh
-npm install --global https://github.com/hraness/system-one-skills/releases/download/v0.4.0/system-one-skills-0.4.0.tgz
+npm install --global https://github.com/hraness/system-one-skills/releases/download/v0.4.1/system-one-skills-0.4.1.tgz
 system-one-skills install-skills --target .agents/skills
 ```
 
-The [versioned release](https://github.com/hraness/system-one-skills/releases/tag/v0.4.0)
+The [versioned release](https://github.com/hraness/system-one-skills/releases/tag/v0.4.1)
 includes a SHA-256 checksum. Bun can install the same artifact. Use your agent’s
 skill directory, such as `.claude/skills` or `.devin/skills`, where appropriate.
 Existing modified skill files are never silently overwritten.
@@ -102,8 +102,13 @@ also counts follow-up reads and keeps failed setup attempts in the evidence reco
 We are prioritizing **more useful failure excerpts** and **focused search with
 needed source lines** over a larger catalog. Both must beat the corresponding
 native workflow on total tokens, correctness and completion time before a new
-capability earns a place in the package. The [catalog's research priorities](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md#next-experiments)
+skill or expanded workflow earns a place in the package. The [catalog's research priorities](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md#next-experiments)
 explain the specific evidence gaps.
+
+The bounded early-error retention update in v0.4.1 stays within the existing
+check wrapper. Its separate source-bound artifact qualification verifies
+preservation and local processing cost; it neither admits another workflow nor
+establishes a whole-task benefit.
 
 The [whole-task benchmark harness](https://github.com/hraness/system-one-skills/blob/main/docs/BENCHMARK-HARNESS.md)
 is now the path to stronger claims: it selects relevant task episodes before
@@ -137,7 +142,17 @@ to fifteen minutes, and a 64 MiB log limit. Exceeding a limit stops the command
 and reports a failure; incomplete capture is disclosed. Cancellation forwards
 the signal for cleanup, then escalates after a bounded grace period. Undrained
 inherited pipes produce `log_incomplete=true` and `cleanup_uncertain=true`.
-Default logs use a private temporary directory. They may contain sensitive output;
+The in-memory suffix is limited to 256 KiB. A separate bounded capture keeps up
+to 2 KiB across 12 early diagnostic/context lines for failed commands, including
+when later output displaces them from the suffix. Gaps remain explicit; excerpts
+preserve the existing suffix selection and add at most 2 KiB of early evidence,
+for at most 6 KiB of retained source bytes. They do not promise complete
+diagnostic coverage. The matcher follows the full log’s
+observed stdout/stderr chunk order. Interleaved partial lines or characters can
+hide a diagnostic; it does not reconstruct separate logical streams.
+The [early-error evidence](https://github.com/hraness/system-one-skills/blob/main/docs/EARLY-ERROR-RETENTION.md) separates current
+qualification from the historical v0.4 findings. Default logs use a private
+temporary directory. They may contain sensitive output;
 delete them when no longer needed.
 
 </details>
@@ -195,7 +210,8 @@ bun bench/run-bench.ts
 bun bench/assess-trials.ts private-observed-trials.json
 ```
 
-The aggregate gate checks runtime behavior, skill footprint, evidence freshness,
+The aggregate gate checks runtime behavior, skill footprint, immutable v0.4
+historical evidence, separate source-bound current replay and runtime qualification,
 privacy, and package contents. The [trial protocol](https://github.com/hraness/system-one-skills/blob/main/bench/TRIALS.md)
 requires a strong native baseline, unused tasks, complete token accounting,
 independent correctness evaluation, and measured completion time. Correctness

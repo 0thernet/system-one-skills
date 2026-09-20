@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "purpose": "Separately authorized retry of one archived-log diagnosis comparison; prior timeout is retained unchanged. Not a new independent holdout.",
+  "provider": "codex",
+  "cli_version": "0.155.0",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "ultra",
+  "order": [
+    "reduced",
+    "native"
+  ],
+  "max_session_launches": 2,
+  "limits": {
+    "total_wall_seconds": 600,
+    "startup_without_session_or_turn_event_seconds": 60,
+    "combined_stdout_stderr_bytes": 8388608
+  },
+  "private_retry_plan_sha256": "abc136189571630436636e2228f5287d0065be07915dd2369de6e23cc5f0d693",
+  "original_private_plan_sha256": "35935f7d0564fa5513db433f0c0b3cfd1d0c4c7a516e1a5eb947fde0d2098163",
+  "previous_report_sha256": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b",
+  "runner_sha256": "15708b2612029b6c36cd143db41055b9d56eb5f386258e3822ec68272906a1ae",
+  "cli_binary_sha256": "b0b14f9c1901c1ec44671094b2dc18b39e4bd8d36a6dc2302cc9d961a7e2a197",
+  "retry_config_sha256": "fea825841f73a9c573c214dc13df5392b12ecfa1f5e2038e35a5645a9b369c14",
+  "inputs_sha256": {
+    "reduced": {
+      "failure.log": "325946a2e8f2a3f467fae330ee75f988f19634b30b27b4f09b006632de3a693c",
+      "result.txt": "57dfb324d79caa4e74a96ad1741f3b4de980e635daa7c5ebfc2f7b5639c57730",
+      "prompt.txt": "e937351ac402b97667c0a05a79a09a3c8f88199db9a14d0c9239d6bd5a6c8cd2"
+    },
+    "native": {
+      "failure.log": "325946a2e8f2a3f467fae330ee75f988f19634b30b27b4f09b006632de3a693c",
+      "result.txt": "005a463a4a51b93ebd835596f4db2a869ac6e55cbfa67da0bfc215cb3d189666",
+      "prompt.txt": "8eae7ead0038dd3bb71bfddc2ca7bb69559a525bb4635e8d93a9ab08976d3c43"
+    }
+  },
+  "answer_schema_sha256": "0548b6cefa86e0833102c2e3af7628a1bdc6f481f1ff339f4a6a67d86d9fdac3",
+  "preflight_result_sha256": "1832550a554b0768bdc17352a6d1e690ecd95806ecd0a9a9d5526e956ed14246",
+  "preflight_scope": "No-model app-server startup and zero enabled skills support feasibility; they do not prove exact exec ambient isolation.",
+  "configuration_change": "Remove the private sqlite_home override and move the private log directory; source inputs, answer schema, model, effort and tool configuration are unchanged.",
+  "stop_rule": "At most one launch per arm, reduced then native. Stop a launch after 60 seconds without a thread.started or turn.started event, 600 seconds total, or 8 MiB capture. Root operational review is required after the first arm before the second; retain every launch including startup failure or timeout.",
+  "blind_review": "Root grades anonymized answers with the original six-criterion rubric before receiving arm labels or counters. No raw answers are public.",
+  "accounting": "CLI completion counters are observations. Use a single final completion snapshot per fresh session; multiple completion events require explicit semantics qualification. Cached input and reasoning output are subsets, not added costs; no estimated 258-token supplement. Missing counters are null.",
+  "interpretation": "One case, fixed order, uncontrolled cache, unversioned model alias, and imperfect ambient-isolation attestation preclude causal token/latency/reliability claims or skill admission. Launcher wall time is distinct from an observed turn interval. Unknown prior upstream requests preclude first-exposure claims.",
+  "frozen_original_sources": {
+    "research/assess_diagnosis.py": "96240674debafc6d523a99391baf110dd6cbd9fca47d83a88bef418879c7ea15",
+    "research/diagnosis-pilot-report.json": "dbc70e43c66493a0b91948071d7cc9bb4c4722736a58154f0c12dbcbb3e7c359",
+    "research/diagnosis-observed-report.json": "46d05d0e97a5e5b776fa56369dea819d40955e99f7838d70f64d922f0db49e2b",
+    "research/failure-report.json": "ad43024c9f8bcd4f465e0412cbcb7e49ac24605c032604df0c3502b31249aab2",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381"
+  },
+  "public_protocol_projected_at_utc": "2026-09-20T15:22:04.732105+00:00",
+  "private_plan_created_at_utc": "2026-09-20T15:21:00.435513+00:00",
+  "timing_note": "The private plan was created and reviewed before launch; this public projection was written about 8 seconds after the first launch started, before outputs or outcomes were inspected. Its projection timestamp is not a prelaunch public registration. The immutable private plan hash binds the plan used."
+}

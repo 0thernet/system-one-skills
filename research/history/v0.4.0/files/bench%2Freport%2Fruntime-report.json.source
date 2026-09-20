@@ -1,0 +1,1368 @@
+{
+  "schema_version": 1,
+  "measured_at_utc": "2026-09-19T17:26:57.655Z",
+  "evidence_type": "synthetic local CLI measurement; transcript-shaped sizes and success/failure only",
+  "environment": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "kernel_release": "25.5.0",
+    "node": "v24.20.0",
+    "bun": "1.3.14",
+    "package_version": "0.4.0",
+    "scheduler": "oompa-host-run --mode=shared --lane=compute",
+    "machine_isolation": "shared scheduler admission; other processes and background activity were not isolated"
+  },
+  "source_sha256": {
+    "bench/measure-runtime.mjs": "f2fe67b9efe08d12be837c76f84b6de4640199c97c5f861ff2bf487c24cc026d",
+    "bin/system-one-skills.js": "067f387f4aff8838f44be4592bf074475eafa30dfc1779776dadc063f1c2fc12",
+    "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
+    "src/process.js": "5ae33286cad9830fef6aa42a471b2620c5c5c50cb7571d288a027645fa6b1845",
+    "src/reduce.js": "80323e603187479c13e347cfb28fdd73fb0e08c1e99345dabdac792a78177381",
+    "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
+    "tests/check-runtime.test.ts": "ab5684b0e7ed9a3cbeb1b9c73fe6b8124f27dacf53b7a33f76371564d373b84d",
+    "research/admission-report.json": "e070421f35cbbb554c899e078d013f325e340f323bb7cf4912bc2b1614753ddb"
+  },
+  "method": {
+    "measured_pairs_per_fixture": 20,
+    "warmup_pairs_per_fixture": 2,
+    "fixture_selection": "All routed success rows and all recorded failure rows from research/admission-report.json. Public sizes and exit-zero booleans only; content is newly generated ASCII. Failure code 7 is chosen for the fixture, not a recovered historical code.",
+    "ordering": "Interleaved pairs; each fixture alternates native-first and wrapper-first, 10 each. Case order rotates every round. Two full warmup pairs per fixture excluded.",
+    "timing_boundary": "performance.now immediately before and after spawnSync. Native: node fixture.cjs input counter code. Wrapper: node bin/system-one-skills.js check --log LOG -- node fixture.cjs input counter code. The child argv is identical in each pair. Includes wrapper Node startup, command execution, private log writes, reduction, and parent stdout collection. Payload creation, assertions, counter reset, and log cleanup are outside the measured interval.",
+    "stdout_boundary": "Parent pipes capture all stdout/stderr bytes. Fixtures write stdout only. Log path has constant byte length within this run; nonce/path length can change compact byte counts between machines. No terminal rendering, provider envelopes, API, agent/model call, or downstream log-read timing.",
+    "p95": "Nearest-rank: sorted[ceil(n*0.95)-1]. Median averages the middle two for even n. Paired delta is wrapper minus native for the same fixture and round. No trimming or outlier removal.",
+    "safe_command_policy": "Only generated local fixture commands and the checked-in runtime tests execute. No transcript commands, network, repository tests/builds under study, or model calls."
+  },
+  "cases": [
+    {
+      "fixture": {
+        "id": "failure-95",
+        "source_sample_id": "7d06d7ac43eb0b9c0193eaacb0cbb3998e0cc099deac00baa6157533a674a015",
+        "source_provider": "devin",
+        "bytes": 95,
+        "code": 7
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "native",
+          "native_ms": 33.759291,
+          "wrapper_ms": 68.397125,
+          "delta_ms": 34.637834
+        },
+        {
+          "pair": 2,
+          "first": "wrapper",
+          "native_ms": 32.943083,
+          "wrapper_ms": 78.616417,
+          "delta_ms": 45.673334
+        },
+        {
+          "pair": 3,
+          "first": "native",
+          "native_ms": 29.343792,
+          "wrapper_ms": 65.008084,
+          "delta_ms": 35.664292
+        },
+        {
+          "pair": 4,
+          "first": "wrapper",
+          "native_ms": 32.970875,
+          "wrapper_ms": 77.152292,
+          "delta_ms": 44.181417
+        },
+        {
+          "pair": 5,
+          "first": "native",
+          "native_ms": 32.862666,
+          "wrapper_ms": 65.050041,
+          "delta_ms": 32.187375
+        },
+        {
+          "pair": 6,
+          "first": "wrapper",
+          "native_ms": 36.32475,
+          "wrapper_ms": 73.566791,
+          "delta_ms": 37.242041
+        },
+        {
+          "pair": 7,
+          "first": "native",
+          "native_ms": 35.720292,
+          "wrapper_ms": 79.211209,
+          "delta_ms": 43.490917
+        },
+        {
+          "pair": 8,
+          "first": "wrapper",
+          "native_ms": 38.906417,
+          "wrapper_ms": 78.718166,
+          "delta_ms": 39.811749
+        },
+        {
+          "pair": 9,
+          "first": "native",
+          "native_ms": 38.560125,
+          "wrapper_ms": 78.941459,
+          "delta_ms": 40.381334
+        },
+        {
+          "pair": 10,
+          "first": "wrapper",
+          "native_ms": 41.731416,
+          "wrapper_ms": 83.501417,
+          "delta_ms": 41.770001
+        },
+        {
+          "pair": 11,
+          "first": "native",
+          "native_ms": 42.349333,
+          "wrapper_ms": 86.782417,
+          "delta_ms": 44.433084
+        },
+        {
+          "pair": 12,
+          "first": "wrapper",
+          "native_ms": 36.516667,
+          "wrapper_ms": 79.870917,
+          "delta_ms": 43.35425
+        },
+        {
+          "pair": 13,
+          "first": "native",
+          "native_ms": 36.339,
+          "wrapper_ms": 85.701458,
+          "delta_ms": 49.362458
+        },
+        {
+          "pair": 14,
+          "first": "wrapper",
+          "native_ms": 36.3125,
+          "wrapper_ms": 83.007,
+          "delta_ms": 46.6945
+        },
+        {
+          "pair": 15,
+          "first": "native",
+          "native_ms": 39.214542,
+          "wrapper_ms": 79.877666,
+          "delta_ms": 40.663124
+        },
+        {
+          "pair": 16,
+          "first": "wrapper",
+          "native_ms": 35.124792,
+          "wrapper_ms": 81.727292,
+          "delta_ms": 46.6025
+        },
+        {
+          "pair": 17,
+          "first": "native",
+          "native_ms": 36.905167,
+          "wrapper_ms": 79.914375,
+          "delta_ms": 43.009208
+        },
+        {
+          "pair": 18,
+          "first": "wrapper",
+          "native_ms": 38.555708,
+          "wrapper_ms": 80.837875,
+          "delta_ms": 42.282167
+        },
+        {
+          "pair": 19,
+          "first": "native",
+          "native_ms": 37.157458,
+          "wrapper_ms": 78.580625,
+          "delta_ms": 41.423167
+        },
+        {
+          "pair": 20,
+          "first": "wrapper",
+          "native_ms": 36.007125,
+          "wrapper_ms": 81.406417,
+          "delta_ms": 45.399292
+        }
+      ],
+      "native_output_bytes": 95,
+      "wrapper_stdout_bytes": 95,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 95,
+      "observed_exit_code": 7,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": true,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 29.343792,
+        "median_ms": 36.331875,
+        "p95_ms": 41.731416,
+        "max_ms": 42.349333
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 65.008084,
+        "median_ms": 79.541063,
+        "p95_ms": 85.701458,
+        "max_ms": 86.782417
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 32.187375,
+        "median_ms": 42.645688,
+        "p95_ms": 46.6945,
+        "max_ms": 49.362458
+      }
+    },
+    {
+      "fixture": {
+        "id": "failure-304",
+        "source_sample_id": "80ed53f8d99ff75fbca4f9af593e42f70f3c4ffd0e90b459da106f65ec19c9b5",
+        "source_provider": "devin",
+        "bytes": 304,
+        "code": 7
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "wrapper",
+          "native_ms": 36.317583,
+          "wrapper_ms": 75.853541,
+          "delta_ms": 39.535958
+        },
+        {
+          "pair": 2,
+          "first": "native",
+          "native_ms": 34.017958,
+          "wrapper_ms": 73.053,
+          "delta_ms": 39.035042
+        },
+        {
+          "pair": 3,
+          "first": "wrapper",
+          "native_ms": 30.18025,
+          "wrapper_ms": 63.272292,
+          "delta_ms": 33.092042
+        },
+        {
+          "pair": 4,
+          "first": "native",
+          "native_ms": 34.549708,
+          "wrapper_ms": 72.176708,
+          "delta_ms": 37.627
+        },
+        {
+          "pair": 5,
+          "first": "wrapper",
+          "native_ms": 31.139625,
+          "wrapper_ms": 63.060791,
+          "delta_ms": 31.921166
+        },
+        {
+          "pair": 6,
+          "first": "native",
+          "native_ms": 37.20425,
+          "wrapper_ms": 74.444042,
+          "delta_ms": 37.239792
+        },
+        {
+          "pair": 7,
+          "first": "wrapper",
+          "native_ms": 34.306375,
+          "wrapper_ms": 74.169667,
+          "delta_ms": 39.863292
+        },
+        {
+          "pair": 8,
+          "first": "native",
+          "native_ms": 36.522334,
+          "wrapper_ms": 81.556291,
+          "delta_ms": 45.033957
+        },
+        {
+          "pair": 9,
+          "first": "wrapper",
+          "native_ms": 36.811833,
+          "wrapper_ms": 81.632333,
+          "delta_ms": 44.8205
+        },
+        {
+          "pair": 10,
+          "first": "native",
+          "native_ms": 41.792833,
+          "wrapper_ms": 90.242875,
+          "delta_ms": 48.450042
+        },
+        {
+          "pair": 11,
+          "first": "wrapper",
+          "native_ms": 37.084291,
+          "wrapper_ms": 85.176459,
+          "delta_ms": 48.092168
+        },
+        {
+          "pair": 12,
+          "first": "native",
+          "native_ms": 36.802834,
+          "wrapper_ms": 79.920834,
+          "delta_ms": 43.118
+        },
+        {
+          "pair": 13,
+          "first": "wrapper",
+          "native_ms": 38.782042,
+          "wrapper_ms": 79.854792,
+          "delta_ms": 41.07275
+        },
+        {
+          "pair": 14,
+          "first": "native",
+          "native_ms": 36.847083,
+          "wrapper_ms": 79.709459,
+          "delta_ms": 42.862376
+        },
+        {
+          "pair": 15,
+          "first": "wrapper",
+          "native_ms": 36.003042,
+          "wrapper_ms": 77.189583,
+          "delta_ms": 41.186541
+        },
+        {
+          "pair": 16,
+          "first": "native",
+          "native_ms": 36.643375,
+          "wrapper_ms": 78.061,
+          "delta_ms": 41.417625
+        },
+        {
+          "pair": 17,
+          "first": "wrapper",
+          "native_ms": 37.287209,
+          "wrapper_ms": 77.7835,
+          "delta_ms": 40.496291
+        },
+        {
+          "pair": 18,
+          "first": "native",
+          "native_ms": 37.538667,
+          "wrapper_ms": 81.069583,
+          "delta_ms": 43.530916
+        },
+        {
+          "pair": 19,
+          "first": "wrapper",
+          "native_ms": 36.0955,
+          "wrapper_ms": 81.674458,
+          "delta_ms": 45.578958
+        },
+        {
+          "pair": 20,
+          "first": "native",
+          "native_ms": 39.140084,
+          "wrapper_ms": 79.718333,
+          "delta_ms": 40.578249
+        }
+      ],
+      "native_output_bytes": 304,
+      "wrapper_stdout_bytes": 304,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 304,
+      "observed_exit_code": 7,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": true,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 30.18025,
+        "median_ms": 36.723104,
+        "p95_ms": 39.140084,
+        "max_ms": 41.792833
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 63.060791,
+        "median_ms": 78.88523,
+        "p95_ms": 85.176459,
+        "max_ms": 90.242875
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 31.921166,
+        "median_ms": 41.129645,
+        "p95_ms": 48.092168,
+        "max_ms": 48.450042
+      }
+    },
+    {
+      "fixture": {
+        "id": "failure-334",
+        "source_sample_id": "12fa1aa1f85ff7012eadf89a42e57d8fc7196dd5b94c85e9fd994782e18da17c",
+        "source_provider": "devin",
+        "bytes": 334,
+        "code": 7
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "native",
+          "native_ms": 36.869125,
+          "wrapper_ms": 81.683583,
+          "delta_ms": 44.814458
+        },
+        {
+          "pair": 2,
+          "first": "wrapper",
+          "native_ms": 36.273084,
+          "wrapper_ms": 73.349917,
+          "delta_ms": 37.076833
+        },
+        {
+          "pair": 3,
+          "first": "native",
+          "native_ms": 32.016667,
+          "wrapper_ms": 65.620167,
+          "delta_ms": 33.6035
+        },
+        {
+          "pair": 4,
+          "first": "wrapper",
+          "native_ms": 31.808958,
+          "wrapper_ms": 70.129166,
+          "delta_ms": 38.320208
+        },
+        {
+          "pair": 5,
+          "first": "native",
+          "native_ms": 32.883667,
+          "wrapper_ms": 70.823541,
+          "delta_ms": 37.939874
+        },
+        {
+          "pair": 6,
+          "first": "wrapper",
+          "native_ms": 35.148959,
+          "wrapper_ms": 74.506917,
+          "delta_ms": 39.357958
+        },
+        {
+          "pair": 7,
+          "first": "native",
+          "native_ms": 33.938875,
+          "wrapper_ms": 72.794083,
+          "delta_ms": 38.855208
+        },
+        {
+          "pair": 8,
+          "first": "wrapper",
+          "native_ms": 37.48525,
+          "wrapper_ms": 82.455,
+          "delta_ms": 44.96975
+        },
+        {
+          "pair": 9,
+          "first": "native",
+          "native_ms": 36.963959,
+          "wrapper_ms": 77.437708,
+          "delta_ms": 40.473749
+        },
+        {
+          "pair": 10,
+          "first": "wrapper",
+          "native_ms": 38.907417,
+          "wrapper_ms": 87.043708,
+          "delta_ms": 48.136291
+        },
+        {
+          "pair": 11,
+          "first": "native",
+          "native_ms": 38.14175,
+          "wrapper_ms": 79.866,
+          "delta_ms": 41.72425
+        },
+        {
+          "pair": 12,
+          "first": "wrapper",
+          "native_ms": 35.995334,
+          "wrapper_ms": 81.728167,
+          "delta_ms": 45.732833
+        },
+        {
+          "pair": 13,
+          "first": "native",
+          "native_ms": 38.340333,
+          "wrapper_ms": 85.368833,
+          "delta_ms": 47.0285
+        },
+        {
+          "pair": 14,
+          "first": "wrapper",
+          "native_ms": 36.356875,
+          "wrapper_ms": 79.52675,
+          "delta_ms": 43.169875
+        },
+        {
+          "pair": 15,
+          "first": "native",
+          "native_ms": 35.668083,
+          "wrapper_ms": 77.887333,
+          "delta_ms": 42.21925
+        },
+        {
+          "pair": 16,
+          "first": "wrapper",
+          "native_ms": 36.499917,
+          "wrapper_ms": 82.287958,
+          "delta_ms": 45.788041
+        },
+        {
+          "pair": 17,
+          "first": "native",
+          "native_ms": 38.42425,
+          "wrapper_ms": 78.821333,
+          "delta_ms": 40.397083
+        },
+        {
+          "pair": 18,
+          "first": "wrapper",
+          "native_ms": 36.103583,
+          "wrapper_ms": 79.123333,
+          "delta_ms": 43.01975
+        },
+        {
+          "pair": 19,
+          "first": "native",
+          "native_ms": 36.552833,
+          "wrapper_ms": 80.709375,
+          "delta_ms": 44.156542
+        },
+        {
+          "pair": 20,
+          "first": "wrapper",
+          "native_ms": 38.435,
+          "wrapper_ms": 80.916125,
+          "delta_ms": 42.481125
+        }
+      ],
+      "native_output_bytes": 334,
+      "wrapper_stdout_bytes": 334,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 334,
+      "observed_exit_code": 7,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": true,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 31.808958,
+        "median_ms": 36.428396,
+        "p95_ms": 38.435,
+        "max_ms": 38.907417
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 65.620167,
+        "median_ms": 79.325041,
+        "p95_ms": 85.368833,
+        "max_ms": 87.043708
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 33.6035,
+        "median_ms": 42.350188,
+        "p95_ms": 47.0285,
+        "max_ms": 48.136291
+      }
+    },
+    {
+      "fixture": {
+        "id": "failure-4384",
+        "source_sample_id": "53af3fdf7f669ef58daea628ba29890bd713205ef72759ff886fee1f85cee876",
+        "source_provider": "devin",
+        "bytes": 4384,
+        "code": 7
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "wrapper",
+          "native_ms": 32.581584,
+          "wrapper_ms": 80.954375,
+          "delta_ms": 48.372791
+        },
+        {
+          "pair": 2,
+          "first": "native",
+          "native_ms": 34.25025,
+          "wrapper_ms": 71.7035,
+          "delta_ms": 37.45325
+        },
+        {
+          "pair": 3,
+          "first": "wrapper",
+          "native_ms": 32.008917,
+          "wrapper_ms": 67.82975,
+          "delta_ms": 35.820833
+        },
+        {
+          "pair": 4,
+          "first": "native",
+          "native_ms": 31.076958,
+          "wrapper_ms": 67.368625,
+          "delta_ms": 36.291667
+        },
+        {
+          "pair": 5,
+          "first": "wrapper",
+          "native_ms": 32.035084,
+          "wrapper_ms": 69.988292,
+          "delta_ms": 37.953208
+        },
+        {
+          "pair": 6,
+          "first": "native",
+          "native_ms": 34.8005,
+          "wrapper_ms": 74.973375,
+          "delta_ms": 40.172875
+        },
+        {
+          "pair": 7,
+          "first": "wrapper",
+          "native_ms": 32.67075,
+          "wrapper_ms": 72.408667,
+          "delta_ms": 39.737917
+        },
+        {
+          "pair": 8,
+          "first": "native",
+          "native_ms": 37.928458,
+          "wrapper_ms": 80.454,
+          "delta_ms": 42.525542
+        },
+        {
+          "pair": 9,
+          "first": "wrapper",
+          "native_ms": 39.785041,
+          "wrapper_ms": 78.747375,
+          "delta_ms": 38.962334
+        },
+        {
+          "pair": 10,
+          "first": "native",
+          "native_ms": 40.5295,
+          "wrapper_ms": 91.864167,
+          "delta_ms": 51.334667
+        },
+        {
+          "pair": 11,
+          "first": "wrapper",
+          "native_ms": 41.918166,
+          "wrapper_ms": 87.096542,
+          "delta_ms": 45.178376
+        },
+        {
+          "pair": 12,
+          "first": "native",
+          "native_ms": 36.879084,
+          "wrapper_ms": 79.741708,
+          "delta_ms": 42.862624
+        },
+        {
+          "pair": 13,
+          "first": "wrapper",
+          "native_ms": 40.810208,
+          "wrapper_ms": 88.062291,
+          "delta_ms": 47.252083
+        },
+        {
+          "pair": 14,
+          "first": "native",
+          "native_ms": 36.784667,
+          "wrapper_ms": 78.899583,
+          "delta_ms": 42.114916
+        },
+        {
+          "pair": 15,
+          "first": "wrapper",
+          "native_ms": 38.383791,
+          "wrapper_ms": 80.596958,
+          "delta_ms": 42.213167
+        },
+        {
+          "pair": 16,
+          "first": "native",
+          "native_ms": 37.047291,
+          "wrapper_ms": 77.63975,
+          "delta_ms": 40.592459
+        },
+        {
+          "pair": 17,
+          "first": "wrapper",
+          "native_ms": 35.662417,
+          "wrapper_ms": 83.483583,
+          "delta_ms": 47.821166
+        },
+        {
+          "pair": 18,
+          "first": "native",
+          "native_ms": 36.650959,
+          "wrapper_ms": 82.506042,
+          "delta_ms": 45.855083
+        },
+        {
+          "pair": 19,
+          "first": "wrapper",
+          "native_ms": 37.084709,
+          "wrapper_ms": 78.774208,
+          "delta_ms": 41.689499
+        },
+        {
+          "pair": 20,
+          "first": "native",
+          "native_ms": 35.993542,
+          "wrapper_ms": 79.534667,
+          "delta_ms": 43.541125
+        }
+      ],
+      "native_output_bytes": 4384,
+      "wrapper_stdout_bytes": 4384,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 4384,
+      "observed_exit_code": 7,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": true,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 31.076958,
+        "median_ms": 36.717813,
+        "p95_ms": 40.810208,
+        "max_ms": 41.918166
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 67.368625,
+        "median_ms": 79.217125,
+        "p95_ms": 88.062291,
+        "max_ms": 91.864167
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 35.820833,
+        "median_ms": 42.164041,
+        "p95_ms": 48.372791,
+        "max_ms": 51.334667
+      }
+    },
+    {
+      "fixture": {
+        "id": "success-8207",
+        "source_sample_id": "0797382949d9ced90354b3f58f5771ccb9253052b3b89066c7f09f96cd800e0c",
+        "source_provider": "devin",
+        "bytes": 8207,
+        "code": 0
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "native",
+          "native_ms": 34.450041,
+          "wrapper_ms": 72.406875,
+          "delta_ms": 37.956834
+        },
+        {
+          "pair": 2,
+          "first": "wrapper",
+          "native_ms": 33.270333,
+          "wrapper_ms": 65.990459,
+          "delta_ms": 32.720126
+        },
+        {
+          "pair": 3,
+          "first": "native",
+          "native_ms": 33.991083,
+          "wrapper_ms": 67.26475,
+          "delta_ms": 33.273667
+        },
+        {
+          "pair": 4,
+          "first": "wrapper",
+          "native_ms": 30.5655,
+          "wrapper_ms": 69.765542,
+          "delta_ms": 39.200042
+        },
+        {
+          "pair": 5,
+          "first": "native",
+          "native_ms": 32.878,
+          "wrapper_ms": 73.808583,
+          "delta_ms": 40.930583
+        },
+        {
+          "pair": 6,
+          "first": "wrapper",
+          "native_ms": 35.157083,
+          "wrapper_ms": 73.005084,
+          "delta_ms": 37.848001
+        },
+        {
+          "pair": 7,
+          "first": "native",
+          "native_ms": 34.115041,
+          "wrapper_ms": 74.946042,
+          "delta_ms": 40.831001
+        },
+        {
+          "pair": 8,
+          "first": "wrapper",
+          "native_ms": 37.247125,
+          "wrapper_ms": 83.417,
+          "delta_ms": 46.169875
+        },
+        {
+          "pair": 9,
+          "first": "native",
+          "native_ms": 37.507916,
+          "wrapper_ms": 75.690292,
+          "delta_ms": 38.182376
+        },
+        {
+          "pair": 10,
+          "first": "wrapper",
+          "native_ms": 35.693916,
+          "wrapper_ms": 80.999167,
+          "delta_ms": 45.305251
+        },
+        {
+          "pair": 11,
+          "first": "native",
+          "native_ms": 41.688916,
+          "wrapper_ms": 83.2465,
+          "delta_ms": 41.557584
+        },
+        {
+          "pair": 12,
+          "first": "wrapper",
+          "native_ms": 37.805666,
+          "wrapper_ms": 78.391083,
+          "delta_ms": 40.585417
+        },
+        {
+          "pair": 13,
+          "first": "native",
+          "native_ms": 36.753625,
+          "wrapper_ms": 79.281333,
+          "delta_ms": 42.527708
+        },
+        {
+          "pair": 14,
+          "first": "wrapper",
+          "native_ms": 37.093042,
+          "wrapper_ms": 82.217542,
+          "delta_ms": 45.1245
+        },
+        {
+          "pair": 15,
+          "first": "native",
+          "native_ms": 37.744959,
+          "wrapper_ms": 83.014084,
+          "delta_ms": 45.269125
+        },
+        {
+          "pair": 16,
+          "first": "wrapper",
+          "native_ms": 35.605958,
+          "wrapper_ms": 80.352041,
+          "delta_ms": 44.746083
+        },
+        {
+          "pair": 17,
+          "first": "native",
+          "native_ms": 36.280708,
+          "wrapper_ms": 81.307041,
+          "delta_ms": 45.026333
+        },
+        {
+          "pair": 18,
+          "first": "wrapper",
+          "native_ms": 40.214458,
+          "wrapper_ms": 81.785375,
+          "delta_ms": 41.570917
+        },
+        {
+          "pair": 19,
+          "first": "native",
+          "native_ms": 36.733959,
+          "wrapper_ms": 77.507917,
+          "delta_ms": 40.773958
+        },
+        {
+          "pair": 20,
+          "first": "wrapper",
+          "native_ms": 38.361916,
+          "wrapper_ms": 81.821709,
+          "delta_ms": 43.459793
+        }
+      ],
+      "native_output_bytes": 8207,
+      "wrapper_stdout_bytes": 647,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 647,
+      "observed_exit_code": 0,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": null,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 30.5655,
+        "median_ms": 36.507334,
+        "p95_ms": 40.214458,
+        "max_ms": 41.688916
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 65.990459,
+        "median_ms": 78.836208,
+        "p95_ms": 83.2465,
+        "max_ms": 83.417
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 32.720126,
+        "median_ms": 41.244084,
+        "p95_ms": 45.305251,
+        "max_ms": 46.169875
+      }
+    },
+    {
+      "fixture": {
+        "id": "success-9876",
+        "source_sample_id": "0051fd4b992e38704cf4c8b1a075437e40790aa566014b7bd9af622f0cfbb2ae",
+        "source_provider": "devin",
+        "bytes": 9876,
+        "code": 0
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "wrapper",
+          "native_ms": 30.233917,
+          "wrapper_ms": 71.868958,
+          "delta_ms": 41.635041
+        },
+        {
+          "pair": 2,
+          "first": "native",
+          "native_ms": 31.303916,
+          "wrapper_ms": 67.671625,
+          "delta_ms": 36.367709
+        },
+        {
+          "pair": 3,
+          "first": "wrapper",
+          "native_ms": 30.688167,
+          "wrapper_ms": 66.781917,
+          "delta_ms": 36.09375
+        },
+        {
+          "pair": 4,
+          "first": "native",
+          "native_ms": 33.116417,
+          "wrapper_ms": 71.752209,
+          "delta_ms": 38.635792
+        },
+        {
+          "pair": 5,
+          "first": "wrapper",
+          "native_ms": 33.299,
+          "wrapper_ms": 80.794041,
+          "delta_ms": 47.495041
+        },
+        {
+          "pair": 6,
+          "first": "native",
+          "native_ms": 34.584166,
+          "wrapper_ms": 76.663834,
+          "delta_ms": 42.079668
+        },
+        {
+          "pair": 7,
+          "first": "wrapper",
+          "native_ms": 34.259708,
+          "wrapper_ms": 75.719458,
+          "delta_ms": 41.45975
+        },
+        {
+          "pair": 8,
+          "first": "native",
+          "native_ms": 36.91125,
+          "wrapper_ms": 79.248875,
+          "delta_ms": 42.337625
+        },
+        {
+          "pair": 9,
+          "first": "wrapper",
+          "native_ms": 36.541459,
+          "wrapper_ms": 80.467042,
+          "delta_ms": 43.925583
+        },
+        {
+          "pair": 10,
+          "first": "native",
+          "native_ms": 35.038792,
+          "wrapper_ms": 83.165917,
+          "delta_ms": 48.127125
+        },
+        {
+          "pair": 11,
+          "first": "wrapper",
+          "native_ms": 39.566208,
+          "wrapper_ms": 89.259209,
+          "delta_ms": 49.693001
+        },
+        {
+          "pair": 12,
+          "first": "native",
+          "native_ms": 37.600875,
+          "wrapper_ms": 76.764709,
+          "delta_ms": 39.163834
+        },
+        {
+          "pair": 13,
+          "first": "wrapper",
+          "native_ms": 36.025458,
+          "wrapper_ms": 78.03425,
+          "delta_ms": 42.008792
+        },
+        {
+          "pair": 14,
+          "first": "native",
+          "native_ms": 36.641292,
+          "wrapper_ms": 83.395584,
+          "delta_ms": 46.754292
+        },
+        {
+          "pair": 15,
+          "first": "wrapper",
+          "native_ms": 37.477709,
+          "wrapper_ms": 80.964083,
+          "delta_ms": 43.486374
+        },
+        {
+          "pair": 16,
+          "first": "native",
+          "native_ms": 37.290042,
+          "wrapper_ms": 78.21025,
+          "delta_ms": 40.920208
+        },
+        {
+          "pair": 17,
+          "first": "wrapper",
+          "native_ms": 38.272833,
+          "wrapper_ms": 81.362833,
+          "delta_ms": 43.09
+        },
+        {
+          "pair": 18,
+          "first": "native",
+          "native_ms": 37.43825,
+          "wrapper_ms": 77.987375,
+          "delta_ms": 40.549125
+        },
+        {
+          "pair": 19,
+          "first": "wrapper",
+          "native_ms": 35.853166,
+          "wrapper_ms": 79.4095,
+          "delta_ms": 43.556334
+        },
+        {
+          "pair": 20,
+          "first": "native",
+          "native_ms": 36.351625,
+          "wrapper_ms": 86.529167,
+          "delta_ms": 50.177542
+        }
+      ],
+      "native_output_bytes": 9876,
+      "wrapper_stdout_bytes": 614,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 614,
+      "observed_exit_code": 0,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": null,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 30.233917,
+        "median_ms": 36.188541,
+        "p95_ms": 38.272833,
+        "max_ms": 39.566208
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 66.781917,
+        "median_ms": 78.729563,
+        "p95_ms": 86.529167,
+        "max_ms": 89.259209
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 36.09375,
+        "median_ms": 42.208647,
+        "p95_ms": 49.693001,
+        "max_ms": 50.177542
+      }
+    },
+    {
+      "fixture": {
+        "id": "success-22040",
+        "source_sample_id": "77dd8365dce50be3538125b38298d6fa017dc6a4a4826749935d2399ba337fcc",
+        "source_provider": "devin",
+        "bytes": 22040,
+        "code": 0
+      },
+      "measurements": [
+        {
+          "pair": 1,
+          "first": "native",
+          "native_ms": 30.454125,
+          "wrapper_ms": 69.581417,
+          "delta_ms": 39.127292
+        },
+        {
+          "pair": 2,
+          "first": "wrapper",
+          "native_ms": 33.680584,
+          "wrapper_ms": 73.467833,
+          "delta_ms": 39.787249
+        },
+        {
+          "pair": 3,
+          "first": "native",
+          "native_ms": 30.9405,
+          "wrapper_ms": 70.255375,
+          "delta_ms": 39.314875
+        },
+        {
+          "pair": 4,
+          "first": "wrapper",
+          "native_ms": 34.538459,
+          "wrapper_ms": 73.014542,
+          "delta_ms": 38.476083
+        },
+        {
+          "pair": 5,
+          "first": "native",
+          "native_ms": 31.924417,
+          "wrapper_ms": 68.345375,
+          "delta_ms": 36.420958
+        },
+        {
+          "pair": 6,
+          "first": "wrapper",
+          "native_ms": 37.866042,
+          "wrapper_ms": 84.953917,
+          "delta_ms": 47.087875
+        },
+        {
+          "pair": 7,
+          "first": "native",
+          "native_ms": 33.854958,
+          "wrapper_ms": 73.45975,
+          "delta_ms": 39.604792
+        },
+        {
+          "pair": 8,
+          "first": "wrapper",
+          "native_ms": 35.885042,
+          "wrapper_ms": 78.007666,
+          "delta_ms": 42.122624
+        },
+        {
+          "pair": 9,
+          "first": "native",
+          "native_ms": 37.639041,
+          "wrapper_ms": 79.49925,
+          "delta_ms": 41.860209
+        },
+        {
+          "pair": 10,
+          "first": "wrapper",
+          "native_ms": 41.417958,
+          "wrapper_ms": 90.138375,
+          "delta_ms": 48.720417
+        },
+        {
+          "pair": 11,
+          "first": "native",
+          "native_ms": 41.71125,
+          "wrapper_ms": 91.031833,
+          "delta_ms": 49.320583
+        },
+        {
+          "pair": 12,
+          "first": "wrapper",
+          "native_ms": 37.864042,
+          "wrapper_ms": 77.249875,
+          "delta_ms": 39.385833
+        },
+        {
+          "pair": 13,
+          "first": "native",
+          "native_ms": 38.1435,
+          "wrapper_ms": 81.165208,
+          "delta_ms": 43.021708
+        },
+        {
+          "pair": 14,
+          "first": "wrapper",
+          "native_ms": 36.933125,
+          "wrapper_ms": 81.122583,
+          "delta_ms": 44.189458
+        },
+        {
+          "pair": 15,
+          "first": "native",
+          "native_ms": 38.747583,
+          "wrapper_ms": 79.760333,
+          "delta_ms": 41.01275
+        },
+        {
+          "pair": 16,
+          "first": "wrapper",
+          "native_ms": 36.896583,
+          "wrapper_ms": 76.937084,
+          "delta_ms": 40.040501
+        },
+        {
+          "pair": 17,
+          "first": "native",
+          "native_ms": 38.042292,
+          "wrapper_ms": 75.2625,
+          "delta_ms": 37.220208
+        },
+        {
+          "pair": 18,
+          "first": "wrapper",
+          "native_ms": 38.347875,
+          "wrapper_ms": 77.143125,
+          "delta_ms": 38.79525
+        },
+        {
+          "pair": 19,
+          "first": "native",
+          "native_ms": 37.249292,
+          "wrapper_ms": 83.97675,
+          "delta_ms": 46.727458
+        },
+        {
+          "pair": 20,
+          "first": "wrapper",
+          "native_ms": 36.027084,
+          "wrapper_ms": 79.249917,
+          "delta_ms": 43.222833
+        }
+      ],
+      "native_output_bytes": 22040,
+      "wrapper_stdout_bytes": 636,
+      "wrapper_stderr_bytes": 0,
+      "wrapper_output_bytes": 636,
+      "observed_exit_code": 0,
+      "full_log_exact": true,
+      "one_execution_per_arm": true,
+      "private_log_mode": "0600",
+      "short_output_exact": null,
+      "native_wall_time": {
+        "n": 20,
+        "min_ms": 30.454125,
+        "median_ms": 37.091208,
+        "p95_ms": 41.417958,
+        "max_ms": 41.71125
+      },
+      "wrapper_wall_time": {
+        "n": 20,
+        "min_ms": 68.345375,
+        "median_ms": 77.628771,
+        "p95_ms": 90.138375,
+        "max_ms": 91.031833
+      },
+      "paired_overhead": {
+        "n": 20,
+        "min_ms": 36.420958,
+        "median_ms": 40.526625,
+        "p95_ms": 48.720417,
+        "max_ms": 49.320583
+      }
+    }
+  ],
+  "paired_overhead_all_fixtures": {
+    "n": 140,
+    "min_ms": 31.921166,
+    "median_ms": 41.815105,
+    "p95_ms": 48.372791,
+    "max_ms": 51.334667
+  },
+  "measured_output_bytes": {
+    "native": 904800,
+    "wrapper": 140280
+  },
+  "reliability": {
+    "paired_command_runs": 308,
+    "measured_pairs": 140,
+    "exact_exit_full_log_and_one_execution_verified_in_every_pair": true,
+    "binary_cli": {
+      "fixture_bytes": 7,
+      "exact_stdout": true,
+      "exact_log": true,
+      "exit_code": 7
+    },
+    "existing_runtime_suite": {
+      "command": "bun test tests/check-runtime.test.ts",
+      "exit_code": 0,
+      "passed_tests": 25,
+      "failed_tests": 0,
+      "assertions": 125,
+      "test_names": [
+        "adaptive reducer > small text is exact, with no wrapper or newline added",
+        "adaptive reducer > long output includes exit, exact byte omissions, final evidence and log path",
+        "adaptive reducer > failure windows and tail never repeat the same source region",
+        "adaptive reducer > early colored failure is selected without modifying its source bytes",
+        "adaptive reducer > 8 KiB success boundary compacts while preserving the final summary",
+        "adaptive reducer > UTF8 clipping and quoted log paths preserve valid text",
+        "adaptive reducer > a single enormous failure line retains its diagnostic beginning and ending",
+        "adaptive reducer > large preceding context cannot displace the first failure diagnosis",
+        "adaptive reducer > long presentation falls back to original if required savings are absent",
+        "one-shot argv execution > short output preserves native code, cwd, literal argv and bytes",
+        "one-shot argv execution > default logs are private, complete and compaction never repeats the command",
+        "one-shot argv execution > existing or symlink log refuses before command effects",
+        "one-shot argv execution > invalid options fail before effects and do not echo arguments",
+        "one-shot argv execution > native signals and missing executable retain failure semantics",
+        "one-shot argv execution > timeout kills owned process group and retains available evidence",
+        "one-shot argv execution > cancellation forwards TERM and INT so ready children can clean up",
+        "one-shot argv execution > a child ignoring TERM is escalated after the bounded cleanup grace",
+        "one-shot argv execution > escaped descendant pipes cannot hang timeout; uncertainty is explicit",
+        "one-shot argv execution > leader exit with inherited pipes fails after bounded drain even without timeout",
+        "one-shot argv execution > disk cap kills with failure and clearly labels incomplete log",
+        "one-shot argv execution > production 64 MiB cap is enforced while retaining bounded memory",
+        "one-shot argv execution > write failure fails closed without reporting a complete log",
+        "one-shot argv execution > bounded memory retains final UTF8 suffix while full log keeps early evidence",
+        "one-shot argv execution > CLI compact stdout equals the pure reducer with no wrapper",
+        "one-shot argv execution > explicit installer is idempotent and preserves local changes"
+      ]
+    }
+  },
+  "limitations": [
+    "Synthetic process benchmark, not timing the archived projects or replaying their workloads.",
+    "One OS/architecture and one Node version on a shared host. Small sample p95 estimates and scheduling noise do not establish a latency service-level objective.",
+    "Wrapper overhead can make short/fast checks slower; output reduction is not a measured wall-clock speedup.",
+    "Fault tests establish only their explicit deterministic contracts. They do not measure agent task success, diagnostic completeness, fewer retries, or a reliability improvement over native execution.",
+    "A compact excerpt can omit the needed diagnosis. Full log retrieval is required when evidence is insufficient, and its tokens and latency are excluded here.",
+    "Transcript token savings are a separate calibrated observation in research/admission-report.json; these synthetic output byte counts are not token-savings evidence."
+  ]
+}
