@@ -105,6 +105,13 @@ native workflow on total tokens, correctness and completion time before a new
 capability earns a place in the package. The [catalog's research priorities](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md#next-experiments)
 explain the specific evidence gaps.
 
+The [whole-task benchmark harness](https://github.com/hraness/system-one-skills/blob/main/docs/BENCHMARK-HARNESS.md)
+is now the path to stronger claims: it selects relevant task episodes before
+outcomes, pairs each skill with the best native workflow, and reports Codex,
+Claude Code, and Devin separately. The current 3.9% diagnosis result remains
+one exploratory pair until that process produces held-out matched tasks; the
+harness itself has no efficacy result yet.
+
 A new [screen of 1,200 real file reads](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-OPPORTUNITIES.md)
 also argues against adding a generic read-reuse skill. Exact repeats accounted
 for only **1.1% of read-output text**, before instructions or freshness checks.
