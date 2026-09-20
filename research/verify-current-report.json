@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "skill": "system-one-verify",
+  "measurement": "UTF-8 bytes of complete recorded validation output versus the reducer presentation. This is a text-size result, not provider-native token usage, billed cost, or complete agent-task usage.",
+  "source": {
+    "private_replay_sha256": "856ceaf9b1d5b89156753324b6034a0996c0a79a352b7ecb566ef57fe9241409",
+    "sample_content_sha256": "4812cec147fb87ddd53297bda8e91571b6be28bc67eb6df907b0bdb556ece1e9",
+    "providers": {
+      "codex": 356,
+      "claude": 0,
+      "devin": 207
+    }
+  },
+  "all_providers": {
+    "eligible_outputs": 563,
+    "compacted_outputs": 28,
+    "baseline_text_bytes": 1163594,
+    "presented_text_bytes": 754006,
+    "text_reduction_pct": 35.2,
+    "compacted_baseline_text_bytes": 452036,
+    "compacted_presented_text_bytes": 42448,
+    "compacted_text_reduction_pct": 90.61,
+    "preservation_invariant_failures": 0,
+    "exit_code_counts": {
+      "0": 445,
+      "1": 56,
+      "2": 29,
+      "7": 1,
+      "42": 1,
+      "77": 7,
+      "101": 17,
+      "130": 4,
+      "143": 3
+    }
+  },
+  "by_provider": {
+    "codex": {
+      "eligible_outputs": 356,
+      "compacted_outputs": 13,
+      "baseline_text_bytes": 688245,
+      "presented_text_bytes": 463552,
+      "text_reduction_pct": 32.65,
+      "compacted_baseline_text_bytes": 253135,
+      "compacted_presented_text_bytes": 28442,
+      "compacted_text_reduction_pct": 88.76,
+      "preservation_invariant_failures": 0,
+      "exit_code_counts": {
+        "0": 278,
+        "1": 39,
+        "2": 18,
+        "7": 1,
+        "42": 1,
+        "77": 7,
+        "101": 5,
+        "130": 4,
+        "143": 3
+      }
+    },
+    "claude": {
+      "eligible_outputs": 0,
+      "compacted_outputs": 0,
+      "baseline_text_bytes": 0,
+      "presented_text_bytes": 0,
+      "text_reduction_pct": null,
+      "compacted_baseline_text_bytes": 0,
+      "compacted_presented_text_bytes": 0,
+      "compacted_text_reduction_pct": null,
+      "preservation_invariant_failures": 0,
+      "exit_code_counts": {}
+    },
+    "devin": {
+      "eligible_outputs": 207,
+      "compacted_outputs": 15,
+      "baseline_text_bytes": 475349,
+      "presented_text_bytes": 290454,
+      "text_reduction_pct": 38.9,
+      "compacted_baseline_text_bytes": 198901,
+      "compacted_presented_text_bytes": 14006,
+      "compacted_text_reduction_pct": 92.96,
+      "preservation_invariant_failures": 0,
+      "exit_code_counts": {
+        "0": 167,
+        "1": 17,
+        "2": 11,
+        "101": 12
+      }
+    }
+  },
+  "whole_task_provider_token_result": {
+    "status": "not_established",
+    "reason": "These are replayed tool results. No fresh paired native-versus-skill agent sessions with provider-native accounting, correctness scoring, and latency gates were run."
+  },
+  "other_skills": {
+    "status": "no_numeric_result",
+    "reason": "The remaining catalog entries have no executable adapter in the package and were not assigned a percentage from workflow counts."
+  },
+  "limitations": [
+    "A replay remeasures the reducer's presentation boundary, not the original agent's complete task.",
+    "Short outputs pass through, so the all-output percentage is lower than the compacted-only percentage.",
+    "The private corpus is a convenience sample from one developer's local Codex, Claude Code, and Devin records; it is not representative."
+  ]
+}

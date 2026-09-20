@@ -1,9 +1,12 @@
 # Whole-task benchmark harness
 
 The 3.94% diagnosis result is one exploratory pair. It cannot answer whether a
-skill helps across the tasks and providers where it is meant to operate. This
-harness makes that question measurable without turning workflow frequency into
-a savings claim.
+skill helps across the tasks and providers where it is meant to operate. The
+current [verify scorecard](SCORECARD.md) has a larger replay result—35.20% less
+presented text across 563 validation outputs—but it is still a text-boundary
+measurement, not whole-task provider-token savings. This harness makes the
+stronger question measurable without turning workflow frequency into a savings
+claim.
 
 ## Workflow
 
