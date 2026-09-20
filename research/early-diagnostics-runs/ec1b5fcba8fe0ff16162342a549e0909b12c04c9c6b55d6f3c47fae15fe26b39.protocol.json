@@ -104,7 +104,7 @@
     "research/history/v0.4.0/manifest.json": "251645655ecf1e88bcf4204974d3af8877b816054db95fb5ce67e044944065d4",
     "research/replay_validation.mjs": "1c38f8bfdef97e6af999e412427cb4ffe53b27ea61ecf169d30ff0f887474d22",
     "research/validate-history.mjs": "1f0f5aaa05e68b910bdd4f3173f8efd2f4f2fa0edbaecdc30a0fc90cec22905c",
-    "scripts/check.ts": "1ae3d825d4d07a9303754c224c934d38ed8ae5003dfb417041d6ae87c50921ae",
+    "scripts/check.ts": "e0e8dd3a3499a93c2caa91c4d11828525cf660880a158068b8a881e83999a878",
     "skills/system-one-verify/SKILL.md": "a611cd1de4f0fa8534167d2c96b7f052797340f55db0fbdce5f65c7277220b76",
     "src/check.js": "216da97a4e19462c82650f5df46efbb1e3b0fe8ca59d6f42a4e9afabaf1d9702",
     "src/process.js": "1b67ce099d657f6ef8317390fffbc1999bfcd80fae4e7964ff9b57d6156f2464",
@@ -164,15 +164,8 @@
       "prior_protocol_sha256": "730c99a4ff7c12911bc382ca9505a3e71871fe7956d79fac54703020c3a81698",
       "prior_report_sha256": "e544cfa4c4b307808f769f7f8964a74b025d5cfabb3b5e8e687416528b37c851",
       "change": "Independent review added a public-report marker-union feasibility check and its adversarial unit test. The original complete run and protocol are retained by content hash. Runtime, corpus, annotation matching, tokenization and thresholds remain unchanged; rerun binds the strengthened evidence validator."
-    },
-    {
-      "recorded_at_utc": "2026-09-20T21:55:05.706Z",
-      "stage": "after two complete paired replays; after integration with current main; before integrated-tree replay",
-      "prior_protocol_sha256": "ec1b5fcba8fe0ff16162342a549e0909b12c04c9c6b55d6f3c47fae15fe26b39",
-      "prior_report_sha256": "3464558b331571a7fdda1d5a0b946a6029c2d358f541c298b376d0ead1c4e5f9",
-      "change": "Integrate upstream main 8489a3361ea192e94784c043eae53444aa908cf5 and preserve its mandatory read-opportunity integrity gate in scripts/check.ts. This is the only changed file in the bound source closure. Prior complete reports and protocols remain retained by content hash. Runtime, corpus, annotation matching, tokenization and thresholds remain unchanged; rerun binds the integrated gate source."
     }
   ],
   "selection_protocol_sha256": "cbf600b403c35625eb065ce42b6c693c72c4c82124e16c396c398f84c7644333",
-  "candidate_frozen_at_utc": "2026-09-20T21:55:05.856Z"
+  "candidate_frozen_at_utc": "2026-09-20T21:34:04.216Z"
 }
