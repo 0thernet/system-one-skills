@@ -5,6 +5,28 @@ Keep negative results and coverage gaps. A later change does not inherit an
 earlier version's qualification automatically. Git history preserves prior
 reports; each entry below names the work and its limits.
 
+## 2026-09-20 UTC — exact read reuse did not justify another skill
+
+A new local screen covered all **1,200 file reads** in the fixed discovery window:
+42 Codex, 9 Claude, and 1,149 Devin calls. It found **74 exact repeated responses**,
+containing **12,485 of 1,143,648 read-output text tokens (1.09%)**. This is an
+optimistic deletion ceiling before overhead, not measured savings. The stricter
+subset with no intervening recorded tool call was one Claude response worth two
+tokens. No read was established to be safe to skip, and read reuse remains outside
+the package. [Results, provider counts, and limits](CANDIDATE-OPPORTUNITIES.md).
+
+Explicit native read bounds already appeared in **516 calls (43%)**. Zero complete
+multi-entry JSON output fragments met the narrow field-projection format screen.
+Unrecognized bounds and absent JSON matches are not evidence of waste elsewhere.
+The collection inspected retained local transcripts only; it made no provider
+requests and executed no historical commands. The local protocol preceded the new
+outcomes, and private opaque measurements bind the public rows to exact query,
+scope, output, and chronology hashes. Post-collection independent review hardened
+only report validation; the original source hash and amendment are retained.
+
+The installed skill and runtime are unchanged. The result narrows the research
+queue instead of adding another overhead-bearing instruction without evidence.
+
 ## 2026-09-20 UTC — Codex comparison completed after setup repairs
 
 Two fresh Codex CLI runs diagnosed the same real Devin failure log. Both answers

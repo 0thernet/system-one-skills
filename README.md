@@ -1,6 +1,6 @@
 # System One Skills
 
-**Keep noisy test logs out of your agent’s context.**
+**Give your agent the check result, with the full log one read away.**
 
 A focused skill for **Devin, Claude Code, and Codex**. Run a verbose test or build
 once, give the agent a compact result, and keep the full log locally for inspection.
@@ -8,12 +8,7 @@ No model call, API key, or runtime dependency.
 
 [Skills guide](https://sys1.io/skills) · [Source](https://github.com/hraness/system-one-skills) · [SYS1](https://sys1.io)
 
-## 82% fewer tokens for noisy check results
-
-In an initial replay of **three successful Devin logs**, including counted skill
-overhead.[^1]
-
-**9,731 tokens of logs → 1,705 tokens of results and skill overhead**
+## When it earns its place
 
 - **More room for the task.** Repetitive test output takes up less agent context.
 - **Run the check once.** Return its exit status, or report a timeout or
@@ -23,10 +18,25 @@ overhead.[^1]
 
 Use it for checks you already know produce long logs. Choose native tools when
 output is short, a useful quiet mode exists, or you need the full log anyway.[^2]
+The practical benefit is less repetitive output with an explicit result and a
+retrievable log. Better task success and faster completion have not been shown.
 
 ```sh
 system-one-skills check --timeout-ms 900000 -- bun test
 ```
+
+## What the numbers mean
+
+| Result | What was compared | What it establishes |
+| --- | --- | --- |
+| **82% smaller initial results** | Three successful historical Devin logs: 9,731 text tokens → 1,705 including counted skill overhead | Less log text in these development replays; native quiet reporters were not tested on the original tasks.[^1] |
+| **3.9% fewer recorded tokens; 9.3 seconds longer** | One completed Codex diagnosis: 49,803 → 47,840 input + output tokens; both answers scored 6/6 | Fewer recorded tokens in the skill arm, with a longer run; no general reliability or speed advantage.[^3] |
+| **88% less text using Bun's own quiet reporter** | One current 21-test fixture: 466 → 55 output + invocation tokens with `--dots` | A native alternative worth trying first. No skill was involved; this is a synthetic fixture, not the historical logs or a complete agent task.[^4] |
+
+These percentages measure different things and must not be combined. The 82%
+figure measures an initial result; the 3.9% figure includes the completed
+diagnosis and its follow-up reads. The comparison that ultimately matters is a
+correct completed task against the best practical native workflow.
 
 ## Install
 
@@ -62,19 +72,19 @@ in the [results notes](https://github.com/hraness/system-one-skills/blob/main/do
 installed. The others need evidence of a benefit over native tools before they
 join the package.
 
-| Skill | Purpose | Status |
+| Skill | Potential benefit | What to use today |
 | --- | --- | --- |
-| `system-one-verify` | Compact noisy check results | Shipped |
-| `system-one-explore` | Repository search | Research |
-| `system-one-ci` | CI monitoring | Research |
-| `system-one-diff` | Scoped diff review | Research |
-| `system-one-digest` | Repository-state summaries | Research |
-| `system-one-fetch` | Readable page extraction | Research |
-| `system-one-research` | Source evidence bundles | Research |
-| `system-one-triage` | Bounded decision routing | Research |
-| `system-one-writing` | Mechanical draft checks | Research |
-| `system-one-evolve` | Routing-policy evaluation | Research |
-| `system-one` | Skill selection | Research |
+| `system-one-verify` | Read less repetitive check output while retaining the exit status and full log | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
+| `system-one-explore` | Find matching code and relevant lines in fewer reads | Focused native search; research must prove it preserves required locations |
+| `system-one-ci` | Avoid repeated model check-ins while CI runs | Native run watching; our pilot established no avoidable polling |
+| `system-one-diff` | Read large changes with explicit review coverage | Scoped native diffs; research must measure missed findings |
+| `system-one-digest` | Collect the repository facts a task needs together | Native Git status; most observed outputs were already too small to justify another layer |
+| `system-one-fetch` | Extract the source passage needed for an answer | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
+| `system-one-research` | Keep source evidence together and avoid duplicate reads | Native search and targeted reads; no separate benefit demonstrated |
+| `system-one-triage` | Handle a recurring decision with a cheaper, accurate process | Deterministic rules or the primary agent; no evaluated decision family yet |
+| `system-one-writing` | Find mechanical draft issues cheaply | Existing linters; inactive until there is relevant task evidence |
+| `system-one-evolve` | Improve a useful routing policy over repeated use | A fixed reviewed policy; inactive until optimization can repay its cost |
+| `system-one` | Choose the smallest useful skill | Direct selection; an extra router is unjustified for one available skill |
 
 The [full catalog](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md)
 explains the proposed benefit, native alternative, and evidence needed for each.
@@ -87,9 +97,18 @@ and [outputs from 960 calls plus native reporter alternatives](https://github.co
 The failure summary saved tokens but needed the full log for some details;
 the candidate analysis gives us reasons to keep the install small.
 A [live Codex diagnosis comparison](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-RESULTS.md)
-produced correct answers in both runs: the skill run used **4% fewer recorded
-tokens but took longer**. This single case does not establish better reliability
-or speed. Failed setup attempts and their costs remain in the evidence record.
+also counts follow-up reads and keeps failed setup attempts in the evidence record.
+
+We are prioritizing **more useful failure excerpts** and **focused search with
+needed source lines** over a larger catalog. Both must beat the corresponding
+native workflow on total tokens, correctness and completion time before a new
+capability earns a place in the package. The [catalog's research priorities](https://github.com/hraness/system-one-skills/blob/main/docs/SKILL-CATALOG.md#next-experiments)
+explain the specific evidence gaps.
+
+A new [screen of 1,200 real file reads](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-OPPORTUNITIES.md)
+also argues against adding a generic read-reuse skill. Exact repeats accounted
+for only **1.1% of read-output text**, before instructions or freshness checks.
+That is an optimistic opportunity ceiling, not a measured saving.
 
 <a id="commands"></a>
 
@@ -143,6 +162,21 @@ not configure the other. [SYS1 source](https://github.com/hraness/sys1).
     skill can also add catalog overhead on tasks that never use it. Faster task
     completion and better task success remain unproven.
     [Negative results](https://github.com/hraness/system-one-skills/blob/main/docs/HOLDOUT.md).
+
+[^3]: **One observed diagnosis, not a qualification cohort.** One historical
+    Devin failure was diagnosed by Codex in two fresh sessions, reduced first
+    and native second. The skill arm made four reads versus three and took
+    37.974 seconds versus 28.625 seconds from launcher start to exit. Cache
+    effects were uncontrolled; the model checkpoint and ambient instructions
+    were not fully attested. A blinded rubric scored both answers 6/6. Failed
+    setup attempts add evaluation cost and are not subtracted from these arms.
+    [Complete results and limitations](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-RESULTS.md).
+
+[^4]: **A current native control, not skill efficacy.** Each reporter returned
+    21 passed tests, 0 failed, 106 assertions and exit 0 in one run per mode.
+    Matching totals do not establish equivalent warning visibility or failure
+    diagnosis. Text counts use `o200k_base`, not provider billing.
+    [Native baseline and candidate screen](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).
 
 <details>
 <summary><strong>Development and assessment</strong></summary>

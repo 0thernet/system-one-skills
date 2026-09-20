@@ -47,6 +47,7 @@ gate("portfolio-and-unused-cohort",()=>run("bun",["research/validate-evidence.ts
 gate("runtime-measurement-integrity",()=>run("node",["bench/measure-runtime.mjs","--check"]));
 gate("ci-pilot-integrity",()=>run("python3",["research/ci_pilot.py","--check"]));
 gate("candidate-screen-integrity",()=>run("python3",["research/candidate_screen.py","--check"]));
+gate("read-opportunity-integrity",()=>run("python3",["research/candidate_opportunities.py","--check"]));
 gate("native-reporter-integrity",()=>run("python3",["research/candidate_native.py","--check"]));
 gate("failure-replay-integrity",()=>run("python3",["research/failure_assess.py","--check"]));
 gate("diagnosis-attempt-integrity",()=>run("python3",["research/assess_diagnosis.py","--check"]));
