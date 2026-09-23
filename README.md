@@ -10,10 +10,10 @@ model calls and needs no API key or runtime dependency.
 
 ## When to use it
 
-Use it for checks you already know produce long logs. The agent gets the exit
-status and a short excerpt instead of pages of passing tests. The command runs
-once, and a timeout or capture failure is reported as a failure. The full log
-stays on disk for warnings, coverage questions, and diagnosis.
+The agent gets the exit status and a short excerpt instead of pages of passing
+tests. The command runs once, and a timeout or capture failure is reported as a
+failure. The full log stays on disk for warnings, coverage questions, and
+diagnosis.
 
 Choose native tools when output is short, a useful quiet mode exists, or you
 need the full log anyway.[^2] Better task success and faster completion have not
@@ -79,7 +79,7 @@ beats native tools before it joins the package.
 | --- | --- | --- | --- |
 | `system-one-verify` | **35.20% less validation text** across 563 real outputs; 100% preservation checks | 563 replay outputs; 35.20% is text-boundary evidence only | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
 | `system-one-explore` | **No result** | 213/573 calls cross an illustrative 256-token headroom screen (37.17%); not savings | Focused native search; research must prove it preserves required locations |
-| `system-one-ci` | **No result** | 128 calls in the CI pilot; no avoidable polling found | Native run watching (`gh run watch`) |
+| `system-one-ci` | **No result** | 128 Devin CI-status calls in the pilot; avoidable polling not measured | Native run watching (`gh run watch`) |
 | `system-one-diff` | **No result** | 31/68 calls cross the same headroom screen (45.59%); not savings | Scoped native diffs; research must measure missed findings |
 | `system-one-digest` | **No result** | 28/224 calls cross it (12.50%); not savings | Native Git status; most observed outputs were already too small to justify another layer |
 | `system-one-fetch` | **No result** | 54/95 shared web calls cross it (56.84%); not an independent cohort | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
