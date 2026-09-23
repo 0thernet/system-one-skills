@@ -56,7 +56,7 @@ be added together. The complete machine-readable derivation is
 [`research/catalog-scorecard.json`](../research/catalog-scorecard.json).
 
 | Candidate | Reduction | 256-token headroom screen | Current decision |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `system-one-explore` | **No result** | 213 / 573 calls (**37.17%**) | Headroom only; freeze expected file/line sets and compare focused native search |
 | `system-one-ci` | **No result** | — | Native baseline preferred; the pilot established no avoidable model turn |
 | `system-one-diff` | **No result** | 31 / 68 calls (**45.59%**) | Headroom only; test changed-hunk coverage and defect recall |
