@@ -1,46 +1,44 @@
 # System One Skills
 
-**Give your agent the check result, with the full log one read away.**
+System One Skills gives Devin, Claude Code, and Codex one skill,
+`system-one-verify`, for test and build commands you already know produce long
+logs. It runs the command once, returns a short result with the exit status, and
+saves the full log on your machine for when the agent needs details. It makes no
+model calls and needs no API key or runtime dependency.
 
-A focused skill for **Devin, Claude Code, and Codex**. Run a verbose test or build
-once, give the agent a compact result, and keep the full log locally for inspection.
-No model call, API key, or runtime dependency.
+[Skills guide](https://sys1.io/skills) · [Source](https://github.com/hraness/system-one-skills) · [Sys1](https://sys1.io)
 
-[Skills guide](https://sys1.io/skills) · [Source](https://github.com/hraness/system-one-skills) · [SYS1](https://sys1.io)
+## When to use it
 
-## When it earns its place
+The agent gets the exit status and a short excerpt instead of pages of passing
+tests. The command runs once, and a timeout or capture failure is reported as a
+failure. The full log stays on disk for warnings, coverage questions, and
+diagnosis.
 
-- **More room for the task.** Repetitive test output takes up less agent context.
-- **Run the check once.** Return its exit status, or report a timeout or
-  capture failure.
-- **Full evidence when needed.** The private local log remains available for
-  warnings, coverage questions, and diagnosis.
-
-Use it for checks you already know produce long logs. Choose native tools when
-output is short, a useful quiet mode exists, or you need the full log anyway.[^2]
-The practical benefit is less repetitive output with an explicit result and a
-retrievable log. Better task success and faster completion have not been shown.
+Choose native tools when output is short, a useful quiet mode exists, or you
+need the full log anyway.[^2] Better task success and faster completion have not
+been shown.
 
 ```sh
 system-one-skills check --timeout-ms 900000 -- bun test
 ```
 
-## The current number
+## Results
 
-The only shipped skill, `system-one-verify`, presented **35.20% less validation
-text** across **563 real outputs** from the local Codex and Devin transcript
-corpus: 32.65% for Codex (356 outputs) and 38.90% for Devin (207 outputs).
-Claude Code had no qualifying validation outputs in this window, so it is shown
-as **No result**. The 28 outputs that actually crossed the compaction guard were
-90.61% smaller, while 535 short outputs passed through unchanged. Every replay
-preservation check passed.
+In a replay of **563 real validation outputs** from one developer's local Codex
+and Devin sessions, `system-one-verify` cut the text the agent would see by
+**35.20%**: 32.65% for Codex (356 outputs) and 38.90% for Devin (207 outputs).
+Claude Code had no qualifying validation outputs in this window, so it has
+**No result**. The 28 outputs the skill shortened were 90.61% smaller, and the
+other 535 short outputs passed through unchanged. Every replay preservation
+check passed.
 
-That is a text-size result, not a provider-token or complete-task result. The
-repo has no verified whole-task provider-native token-reduction percentage yet.
-The [numeric scorecard](docs/SCORECARD.md) gives the denominator, provider
-breakdown, preservation checks, and the reason every other candidate remains
-unmeasured. Earlier exploratory 82% and 3.9% figures stay in the [results
-notes](docs/RESULTS.md), where their narrower scopes are explicit.[^1][^3]
+This measures text size, not provider tokens or whole-task usage, and no
+whole-task token reduction has been measured yet. The [numeric
+scorecard](docs/SCORECARD.md) gives the denominators, provider breakdown,
+preservation checks, and the reason each other candidate is still unmeasured.
+Earlier exploratory 82% and 3.9% figures are in the [results
+notes](docs/RESULTS.md) with their narrower scopes.[^1][^3]
 
 
 ## Install
@@ -73,15 +71,15 @@ in the [results notes](https://github.com/hraness/system-one-skills/blob/main/do
 
 ## All skills
 
-**One shipped skill. Ten research candidates.** Only `system-one-verify` is
-installed. The others have **No numeric result** and need an executable adapter
-and evidence of a benefit over native tools before they join the package.
+Only `system-one-verify` ships. The ten other names are research candidates
+with **No numeric result**; each needs a working adapter and evidence that it
+beats native tools before it joins the package.
 
 | Skill | Verified reduction | Discovery signal | What to use today |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `system-one-verify` | **35.20% less validation text** across 563 real outputs; 100% preservation checks | 563 replay outputs; 35.20% is text-boundary evidence only | **Available:** known noisy pass/fail checks when native quiet output is inadequate |
 | `system-one-explore` | **No result** | 213/573 calls cross an illustrative 256-token headroom screen (37.17%); not savings | Focused native search; research must prove it preserves required locations |
-| `system-one-ci` | **No result** | Native run watching; pilot established no avoidable polling | Native run watching; our pilot established no avoidable polling |
+| `system-one-ci` | **No result** | 128 Devin CI-status calls in the pilot; avoidable polling not measured | Native run watching (`gh run watch`) |
 | `system-one-diff` | **No result** | 31/68 calls cross the same headroom screen (45.59%); not savings | Scoped native diffs; research must measure missed findings |
 | `system-one-digest` | **No result** | 28/224 calls cross it (12.50%); not savings | Native Git status; most observed outputs were already too small to justify another layer |
 | `system-one-fetch` | **No result** | 54/95 shared web calls cross it (56.84%); not an independent cohort | The agent's readable-page tool; extraction accuracy and extra savings are unproven |
@@ -107,7 +105,7 @@ publishes the denominators, provider split, and current decision for every
 entry.
 
 Recent analysis covers [a real failed check](https://github.com/hraness/system-one-skills/blob/main/docs/FAILURE-EVIDENCE.md)
-and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).
+and [outputs from 960 calls plus native reporter alternatives](https://github.com/hraness/system-one-skills/blob/main/docs/CANDIDATE-EVIDENCE.md).[^4]
 The failure summary saved tokens but needed the full log for some details;
 the candidate analysis gives us reasons to keep the install small.
 A [live Codex diagnosis comparison](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-RESULTS.md)
@@ -178,12 +176,12 @@ can use its context for the task. Here, ordinary code processes repetitive logs.
 [TypeSafe’s introduction to System One models and Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev)
 is related background; this collection needs no model backend or TypeSafe account.
 
-[SYS1](https://sys1.io) is the related decision interface for applications: typed
-yes/no answers, choices, and scores across local models, hosted Jev, and compatible
-servers. System One Skills works independently; installing either project does
-not configure the other. [SYS1 source](https://github.com/hraness/sys1).
+[Sys1](https://sys1.io) is a separate project that gives agents yes/no, choice,
+and score decisions from local models, hosted Jev, or compatible servers. System
+One Skills works without it, and installing either project does not configure
+the other. [Sys1 source](https://github.com/hraness/sys1).
 
-[^1]: **Early text-replay result, not whole-task or billing savings.** Three noisy
+[^1]: **Early text replay.** Three noisy
     successful logs qualified from 24 Devin development replays. Their 9,731 tokens
     became 931 output tokens plus 774 counted skill, discovery, and invocation
     tokens. `(9,731 − 1,705) / 9,731 = 82.48%`, rounded to 82%. Counts use
@@ -199,7 +197,7 @@ not configure the other. [SYS1 source](https://github.com/hraness/sys1).
     completion and better task success remain unproven.
     [Negative results](https://github.com/hraness/system-one-skills/blob/main/docs/HOLDOUT.md).
 
-[^3]: **One observed diagnosis, not a qualification cohort.** One historical
+[^3]: **One observed diagnosis.** One historical
     Devin failure was diagnosed by Codex in two fresh sessions, reduced first
     and native second. The skill arm made four reads versus three and took
     37.974 seconds versus 28.625 seconds from launcher start to exit. Cache
@@ -208,7 +206,7 @@ not configure the other. [SYS1 source](https://github.com/hraness/sys1).
     setup attempts add evaluation cost and are not subtracted from these arms.
     [Complete results and limitations](https://github.com/hraness/system-one-skills/blob/main/docs/DIAGNOSIS-RESULTS.md).
 
-[^4]: **A current native control, not skill efficacy.** Each reporter returned
+[^4]: **Native control run.** Each reporter returned
     21 passed tests, 0 failed, 106 assertions and exit 0 in one run per mode.
     Matching totals do not establish equivalent warning visibility or failure
     diagnosis. Text counts use `o200k_base`, not provider billing.

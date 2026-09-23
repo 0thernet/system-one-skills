@@ -22,7 +22,7 @@ their cost.
 | --- | --- | --- |
 | `system-one-verify` | Read less repetitive test output | **Shipped for known noisy checks.** 35.20% less presented text across 563 real outputs, with 0 preservation failures; 90.61% on the 28 outputs compacted. No whole-task provider-token percentage is established. [Scorecard](SCORECARD.md) · [Replay](RESULTS.md). |
 | `system-one-explore` | Find matching code and relevant source lines in one result | **Research only.** Many existing search results are small; must beat focused native search plus context lines while preserving required locations. [Cost screen](CANDIDATE-EVIDENCE.md). |
-| `system-one-ci` | Avoid unnecessary model turns while CI runs | **Use native watching.** The identity pilot established no avoidable polling or token benefit. [Pilot](CI-PILOT.md). |
+| `system-one-ci` | Avoid unnecessary model turns while CI runs | **Use native watching.** The identity pilot showed no benefit; avoidable polling and token savings were not measured. [Pilot](CI-PILOT.md). |
 | `system-one-digest` | Inspect repository state in one concise result | **Deferred; use native Git.** Small native outputs leave little room for another layer to help. [Cost screen](CANDIDATE-EVIDENCE.md). |
 | `system-one-diff` | Review relevant changes without losing coverage | **Research only.** Some outputs have room for reduction; retained review coverage is untested. [Cost screen](CANDIDATE-EVIDENCE.md). |
 | `system-one-fetch` | Read the relevant parts of a web page | **Deferred; use the existing reader.** Must preserve needed evidence and beat targeted source reading. [Cost screen](CANDIDATE-EVIDENCE.md). |
@@ -69,7 +69,7 @@ The machine-readable [portfolio report](../research/portfolio-report.json) inclu
 
 Large-diff coverage remains a secondary research direction. Native run watching
 is the current answer for CI: the [completed identity pilot](CI-PILOT.md) resolved
-32 of 128 calls into 30 run/context groups and established no avoidable polling.
+32 of 128 calls into 30 run/context groups and did not measure avoidable polling.
 Generic Git summaries, source bundling and typed routing need a demonstrated
 task before implementation. Writing, policy evolution and umbrella routing stay
 outside the active product roadmap.
