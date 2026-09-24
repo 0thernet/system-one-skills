@@ -100,7 +100,7 @@ On a machine with the required host scheduler, run from the repository root
 with the installed absolute scheduler path:
 
 ```sh
-/absolute/path/to/hra-host-run --mode=shared --lane=compute \
+/absolute/path/to/host-run --mode=shared --lane=compute \
   --label=system-one-runtime-evidence -- node bench/measure-runtime.mjs --write
 ```
 
