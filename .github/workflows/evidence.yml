@@ -28,3 +28,21 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: node --test tests/transcript-admission.test.mjs
+    timeout-minutes: 15
+
+  required:
+    name: Required
+    if: always()
+    needs: [check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every selected job
+        env:
+          CHECK: ${{ needs.check.result }}
+        run: |
+          set -euo pipefail
+          if [[ "$CHECK" != success ]]; then
+            printf 'Unexpected required job result: %s\n' "$CHECK"
+            exit 1
+          fi
